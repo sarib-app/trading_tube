@@ -24,7 +24,12 @@ const WindowWidth = Dimensions.get('window').width
 
 
 
-function Cardd(){
+function Cardd({
+  AccountTitle,
+  Acc_numberr,
+  Bank_Type,
+  type
+}){
   return(
     <>
     <ImageBackground 
@@ -37,14 +42,14 @@ style={{width:362,height:194,alignSelf:'center'}}
 
     <Text style={styles.CardHeadTxt}>Trading Card</Text>
 
-<Text style={[styles.CardHeadTxt,{color:Colors.BgColorII}]}>UBL BANK</Text>
+<Text style={[styles.CardHeadTxt,{color:Colors.BgColorII}]}>{Bank_Type}</Text>
 
     </View>
     <View style={[styles.UpperCardTxt,{marginTop:50, width:WindowWidth/1.15}]}>
 
-    <Text style={[styles.CardHeadTxt,{textAlign:'center'}]}>Account Title{'\n'}M. Zafar Ali</Text>
+    <Text style={[styles.CardHeadTxt,{textAlign:'center'}]}>Account Title{'\n'}{AccountTitle}</Text>
 
-<Text style={[styles.CardHeadTxt,{color:Colors.BgColorII,textAlign:'center'}]}>Account Number{'\n'}IBANX XXXX XXXXXX</Text>
+<Text style={[styles.CardHeadTxt,{color:Colors.BgColorII,textAlign:'center'}]}>Account Number{'\n'}{Acc_numberr}</Text>
 
     </View>
 

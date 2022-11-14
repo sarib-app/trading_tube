@@ -33,7 +33,7 @@ import { FlatList } from 'react-native-gesture-handler';
 import DropDwn from '../../assets/icons/dropdown.png'
 import promotion from '../../assets/icons/promotion.png'
 import WebView from 'react-native-webview';
-function Home() {
+function Home({data}) {
 
 const navigation = useNavigation()
 
@@ -109,7 +109,9 @@ style={{width:27,height:27}}
 
 
 
-<View style={styles.iconWrapper}>
+<Pressable 
+onPress={()=> navigation.navigate("PlanDecider")}
+style={styles.iconWrapper}>
 <LinearGradient 
  colors={[Colors.GoldII, Colors.GoldI]}
  start={start} end={end}     
@@ -125,7 +127,7 @@ style={{width:27,height:27}}
 
 </LinearGradient>
 <Text style={{color:"white"}}>Plans</Text>
-</View>
+</Pressable>
 
 
 
@@ -320,11 +322,10 @@ function LowerCart(){
     <>
   <Text style={{textAlign:'center',marginTop:10}}> 
   {item.body}
-  
   </Text>
   <WebView 
   style={{width:300,height:150}}
-  source={{uri: "https://www.youtube.com/embed/eGE-tFalwpA"}}
+  source={{uri: item.embeded_link}}
   
   javaScriptEnabled={true}
   domStorageEnabled={true}
@@ -342,8 +343,11 @@ function LowerCart(){
   
 return(
   <View style={styles.LowerCart}>
+  
   <Text style={styles.L_Cart_Title}>Top Investors</Text>
+  
   <View style={styles.lowerProfilesCart}>
+
 <FlatList 
 data={TopInvestors}
 renderItem={Investor}
@@ -353,27 +357,28 @@ scrollEnabled={true}
 />
 
 </View>
+
 <Text style={[styles.L_Cart_Title,{marginTop:0}]}>Tips & Tricks</Text>
-
-
 
 <ScrollView
 showsVerticalScrollIndicator={false}
 nestedScrollEnabled={true}
 >
-{TipsTricks.map((item)=>{
+
+{
+data.length > 0 &&
+data.map((item)=>{
   return(
     <TipsTrickss item={item} />
 
   )
 })}
+
 <View style={{height:150,width:100}}>
 
 </View>
+
 </ScrollView>
-
-
-
 
 </View>
 

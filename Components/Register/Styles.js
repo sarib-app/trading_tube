@@ -49,6 +49,12 @@ const styles = StyleSheet.create({
         padding:15
         // alignItems:'center'    
     },
+    QuestionBox:{
+        width:WindowWidth/1.05,
+        padding:10,
+        marginTop:10,
+        backgroundColor:Colors.bgIII
+    },
     NextTextSTyle:{color:Colors.PrimaryColor,textDecorationStyle:'solid',textDecorationLine:'underline',alignSelf:'flex-end',marginTop:10,fontSize:17}
 
 });

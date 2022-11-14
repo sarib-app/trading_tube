@@ -25,6 +25,11 @@ import Help from './Components/Help/Help';
 import PromotionScreen from './Components/PromotionScreen/PromotionScreen';
 import Decider from './Components/Help/Decider';
 import LiveChat from './Components/Help/LiveChat';
+import ForgetPassword from './Components/Register/ForgetPassword';
+import DecideUpdate from './Components/UpdateProfile/DecideUpdate';
+import PlanDecider from './Components/Plans/Decider';
+import SharePlans from './Components/Plans/SharePlan';
+import InvestmentPlans from './Components/Plans/InvestmentPlans';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -49,10 +54,13 @@ return(
     <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
     <Stack.Screen name="Help" component={Help} />
     <Stack.Screen name="Decider" component={Decider} />
-
+    <Stack.Screen name="ForgetPassword" component={ForgetPassword} />
     <Stack.Screen name="LiveChat" component={LiveChat} />
-
     <Stack.Screen name="PromotionScreen" component={PromotionScreen} />
+    <Stack.Screen name="DecideUpdate" component={DecideUpdate} />
+    <Stack.Screen name="PlanDecider" component={PlanDecider} />
+    <Stack.Screen name="SharePlans" component={SharePlans} />
+    <Stack.Screen name="InvestmentPlans" component={InvestmentPlans} />
 
 
     </Stack.Navigator>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   Image,
@@ -21,6 +21,9 @@ import Profile from '../../assets/icons/5.png'
 
 import TeamDetail from './TeamDetail';
 import BackBtn from '../GlobalStyles/BackButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import BaseUrl from '../../Urls';
+import Endpoints from '../../EnDPoints';
 
 function MyTeam() {
 
@@ -28,17 +31,81 @@ function MyTeam() {
 
 const navigation = useNavigation()
 
-  const [showDetail,setShowDetail]=useState(false)
+  const [firstTeamList,setFirstTeamList]=useState([])
+  const [secondTeamList,setSecondTeam]=useState([])
+  const [selected,setIsSelected]=useState(1)
+  
+  const data = selected === 1 ?firstTeamList : secondTeamList
 
-function onHideModal(){
-  setShowDetail((p)=>!p)
+
+
+useEffect(()=>{
+
+  getAsyncData()
+
+  
+  },[])
+
+
+
+  
+  async function getAsyncData () {
+    const user = await AsyncStorage.getItem('user')
+    const token = await AsyncStorage.getItem('token')
+    let userParsed=JSON.parse(user) 
+    if(token){
+  
+getTeamList(userParsed.id)
+  
+  
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+function getTeamList(user_id){
+
+
+  var formdata = new FormData();
+  formdata.append("user_id", "46");
+  
+  var requestOptions = {
+    method: 'POST',
+    body: formdata,
+    redirect: 'follow'
+  };
+  
+  fetch(`${BaseUrl}${Endpoints.get_the_team}`, requestOptions)
+    .then(response => response.json())
+    .then(result => {
+      if(result.status==="200"){
+        setFirstTeamList(result.first_members)
+        setSecondTeam(result.second_members)
+
+
+      }
+      
+      console.log(result)})
+    .catch(error => console.log('error', error));
+
 }
 
 
 
-
-
 function MyTeamList({item}){
+  const [showDetail,setShowDetail]=useState(false)
+  function onHideModal(){
+    setShowDetail((p)=>!p)
+  }
+  
+
 return(
     <View style={styles.TrickContainer}>
   
@@ -57,7 +124,7 @@ return(
     
     
     <View style={styles.InnerTricks}>
-    <Text style={{fontWeight:'bold',fontSize:18,color:Colors.FontColorI}}>{item.name}</Text>
+    <Text style={styles.TextStyle}>{item.username}</Text>
     
     </View>
     
@@ -69,7 +136,13 @@ return(
     onPress={()=> setShowDetail(true)}
     
     style={[styles.TransactionText,{color:Colors.PrimaryColor}]}>View</Text>
-    
+    <TeamDetail 
+    IsVisible={showDetail} 
+    onHideModal={onHideModal}
+    item={item}
+
+/>
+
     
     </View>
 )
@@ -85,8 +158,20 @@ return (
     My Team
 </Text>
 
+<View style={styles.TrickContainer}>
+<Text 
+onPress={()=> setIsSelected(1)}
+style={[styles.TextStyle,{color:selected===1 ? Colors.FontColorI:Colors.bgIII}]}>1st Refer</Text>
+<Text
+onPress={()=> setIsSelected(2)}
+
+
+style={[styles.TextStyle,{color:selected===2 ? Colors.FontColorI:Colors.bgIII}]}>2nd Refer</Text>
+
+</View>
+
 <FlatList 
-data={MyTeamData}
+data={data}
 renderItem={({item})=>
 <MyTeamList  item={item} 
 />
@@ -97,7 +182,6 @@ renderItem={({item})=>
 style={{height:20,width:50}}
 ></View>
 
-<TeamDetail IsVisible={showDetail} onHideModal={onHideModal}/>
 
     </SafeAreaView>
   )

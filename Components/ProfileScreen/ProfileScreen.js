@@ -131,7 +131,7 @@ return (
 
 <Text style={styles.InnerTxt}>@Username{'\n'} <Text style={styles.OuterTxt}>+9232020200</Text></Text>
     </View>
-<Pressable onPress={()=> Navigator('UpdateProfile')}>
+<Pressable onPress={()=> Navigator('DecideUpdate')}>
 <Image source={updateProfIcon} style={{width:29,height:21}}/>
 
 </Pressable>

@@ -18,43 +18,39 @@ import { Item } from 'react-native-paper/lib/typescript/components/List/List';
 import GlobalProgressLoader from '../LoadingModal/LoadingModal';
 import BaseUrl from '../../Urls';
 import Endpoints from '../../EnDPoints';
+import moment from 'moment/moment';
 function Confirmation({
   IsVisible,
   onHideModal,
   selectedPackage,
-  user
+  user,
+  currentDate
 
 }) {
 
 
+
+
 const navigation = useNavigation()
 const [showProgressLoader,setshowProgressLoader]=useState(false)
-
 function onHideLoader(){
-setshowProgressLoader((p)=>!p)
+  
+  setshowProgressLoader((p)=>!p)
 }
-
-console.log(selectedPackage.single_payment)
-
-
 function InvestOnpackage(){
-  var date = new Date().getDate()+10;
-  var month = new Date().getMonth() + 1;
-  var year = new Date().getFullYear();
+  const newDate = moment(currentDate, "YYYY-MM-DD").add(10,"days");
 
-  //Alert.alert(date + '-' + month + '-' + year);
-  // You can turn it in to your desired format
-const currentDate = year+"-"+month+"-"+date;//format: d-m-y;
+
+console.log(selectedPackage.id,newDate.format('YYYY-MM-DD'),user.id,selectedPackage.single_payment)
 
 
 
-console.log(currentDate)
 
       var formdata = new FormData();
       formdata.append("package_id", selectedPackage.id);
       formdata.append("user_id", user.id);
-      formdata.append("end_date", currentDate);
-      formdata.append("single_earning",selectedPackage.single_payment);
+      formdata.append("end_date", newDate.format('YYYY-MM-DD'));
+      formdata.append("single_earning",String(selectedPackage.single_payment));
       
       var requestOptions = {
         method: 'POST',
@@ -69,8 +65,8 @@ console.log(currentDate)
             console.log(result)
         
             setshowProgressLoader(false)
-            onHideLoader()
-            alert("cONGRATULATIONS !!!")
+            // onHideLoader()
+              Alert.alert("Congratulations!","You have successfully invested on this package.")
 
           }
         })
@@ -134,7 +130,9 @@ style={styles.ModalTitles}>Close</Text>
   <Text 
   onPress={()=>  {
     InvestOnpackage()
-    setshowProgressLoader(true)}}
+    // setshowProgressLoader(true)
+  
+  }}
   
   style={[styles.ModalTXt,{color:Colors.send,marginTop:20,textDecorationLine:"underline"}]}>Yes, I want to Invest!</Text>
 

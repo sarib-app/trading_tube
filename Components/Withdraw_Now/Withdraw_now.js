@@ -8,6 +8,7 @@ import {
   ImageBackground,
   Pressable,
   Dimensions,
+  Alert,
   
  
 } from 'react-native';
@@ -27,35 +28,92 @@ import Colors from '../GlobalStyles/Color';
 import GlobalStyles from '../GlobalStyles/GlobalStyles';
 import { ScrollView } from 'react-native-gesture-handler';
 import Button from './../../assets/icons/longBtn.png'
+import SpinnerButton from 'react-native-spinner-button';
+import BaseUrl from '../../Urls';
+import Endpoints from '../../EnDPoints';
+import getAsync from '../GetAsynData/getAsync';
+import BankAllList from '../BankAllList/BankAllList';
 
 const WindowHeight = Dimensions.get('window').height; 
 
 function Withdraw_now({route}) {
-
+const asyncdata= getAsync()
 const item = route.params.item
 console.log(item)
-const [Acc_Title,setAcc_title]=useState()
+const [Acc_Title,setAcc_title]=useState(item.Acc_Type === "OKX" || item.Acc_Type === "Binance"? item.Acc_Type:"")
 const [Acc_Number,setAcc_Number]=useState()
 const [Acc_Type,setAcc_Type]=useState(item.Acc_Type)
-const [Account_Subtype,setAcc_SubType]=useState(item.Acc_Type)
+const [Account_Subtype,setAcc_SubType]=useState(item.Acc_Type === "VISA" || item.Acc_Type === "OKX" || item.Acc_Type === "Binance"? "":item.Acc_Type)
 const [Amount,setAmount]=useState()
 const [isPressed,setIsPressed]=useState(false)
+const [loading,setLoading]=useState(false)
+const [showBanks,setShowBank]=useState(false)
 
 
 
 
 
-function onDeposit(){
-  
-   if(Acc_Title && Acc_Number && Acc_Type && Account_Subtype && Amount ){
+function onWithdraw(){
+   if(Acc_Title !="" && Acc_Number && Acc_Type && Account_Subtype && Amount ){
 alert("good")
+Withdraw()
    }else{
     setIsPressed(true)
    }
+}
+
+
+function Withdraw (){
+  setLoading(true)
+
+  var formdata = new FormData();
+  formdata.append("account_title",Acc_Title);
+  formdata.append("account_type", Acc_Type);
+  formdata.append("account_subtype", Account_Subtype);
+
+  formdata.append("account_number", Acc_Number);
+  formdata.append("requested_amount", Amount);
+  formdata.append("user_id", asyncdata.user.id);
+  
+  var requestOptions = {
+    method: 'POST',
+    body: formdata,
+    redirect: 'follow'
+  };
+    fetch(`${BaseUrl}${Endpoints.withdrawal}`, requestOptions)
+    .then(response => response.json())
+    .then(result =>
+      {
+        console.log(result)
+        if(result.status==="200")
+         {
+          setLoading(false)
+          Alert.alert("Congratulations","Your withdrawal request has been sent!")
+          navigation.navigate("Main")
+         }
+         else if(result.status==="401"){
+          setLoading(false) 
+        Alert.alert("Sorry",result.message)
+        }
+      })
+    .catch(error => {
+      setLoading(false)
+      Alert.alert("Ooops","Something Went Wrong Please try again later.")
+      
+      console.log('error', error)});
+
 
 
 }
 
+
+
+
+function onSelectBank (val){
+  setShowBank(false)
+   setAcc_SubType(val)
+
+}
 
 
 
@@ -78,15 +136,128 @@ const navigation = useNavigation()
 </Text>
 
 
+{
+  item.Acc_Type === "Binance" ||   item.Acc_Type === "OKX" ?
+<>
+<Text style={styles.TxtInputTitle}>
+  Account Type
+</Text>
+<View
+style={[GlobalStyles.TextInput,{borderColor: !Acc_Type&&isPressed === true ? Colors.danger:Colors.BgColorII}]}
+>
+
+<Image
+source={acc_type_icon}
+style={{width:24,height:19,marginLeft:10  }}
+/>
+
+<TextInput
+placeholder='Enter Account Type'
+value={Acc_Type}
+// onChangeText={(e)=> setAcc_Type(e)}
+placeholderTextColor={Colors.placeHolder}
+style={{flex:1,color:Colors.FontColorI,marginLeft:10}}
+cursorColor={Colors.PrimaryColor}
+// secureTextEntry={true}
+editable={false}
+
+/>
+
+</View>
 
 
+<Text style={styles.TxtInputTitle}>
+  Currency Type
+</Text>
+
+<Pressable
+onPress={()=> setShowBank(true)}
+style={[GlobalStyles.TextInput,{borderColor: !Account_Subtype &&isPressed === true ? Colors.danger:Colors.BgColorII}]}
+>
+
+<Image
+source={acc_type_icon}
+style={{width:24,height:19,marginLeft:10  }}
+/>
+
+<TextInput
+placeholder='Please Select Currency'
+value={Account_Subtype}
+// onChangeText={(e)=> setAcc_SubType(e)}
+placeholderTextColor={Colors.placeHolder}
+style={{flex:1,color:Colors.FontColorI,marginLeft:10}}
+cursorColor={Colors.PrimaryColor}
+editable={false}
+// secureTextEntry={true}
+/>
+
+</Pressable>
+
+
+<Text style={styles.TxtInputTitle}>
+  Wallet Address
+</Text> 
+<View
+style={[GlobalStyles.TextInput,{borderColor: !Acc_Number &&isPressed === true ? Colors.danger:Colors.BgColorII}]}
+>
+
+<Image
+source={acc_numb_icon}
+style={{width:27,height:20,marginLeft:10  }}
+/>
+
+<TextInput
+placeholder='Enter Wallet Address'
+value={Acc_Number}
+
+onChangeText={(e)=> setAcc_Number(e)}
+placeholderTextColor={Colors.placeHolder}
+style={{flex:1,color:Colors.FontColorI,marginLeft:10}}
+cursorColor={Colors.PrimaryColor}
+// secureTextEntry={true}
+
+/>
+
+</View>
+
+
+
+<Text style={styles.TxtInputTitle}>
+  Amount
+</Text>
+<View
+style={[GlobalStyles.TextInput,{borderColor: !Amount &&isPressed === true ? Colors.danger:Colors.BgColorII}]}
+>
+
+<Image
+source={amount_icon}
+style={{width:22,height:24,marginLeft:10  }}
+/>
+
+<TextInput
+placeholder='Enter Amount'
+value={Amount}
+keyboardType={'numeric'}
+onChangeText={(e)=> setAmount(e)}
+placeholderTextColor={Colors.placeHolder}
+style={{flex:1,color:Colors.FontColorI,marginLeft:10}}
+cursorColor={Colors.PrimaryColor}
+// secureTextEntry={true}
+
+/>
+
+</View>
+</>  
+  
+  :
+<>
 
 
 <Text style={styles.TxtInputTitle}>
   Account Title
 </Text>
 <View
-style={[GlobalStyles.TextInput,{borderColor: !Acc_Title &&isPressed === true ? Colors.danger:Colors.BgColorII}]}
+style={[GlobalStyles.TextInput,{borderColor: Acc_Title ==="" &&isPressed === true ? Colors.danger:Colors.BgColorII}]}
 >
 
 <Image
@@ -181,6 +352,10 @@ editable={false}
 <Text style={styles.TxtInputTitle}>
   Account Sub-Type
 </Text>
+
+{
+  item.Acc_Type != "VISA" ?
+
 <View
 style={[GlobalStyles.TextInput,{borderColor: !Account_Subtype &&isPressed === true ? Colors.danger:Colors.BgColorII}]}
 >
@@ -191,7 +366,7 @@ style={{width:24,height:19,marginLeft:10  }}
 />
 
 <TextInput
-placeholder='Enter Account Sub-Type'
+placeholder='Please Select Bank SubType'
 value={Account_Subtype}
 // onChangeText={(e)=> setAcc_SubType(e)}
 placeholderTextColor={Colors.placeHolder}
@@ -199,11 +374,36 @@ style={{flex:1,color:Colors.FontColorI,marginLeft:10}}
 cursorColor={Colors.PrimaryColor}
 editable={false}
 // secureTextEntry={true}
-
 />
 
 </View>
 
+:
+<Pressable
+onPress={()=> setShowBank(true)}
+style={[GlobalStyles.TextInput,{borderColor: !Account_Subtype &&isPressed === true ? Colors.danger:Colors.BgColorII}]}
+>
+
+<Image
+source={acc_type_icon}
+style={{width:24,height:19,marginLeft:10  }}
+/>
+
+<TextInput
+placeholder='Please Select Basank SubType'
+value={Account_Subtype}
+// onChangeText={(e)=> setAcc_SubType(e)}
+placeholderTextColor={Colors.placeHolder}
+style={{flex:1,color:Colors.FontColorI,marginLeft:10}}
+cursorColor={Colors.PrimaryColor}
+editable={false}
+// secureTextEntry={true}
+/>
+
+</Pressable>
+
+
+}
 
 
 <Text style={styles.TxtInputTitle}>
@@ -233,13 +433,17 @@ cursorColor={Colors.PrimaryColor}
 </View>
 
 
+</>
 
 
+}
 
+
+{loading === false ?
 
 
 <Pressable 
-onPress={()=> onDeposit()}
+onPress={()=> onWithdraw()}
 >
 
 <ImageBackground 
@@ -251,12 +455,26 @@ style={[GlobalStyles.Button,{alignSelf:'center'}]}
 <Text style={GlobalStyles.BtnText}>Withdraw</Text>
 
 </ImageBackground>
-</Pressable>
+</Pressable>:
+<SpinnerButton
+                        buttonStyle={{  backgroundColor: Colors.PrimaryColor,
+                        borderRadius: 6}}
+                        isLoading={loading}
+                        spinnerType='PulseIndicator'
+                        indicatorCount={0}
+>
 
+</SpinnerButton>
+}
 
 <View style={{width:50,height:300}}></View>
 </ScrollView>
+<BankAllList 
+    isVisible={showBanks}
+    onSelectBank={onSelectBank}
+    route={item.Acc_Type}
 
+/>
     </SafeAreaView>
   )
 }

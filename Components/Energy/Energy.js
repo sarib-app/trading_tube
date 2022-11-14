@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState,useCallback } from 'react';
 import {
 
   Text,
   Image,
   View,
 ScrollView,
-Pressable
+Pressable,
+RefreshControl
  
 } from 'react-native';
 import styles from './Styles';
@@ -24,10 +25,21 @@ import LinearGradient from 'react-native-linear-gradient';
 import {DepositTransaction,TeamsComission,DailyIncomeData} from '../data/TopInvestors';
 import DailyIncome from '../../assets/icons/DailyIncome.png'
 import TeamComission from '../../assets/icons/TeamComission.png'
+import BaseUrl from '../../Urls';
+import Endpoints from '../../EnDPoints';
+import GlobalProgressLoader from '../LoadingModal/LoadingModal';
+import getAsync from '../GetAsynData/getAsync';
+function EnergyScreen({
+  DailyIncomes,
+  forceReload,
+  currentDate
 
-function EnergyScreen() {
+}) {
+  const asyncdata = getAsync()
+  const [refreshing, setRefreshing] = useState(false);
+
   const [selected,setSelected]=useState("Income")
-
+ 
 const navigation = useNavigation()
 
 
@@ -40,6 +52,18 @@ const LowerCardTitle = selected === "Income"?"Daily Income":"Team's Comission"
 
 
 
+
+const onRefresh = useCallback(() => {
+
+  forceReload()
+  setRefreshing(true)
+  setTimeout(() => {
+  setRefreshing(false)
+ 
+},2000);
+
+
+}, [])
 
 
 
@@ -135,10 +159,121 @@ Team Comission
 
 
 function LowerCart(){
-  const data = selected==="Income"?DailyIncomeData:TeamsComission
-  const TransactionList =({item})=>{
+  const data = DailyIncomes
 
-  const amountClr= selected==="Income"?Colors.send:Colors.deposit
+
+
+  const ComissionList =({item})=>{
+
+    const amountClr= selected==="Income"?Colors.send:Colors.deposit
+    const transIcon = debited
+    const operator = "+"
+  
+      const [isOpen ,setIsOpen]=useState(false)
+    
+    return(
+      <View style={styles.TrickContainer}>
+    
+    
+    <View style={{flexDirection:'row',alignItems:"center"}}>
+    <View style={styles.IconWrapper}>
+    
+    <Image 
+    style={{width:22,height:22,tintColor:amountClr}} 
+    source={transIcon}
+    />
+    
+    
+    </View>
+    
+    
+    
+    <View style={styles.InnerTricks}>
+    <Text style={{fontWeight:'bold',fontSize:18,color:Colors.BgColor}}>{item.type}</Text>
+    
+  
+    {selected === "Income"?
+    <>
+    <Text>Package Id: {item.package_Id}</Text>
+    <Text>Package: {item.package_Name}</Text>
+    </>
+    
+    :
+  <>
+    <Text>Member name: {item.mem_name}</Text>
+    <Text>Chain: {item.Chain}</Text>
+    </>
+  
+    }
+  
+  
+  
+     
+     
+    <Text>5 days ago</Text>
+    
+    </View>
+    
+    
+    </View>
+    
+    
+    <Text style={[styles.TransactionText,{color:amountClr}]}>{operator}{item.amount} PKR</Text>
+    
+    
+    </View>
+    
+    
+    )
+    }
+  
+
+  
+  const TransactionList =({item})=>{
+    const [showProgressLoader,setshowProgressLoader]=useState(false)
+    function onHideLoader(){
+    setshowProgressLoader((p)=>!p)
+    }
+const [isGot,SetIsGot]=useState(item.is_got)
+
+function onCollect(){
+  SetIsGot("1")
+}
+
+
+
+    function CollectIncome(){
+      setshowProgressLoader(true)
+      var formdata = new FormData();
+      formdata.append("id", item.id);
+      
+      var requestOptions = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow'
+      };
+      
+      fetch(`${BaseUrl}${Endpoints.CollectInvestment}`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          console.log(result)
+          
+        if(result.status==="200"){
+          forceReload()
+          onHideLoader()
+          onCollect()
+
+        }
+          
+        })
+        .catch(error => console.log('error', error));
+    
+    
+    }
+    
+
+
+  const amountClr= Colors.send
   const transIcon = debited
   const operator = "+"
 
@@ -162,37 +297,51 @@ function LowerCart(){
   
   
   <View style={styles.InnerTricks}>
-  <Text style={{fontWeight:'bold',fontSize:18,color:Colors.BgColor}}>{item.type}</Text>
+  <Text style={{fontWeight:'bold',fontSize:18,color:Colors.BgColor}}>Income</Text>
   
 
-  {selected === "Income"?
-  <>
-  <Text>Package Id: {item.package_Id}</Text>
-  <Text>Package: {item.package_Name}</Text>
-  </>
+
+  <Text>Package Id: {item.package_id}</Text>
+  <Text>Cycle Ends at: {item.end_date}</Text>
   
-  :
-<>
-  <Text>Member name: {item.mem_name}</Text>
-  <Text>Chain: {item.Chain}</Text>
-  </>
+  
+
+
+  
+
+
+
+   
+   
+  <Text>Available at: {item.earn_date}</Text>
+  
+  </View>
+  
+  
+  </View>
+  
+  <View style={{alignItems:"center"}}>
+  <Text style={[styles.TransactionText,{color:amountClr}]}>{operator}{item.single_earning} PKR{'\n'}</Text>
+  {
+    isGot === "0" ?
+    <Text 
+    onPress={()=> CollectIncome()}
+    style={[styles.TransactionText,{color:Colors.deposit}]}>Collect Now</Text>
+:
+<Text style={[styles.TransactionText,{color:Colors.placeHolder}]}>Collected</Text>
 
   }
-
-
-
-   
-   
-  <Text>5 days ago</Text>
-  
   </View>
-  
-  
-  </View>
-  
-  
-  <Text style={[styles.TransactionText,{color:amountClr}]}>{operator}{item.amount} PKR</Text>
-  
+
+  {
+  showProgressLoader === true &&
+<GlobalProgressLoader 
+IsVisible={showProgressLoader} 
+onHideLoader={onHideLoader} 
+
+/>
+
+}
   
   </View>
   
@@ -211,7 +360,10 @@ return(
 showsVerticalScrollIndicator={false}
 nestedScrollEnabled={true}
 >
-{data.map((item)=>{
+{
+data.length < 1?
+<Text style={{color:Colors.BgColor,fontSize:18,marginTop:40,alignSelf:"center"}}>No data found!</Text>:
+data.map((item)=>{
   return(
     <TransactionList item={item} />
 
@@ -245,13 +397,24 @@ nestedScrollEnabled={true}
 
 
 <ScrollView nestedScrollEnabled={true}
+    refreshControl={
+      <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      
 
+
+      />
+    }
 >
 <UpperCart/>
 
 <LowerCart/>
 
 </ScrollView>
+
+
+
 
     </SafeAreaView>
   )

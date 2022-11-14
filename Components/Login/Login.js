@@ -179,7 +179,10 @@ secureTextEntry={true}
 }
 
 
-<Text style={styles.TitleTxt}>Forgot Password?</Text>
+<Text 
+
+onPress={()=> navigation.navigate("ForgetPassword")}
+style={styles.TitleTxt}>Forgot Password?</Text>
 </View>
 
 {

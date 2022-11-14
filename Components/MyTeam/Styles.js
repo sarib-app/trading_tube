@@ -100,7 +100,8 @@ const styles = StyleSheet.create({
         fontWeight:'400',
         fontSize:16
 
-       }
+       },
+       TextStyle:{fontWeight:'bold',fontSize:18,color:Colors.FontColorI}
 
 });
 

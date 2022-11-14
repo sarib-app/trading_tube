@@ -29,6 +29,10 @@ import Colors from '../GlobalStyles/Color';
 import BaseUrl from '../../Urls';
 import Endpoints from '../../EnDPoints';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Question } from '../data/TopInvestors';
+import { FlatList } from 'react-native-gesture-handler';
+import { Item } from 'react-native-paper/lib/typescript/components/List/List';
+
 function Register() {
 const [index,setIndex]=useState(1)
 const navigation = useNavigation()
@@ -49,6 +53,9 @@ const [errorCode,setErrorCode]=useState("")
 const [isPressed,setIsPressed]=useState(false)
 const [loading,setLoading]=useState(false)
 
+const [question,setQuestion]=useState("")
+const [answer,setAnswer]=useState("")
+
 
 const InputSty = {flex:1,color:Colors.FontColorI}
 
@@ -68,9 +75,14 @@ function ONpressNext(){
     setIndex(index+1)
     setIsPressed(false)
   }
-  else if(index === 4 &&  otp){
+  else if(index === 4 &&  question != "" && answer !=""){
+    setIndex(index+1)
+    setIsPressed(false)
+  }
+  else if(index === 5 &&  otp){
     Register()
-  }else{
+  }
+  else{
 setIsPressed(true)
 }
 }
@@ -95,7 +107,8 @@ function Register(){
   formdata.append("code", refer);
   formdata.append("firstname", firstName);
   formdata.append("lastname", LastName);
-  
+  formdata.append("question", question);
+  formdata.append("answer", answer);
   var requestOptions = {
     method: 'POST',
     body: formdata,
@@ -213,7 +226,7 @@ onPress={()=>OnPressBack()}
 style={styles.NextTextSTyle} >{"<"} Back</Text>
 }
 {
-  index !=4&&
+  index !=5&&
   <Text 
 onPress={()=>ONpressNext()}
 style={styles.NextTextSTyle} >{loading === true ? "Loading....":"Next >"}</Text>
@@ -234,10 +247,26 @@ function BottoMtext(){
   )
 }
 
+
+
+function Allquestions({item}){
+  return(
+    <Pressable 
+    onPress={()=> setQuestion(item.Question)}
+    style={[styles.QuestionBox,{backgroundColor:item.Question === question ? Colors.send :Colors.bgIII}]}>
+      <Text style={styles.TitleTxt}>{item.Question}</Text>
+    </Pressable>
+  )
+}
+
   return (
     <View style={styles.Container}
     >
-
+<ScrollView
+showsVerticalScrollIndicator={false}
+nestedScrollEnabled={true}
+contentContainerStyle={{alignItems:'center'}}
+>
 <View style={styles.marginer}>
 <Text style={styles.HeaderTitle}>
   Welcome
@@ -452,8 +481,46 @@ keyboardType="numeric"
 
 </>
 }
+
+
 {
   index===4&&
+<>
+<Text style={[styles.TitleTxt,{marginTop:-20}]}>Select a Question</Text>
+<FlatList
+scrollEnabled={true}
+nestedScrollEnabled={true}
+data={Question}
+renderItem={({item})=> 
+<Allquestions item={item}/>
+}
+
+/>
+
+
+
+
+<Text style={styles.TitleTxt}>Enter answer</Text>
+<View style={[GlobalStyles.TextInput,{borderColor:answer==="" && isPressed === true?Colors.danger:Colors.PrimaryColor }]}>
+  
+<Image
+source={typeIcon}
+style={{width:15,height:15,margin:10}}
+/>
+<TextInput
+placeholder='Enter Your Answer Please'
+placeholderTextColor={Colors.placeHolder}
+style={{flex:1,color:"white"}}
+
+value={answer}
+onChangeText={(e)=>setAnswer(e)}
+
+/>
+</View>
+</>
+}
+{
+  index===5&&
 <>
 <Text style={styles.TitleTxt}>OTP Code</Text>
 <View style={[GlobalStyles.TextInput,{borderColor:!otp && isPressed === true?Colors.danger:Colors.PrimaryColor }]}>
@@ -466,9 +533,8 @@ style={{width:17,height:17,margin:10}}
 placeholder='Enter OTP code sent to your phone'
 placeholderTextColor={Colors.placeHolder}
 style={{flex:1,color:"white"}}
-
-value={otp}
 keyboardType="numeric"
+value={otp}
 onChangeText={(e)=>setOtp(e)}
 
 />
@@ -485,9 +551,10 @@ onChangeText={(e)=>setOtp(e)}
 
 </View>
 {
-  index === 4 &&
+  index === 5 &&
 <Pressable 
 onPress={()=> ONpressNext()}
+
 >
 
 <ImageBackground 
@@ -503,10 +570,14 @@ style={GlobalStyles.Button}
 }
 
 
+
+<View style={{width:100,height:250}}>
+
+</View>
+
+
+</ScrollView>
 <BottoMtext/>
-
-
-
     </View>
   )
 }

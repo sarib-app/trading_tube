@@ -35,7 +35,7 @@ return (
 
 <View style={styles.ModalDetail}>
 <Text 
-onPress={()=> onHideLoader()}
+// onPress={()=> onHideLoader()}
 style={styles.ModalTitles}>We are making your transaction.</Text>
 
 

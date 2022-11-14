@@ -33,7 +33,8 @@ import Confirmation from './ConfirmationModal';
 import getAsync from '../GetAsynData/getAsync';
 function InvestmentScreen({
   AllPackages,
-  forceReload
+  forceReload,
+  currentDate
 }) {
    const asyncdata = getAsync()
   const [selected,setSelected]=useState("New") 
@@ -54,10 +55,12 @@ const end = {x: 0, y: 0}
 
 
 const onRefresh = useCallback(() => {
+
   forceReload()
   setRefreshing(true)
-setTimeout(() => {
-setRefreshing(false)
+  setTimeout(() => {
+  setRefreshing(false)
+ 
 },2000);
 
 
@@ -267,6 +270,7 @@ IsVisible={showConfirmation}
 onHideModal={onHideModal} 
 selectedPackage={item}
 user={asyncdata.user}
+currentDate={currentDate}
 />
 
 }
@@ -285,7 +289,7 @@ return(
 
   <ScrollView
 showsVerticalScrollIndicator={false}
-
+nestedScrollEnabled={true}
 // refreshControl={
 //   <RefreshControl
 //   refreshing={refreshing}
@@ -295,7 +299,7 @@ showsVerticalScrollIndicator={false}
 // }
 >
 {
-data ?
+data.length > 0 ?
 
 data.map((item)=>{
   return(
@@ -303,7 +307,7 @@ data.map((item)=>{
 
   )
 }) :
-<Text>No data available now</Text>
+<Text style={{color:Colors.BgColor,fontSize:18,marginTop:40,alignSelf:"center"}}>No data found!</Text>
 
 
 }

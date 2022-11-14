@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   Text,
   Image,
@@ -22,13 +22,73 @@ import Profile from '../../assets/icons/5.png'
 import TeamDetail from './TeamDetail';
 import BackBtn from '../GlobalStyles/BackButton';
 import ComissionDetail from './ComissionDetails';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Endpoints from '../../EnDPoints';
+import BaseUrl from '../../Urls';
 function TeamComissionScreen() {
 const navigation = useNavigation()
+  
 
-  const [showDetail,setShowDetail]=useState(false)
+const [firstTeamList,setFirstTeamList]=useState([])
+const [secondTeamList,setSecondTeam]=useState([])
+const [selected,setIsSelected]=useState(1)
 
-function onHideModal(){
-  setShowDetail((p)=>!p)
+const data = selected === 1 ?firstTeamList : secondTeamList
+
+
+
+useEffect(()=>{
+
+  getAsyncData()
+
+  
+  },[])
+
+
+
+
+
+
+async function getAsyncData () {
+  const user = await AsyncStorage.getItem('user')
+  const token = await AsyncStorage.getItem('token')
+  let userParsed=JSON.parse(user) 
+  if(token){
+
+getTeamList(userParsed.id)
+
+
+  }
+}
+
+
+
+
+function getTeamList(user_id){
+
+
+  var formdata = new FormData();
+  formdata.append("user_id", "46");
+  
+  var requestOptions = {
+    method: 'POST',
+    body: formdata,
+    redirect: 'follow'
+  };
+  
+  fetch(`${BaseUrl}${Endpoints.get_the_team}`, requestOptions)
+    .then(response => response.json())
+    .then(result => {
+      if(result.status==="200"){
+        setFirstTeamList(result.first_members)
+        setSecondTeam(result.second_members)
+
+
+      }
+      
+      console.log(result)})
+    .catch(error => console.log('error', error));
+
 }
 
 
@@ -36,6 +96,15 @@ function onHideModal(){
 
 
 function MyTeamList({item}){
+  const [showDetail,setShowDetail]=useState(false)
+
+
+function onHideModal(){
+  setShowDetail((p)=>!p)
+}
+
+
+
 return(
     <View style={styles.TrickContainer}>
   
@@ -54,7 +123,7 @@ return(
     
     
     <View style={styles.InnerTricks}>
-    <Text style={{fontWeight:'bold',fontSize:18,color:Colors.FontColorI}}>{item.name}</Text>
+    <Text style={{fontWeight:'bold',fontSize:18,color:Colors.FontColorI}}>{item.username}</Text>
     <Text style={{fontWeight:'500',fontSize:14,color:Colors.PrimaryColor}}>Level 2</Text>
 
     
@@ -69,7 +138,8 @@ return(
     
     style={[styles.TransactionText,{color:Colors.PrimaryColor}]}>View</Text>
     
-    
+    <ComissionDetail IsVisible={showDetail} onHideModal={onHideModal} item={item}/>
+
     </View>
 )
 }
@@ -85,7 +155,7 @@ return (
 </Text>
 
 <FlatList 
-data={MyTeamData}
+data={data}
 renderItem={({item})=>
 <MyTeamList  item={item} 
 />
@@ -96,7 +166,6 @@ renderItem={({item})=>
 style={{height:20,width:50}}
 ></View>
 
-<ComissionDetail IsVisible={showDetail} onHideModal={onHideModal}/>
 
     </SafeAreaView>
   )
