@@ -38,7 +38,9 @@ function onHideLoader(){
   setshowProgressLoader((p)=>!p)
 }
 function InvestOnpackage(){
-  const newDate = moment(currentDate, "YYYY-MM-DD").add(10,"days");
+  setshowProgressLoader(true)
+
+  const newDate = moment(currentDate, "YYYY-MM-DD").add(Number(selectedPackage.cycle_duration),"days");
 
 
 console.log(selectedPackage.id,newDate.format('YYYY-MM-DD'),user.id,selectedPackage.single_payment)
@@ -51,7 +53,9 @@ console.log(selectedPackage.id,newDate.format('YYYY-MM-DD'),user.id,selectedPack
       formdata.append("user_id", user.id);
       formdata.append("end_date", newDate.format('YYYY-MM-DD'));
       formdata.append("single_earning",String(selectedPackage.single_payment));
-      
+      formdata.append("applied_income",String(selectedPackage.cycle_income));
+      formdata.append("applied_price",String(selectedPackage.price));
+
       var requestOptions = {
         method: 'POST',
         body: formdata,
@@ -61,16 +65,25 @@ console.log(selectedPackage.id,newDate.format('YYYY-MM-DD'),user.id,selectedPack
       fetch(`${BaseUrl}${Endpoints.AddInvestment}`, requestOptions)
         .then(response => response.json())
         .then(result => {
+          console.log(result)
           if(result.status==="200"){
-            console.log(result)
         
             setshowProgressLoader(false)
             // onHideLoader()
               Alert.alert("Congratulations!","You have successfully invested on this package.")
 
           }
+          else if(result.status==="401"){
+            setshowProgressLoader(false)
+            // onHideLoader()
+              Alert.alert("Sorry!",result.message)
+          }
         })
-        .catch(error => console.log('error', error));
+        .catch(error => {
+          setshowProgressLoader(false)
+          // onHideLoader()
+            Alert.alert("Sorry!","Something Went Wrong Try Again Later!")
+          console.log('error', error)});
 
 
 

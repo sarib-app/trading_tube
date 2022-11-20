@@ -30,6 +30,7 @@ import Loader from '../Loader/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import Filter from '../Recharge/Filter';
+import BackBtn from '../GlobalStyles/BackButton';
 function Withdraw() {
   const asyncdata = getAsync()
 const [Withdraw,setWithdraw]=useState([])
@@ -176,13 +177,24 @@ height:item.Acc_Type === "VISA"?19:item.Acc_Type === "OKX" ?8:27,
     
     <Text style={GlobalStyles.TitleText}>Withdraw Via {item.Acc_Type}</Text>
     <Text style={[GlobalStyles.ScndTxt,{color:item.status !="approved" ?Colors.danger:Colors.send}]}>Status: {item.status}</Text>
+    <Text style={[GlobalStyles.ScndTxt,{color:Colors.FontColorI,textDecorationLine:'line-through'}]}>Actual Price: {(100*item.requested_amount)/95}</Text>
+    <Text style={[GlobalStyles.ScndTxt,{color:Colors.danger}]}>Tax: 5%</Text>
 
 
     <Text style={GlobalStyles.ScndTxt}>{ moment(item.created_at).format("YYYY-MM-DD")}</Text>
      </View>
   
+
+
+  <View>
   <View style={GlobalStyles.TransactionWrapper}>
   <Text style={{color:item.status ==="approved" ?Colors.danger:Colors.deposit}}>-{item.requested_amount}</Text>
+
+
+  
+  </View>
+
+
   </View>
   
   
@@ -266,6 +278,7 @@ loading === false ?
 
   return (
     <View style={styles.Container}>  
+    <BackBtn />
 <Text style={styles.Text}>Withdraw</Text>
 <ScrollView
 nestedScrollEnabled={true}

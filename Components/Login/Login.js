@@ -48,7 +48,6 @@ const [loading,setLoading]=useState(false)
 
 function onLoginPress(){
   if(phone && password){
-    navigation.navigate('Main')
 
     Login()
   }

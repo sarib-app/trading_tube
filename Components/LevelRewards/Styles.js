@@ -18,8 +18,8 @@ const styles = StyleSheet.create({
         color:Colors.FontColorI,
         fontWeight:'bold',
         fontSize:30,
-        marginLeft:15,
-        // marginTop:10,
+        margin:15,
+        marginTop:10,
     },
     TrickContainer:{
         width:WindowWidth/1.1,
@@ -39,18 +39,25 @@ const styles = StyleSheet.create({
     IconWrapper:{
 
         backgroundColor:Colors.bgIII,
-        width:50,
-        height:50,
+        
+        // width:50,
+        
+        // height:50,
+        
         borderRadius:1000,
-borderWidth:0.5,
-// borderColor:Colors.PrimaryColor,
+        
+        borderWidth:0.5,
+        
+        borderColor:Colors.PrimaryColor,
+        
         justifyContent:'center',
+        
         alignItems:'center'
       
       },
 
       InnerTricks:{
-        width:WindowWidth/1.7,
+        width:WindowWidth/2,
         marginLeft:15,
         // height:20,
         
@@ -69,90 +76,32 @@ borderWidth:0.5,
         alignSelf:'flex-end'
        },
        ModalHeader:{
+        flexDirection:"row",
         alignSelf:"center",
         margin:10,
+        marginTop:10,
         // justifyContent:'space-evenly',
         width:WindowWidth/1.1,
+        alignItems:"center",
         // backgroundColor:'red',
-        // padding:10,
-        borderBottomWidth:1,
+        padding:10,
+        borderBottomWidth:0.5,
 
         borderColor:Colors.PrimaryColor
        },
        ModalTitles:{
         color:Colors.FontColorI,
         fontWeight:'bold',
-        fontSize:16,
-        marginLeft:15
+        fontSize:18
 
        },
        ModalBelowTitles:{
         color:Colors.FontColorI,
         fontWeight:'400',
-        fontSize:16,
-        marginLeft:15
+        fontSize:16
 
        },
-       ChatBox:{
-        maxWidth:WindowWidth/1.6,
-        padding:10,
-        backgroundColor:Colors.BgColorII,
-        borderRadius:10,
-        margin:10
-       },
-       chatTxt:{
-        color:Colors.FontColorI
-       },
-       InputBox:{
-        width:WindowWidth/1.2,
-        height:WindowHeight/14,
-        alignItems:'center',
-        padding:10,
-        backgroundColor:Colors.BgColorII,
-        borderRadius:10,
-        position:'absolute',
-        bottom:50,
-        alignSelf:'center'
-       },
-       InputBoxIv:{
-        width:WindowWidth/1.2,
-        height:WindowHeight/14,
-        // padding:10,
-        borderWidth:1,
-        backgroundColor:Colors.BgColorII,
-        borderRadius:10,
-        alignSelf:'center'
-       },
-       
-
-TicketBox:{
-    justifyContent:"center",
-    alignItems:"center",
-    width:WindowWidth/1.1,
-    // height:WindowHeight/3.5,
-    backgroundColor:Colors.bgIII,
-    padding:20,
-    alignSelf:"center",
-    marginTop:40,
-    borderRadius:20,
-    elevation:10,
-    shadowColor:Colors.BgColor       
-},
-
-
-       OptionBox:{
-        justifyContent:"center",
-        alignItems:"center",
-        width:WindowWidth/1.2,
-        height:WindowHeight/3.5,
-        backgroundColor:Colors.BgColorII,
-        alignSelf:"center",
-        marginTop:40,
-        borderRadius:20,
-        elevation:10,
-        shadowColor:Colors.PrimaryColor       
-    },
-
+       TextStyle:{fontWeight:'400',fontSize:16,color:Colors.FontColorI}
 
 });
 

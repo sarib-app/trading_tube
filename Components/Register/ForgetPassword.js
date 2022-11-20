@@ -34,6 +34,7 @@ import { Question } from '../data/TopInvestors';
 import { FlatList } from 'react-native-gesture-handler';
 import { Item } from 'react-native-paper/lib/typescript/components/List/List';
 import SpinnerButton from 'react-native-spinner-button';
+import CountryCode from './CountryCodes';
 function ForgetPassword() {
 const [index,setIndex]=useState(1)
 const navigation = useNavigation()
@@ -49,9 +50,15 @@ const [question,setQuestion]=useState("")
 const [answer,setAnswer]=useState("")
 const [password,setPassword]=useState("")
 const [c_password,setC_Password]=useState("")
+const [showCodes,setShowCodes]=useState(false)
+const [countryCode,setCountryCode]=useState(92)
+const [random,setRandom]=useState('0000')
 
 const InputSty = {flex:1,color:Colors.FontColorI}
-
+function onSelectBank(val){
+  setCountryCode(val)
+  setShowCodes((p)=> !p)
+}
 
 ////////on Press Button///////////////////
 function ONpressNext(){
@@ -71,6 +78,7 @@ function ONpressNext(){
     if(password === c_password){
         setIndex(index+1)
         setIsPressed(false)
+        GeneratingOtp()
     }
     else{
         setErrorMessage("Password does not match.")
@@ -79,8 +87,10 @@ function ONpressNext(){
   }
 
   else if(index === 4 &&  otp){
-    
-    changePassword()
+    if(otp === random){
+      changePassword()
+
+    }
   }
   else{
 setIsPressed(true)
@@ -269,6 +279,51 @@ style={styles.NextTextSTyle} >{loading === true ? "Loading....":"Next >"}</Text>
 }
 
 
+
+
+
+
+
+function GeneratingOtp(){
+
+  var val = Math.floor(1000 + Math.random() * 9000);
+  setRandom(val)
+  setTimeout(() => {
+    SendOtp(val)
+   
+  },2000);
+
+
+}
+function SendOtp(val){
+
+
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'X-RapidAPI-Key': 'be434c3026msh50dc650f31b5e59p1380e1jsn8889f821e46d',
+        'X-RapidAPI-Host': 'telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com'
+      }
+    };
+    
+    fetch(`https://telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com/sms-verification-code?phoneNumber=${countryCode+Phone}&verifyCode=${val}&appName=tradingtube`, options)
+      .then(response => response.json())
+      .then(response => {
+        if(response.message === "Invalid phone number"){
+          setErrorCode("phone")
+          setIndex(3)
+          setErrorMessage("Cannot send otp on this phone no please check no again.")
+        }
+        console.log(response)})
+      .catch(err => console.error(err));
+
+
+}
+
+
+
+
 function BottoMtext(){
   return(
     <Text style={{color:Colors.FontColorI,margin:15,alignSelf:'center',position:'absolute',bottom:30}}>
@@ -355,7 +410,40 @@ contentContainerStyle={{alignItems:'center'}}
   index===1&&
 <>
 <Text style={styles.TitleTxt}>Enter Your Phone No</Text>
-<View style={[GlobalStyles.TextInput,{borderColor:Phone === ""&& isPressed === true?Colors.danger:Colors.PrimaryColor }]}>
+
+
+
+
+
+
+<View style={[GlobalStyles.TextInput,{borderColor:!Phone && isPressed === true?Colors.danger:Colors.PrimaryColor }]}>
+
+<Pressable
+onPress={()=> setShowCodes(true)}
+style={{padding:10,marginLeft:10,borderRightColor:"white",borderRightWidth:1}}
+>
+<Text style={{color:Colors.FontColorI,fontWeight:'bold'}}>{countryCode}</Text>
+
+</Pressable>
+<TextInput
+placeholder='Number after country code i.e. 320 *******'
+placeholderTextColor={Colors.placeHolder}
+style={{flex:1,color:"white"}}
+
+value={Phone}
+keyboardType="numeric"
+
+onChangeText={(e)=>setPhone(e)}
+
+/>
+</View>
+
+
+
+
+
+
+{/* <View style={[GlobalStyles.TextInput,{borderColor:Phone === ""&& isPressed === true?Colors.danger:Colors.PrimaryColor }]}>
   
 <Image
 source={phoneIcon}
@@ -368,7 +456,7 @@ onChangeText={(e)=> setPhone(e)}
 placeholderTextColor={Colors.placeHolder}
 style={{flex:1,color:"white"}}
 />
-</View>
+</View> */}
 {
   errorMessage != "" && errorCode === "phone"  &&
 <Text style={{color:Colors.danger}}>{errorMessage}</Text>
@@ -509,6 +597,11 @@ onChangeText={(e)=>setOtp(e)}
 
 
 </ScrollView>
+<CountryCode 
+isVisible={showCodes}
+onSelectBank={onSelectBank}
+
+/>
     </View>
   )
 }

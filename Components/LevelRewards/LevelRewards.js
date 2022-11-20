@@ -5,7 +5,8 @@ import {
   View,
 ScrollView,
 Pressable,
-ImageBackground
+ImageBackground,
+Alert
 } from 'react-native';
 import styles from './Styles';
 
@@ -19,13 +20,12 @@ import { FlatList } from 'react-native-gesture-handler';
 import credited from '../../assets/icons/credited.png'
 import Profile from '../../assets/icons/5.png'
 
-import TeamDetail from './TeamDetail';
 import BackBtn from '../GlobalStyles/BackButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BaseUrl from '../../Urls';
 import Endpoints from '../../EnDPoints';
 
-function MyTeam() {
+function LevelRewards() {
 
 
 
@@ -55,7 +55,7 @@ useEffect(()=>{
     let userParsed=JSON.parse(user) 
     if(token){
   
-getTeamList(userParsed.id)
+getRewards(userParsed.id)
   
   
     }
@@ -70,32 +70,56 @@ getTeamList(userParsed.id)
 
 
 
-function getTeamList(user_id){
-
+function getRewards(user_id){
 
   var formdata = new FormData();
-  formdata.append("user_id", user_id);
-  
+
   var requestOptions = {
     method: 'POST',
     body: formdata,
     redirect: 'follow'
   };
-  
-  fetch(`${BaseUrl}${Endpoints.get_the_team}`, requestOptions)
+  formdata.append("user_id", user_id);
+  console.log(user_id)
+
+  fetch(`${BaseUrl}fetch_user_level_reward`, requestOptions)
     .then(response => response.json())
-    .then(result => {
-      if(result.status==="200"){
-        setFirstTeamList(result.first_members)
-        setSecondTeam(result.second_members)
-
-
+    .then(result =>{
+      if(result.status === "200"){
+        setFirstTeamList(result.data)
       }
-      
       console.log(result)})
     .catch(error => console.log('error', error));
 
 }
+
+
+
+
+
+function requestReward(id){
+  var formdata = new FormData();
+formdata.append("id", id);
+
+var requestOptions = {
+  method: 'POST',
+  body: formdata,
+  redirect: 'follow'
+};
+
+fetch(`${BaseUrl}request_level_reward`, requestOptions)
+  .then(response => response.json())
+  .then(result => {
+    
+    if(result.status === "200"){
+      Alert.alert("Success","Request Sent Successfully!")
+      navigation.goBack()
+    }
+    console.log(result)})
+  .catch(error => console.log('error', error));
+}
+
+
 
 
 
@@ -113,35 +137,43 @@ return(
     <View style={{flexDirection:'row',alignItems:"center"}}>
     <View style={styles.IconWrapper}>
     
-    <Image 
-    style={{width:50,height:50,}} 
-    source={Profile}
-    />
-    
+    <Image source={{uri:"https://img.icons8.com/glyph-neue/64/null/packaging.png"}} style={{width:30,height:30,tintColor:Colors.PrimaryColor,margin:5}}/>
+
     
     </View>
     
     
     
     <View style={styles.InnerTricks}>
-    <Text style={styles.TextStyle}>{item.username}</Text>
-    
-    </View>
-    
-    
-    </View>
-    
-    
-    <Text 
-    onPress={()=> setShowDetail(true)}
-    
-    style={[styles.TransactionText,{color:Colors.PrimaryColor}]}>View</Text>
-    <TeamDetail 
-    IsVisible={showDetail} 
-    onHideModal={onHideModal}
-    item={item}
+    <Text style={styles.TextStyle}>Congratulations</Text>
+    <Text style={styles.TextStyle}>You reached level {item.level}</Text>
+    <Text style={styles.TextStyle}>You won {item.reward_price} free reward</Text>
 
-/>
+    </View>
+    
+    
+    </View>
+    
+    {
+      item.is_requested === "0"?    <Text 
+      onPress={()=> requestReward(item.id)}
+      
+      style={[styles.TransactionText,{color:Colors.PrimaryColor}]}>Request</Text>
+   :
+
+   item.is_got ==="0"?
+
+   <Text 
+   
+   style={[styles.TransactionText,{color:Colors.PrimaryColor}]}>Requested</Text>
+    :
+    <Text 
+    
+    style={[styles.TransactionText,{color:Colors.PrimaryColor}]}>Recieved</Text>
+
+    }
+   
+   
 
     
     </View>
@@ -155,10 +187,10 @@ return (
     <SafeAreaView style={styles.Container}>
 <BackBtn/>
 <Text style={styles.HeaderText}>
-    My Team
+    Your Rewards
 </Text>
 
-<View style={styles.TrickContainer}>
+{/* <View style={styles.TrickContainer}>
 <Text 
 onPress={()=> setIsSelected(1)}
 style={[styles.TextStyle,{color:selected===1 ? Colors.FontColorI:Colors.bgIII}]}>1st Refer</Text>
@@ -168,7 +200,7 @@ onPress={()=> setIsSelected(2)}
 
 style={[styles.TextStyle,{color:selected===2 ? Colors.FontColorI:Colors.bgIII}]}>2nd Refer</Text>
 
-</View>
+</View> */}
 
 <FlatList 
 data={data}
@@ -186,5 +218,5 @@ style={{height:20,width:50}}
     </SafeAreaView>
   )
 }
-export default MyTeam;
+export default LevelRewards;
 

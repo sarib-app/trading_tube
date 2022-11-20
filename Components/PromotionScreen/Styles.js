@@ -26,7 +26,10 @@ const styles = StyleSheet.create({
         margin:10,
         textAlign:'center',
         fontSize:16
-    }
+    },
+    DetailTitle:{fontSize:24,color:Colors.PrimaryColor,fontWeight:'bold',margin:10,alignSelf:"flex-start"},
+    DetailTxt:{color:"white",fontWeight:'400',fontSize:18}
+
 
 
 });

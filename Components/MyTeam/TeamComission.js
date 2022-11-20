@@ -68,7 +68,7 @@ function getTeamList(user_id){
 
 
   var formdata = new FormData();
-  formdata.append("user_id", "46");
+  formdata.append("user_id", user_id);
   
   var requestOptions = {
     method: 'POST',

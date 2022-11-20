@@ -226,7 +226,7 @@ const TransactionIcons = [
 
         id: 1,
         icon: allIcon,
-        name: "All",
+        name: "Investment",
         width: 21,
         height: 21
     },

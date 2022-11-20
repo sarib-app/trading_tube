@@ -121,6 +121,8 @@ function updateProfileCall(){
       if(result.status === "200"){
         console.log(result)
         setLoading(false)
+        AsyncStorage.setItem('user',JSON.stringify(result.user))
+
         navigation.navigate('Main')
         Alert.alert("Congratulation","Profile Updated Successfully!")
       }

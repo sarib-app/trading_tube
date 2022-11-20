@@ -95,7 +95,14 @@ justifyContent:'space-between',
         fontWeight:'bold',
         fontSize:18,
         marginLeft:20
-       }
+       },
+       DescriptionStyle:{
+       textAlign:'center',
+       color:Colors.FontColorI,
+       fontSize:18,
+       margin:10   
+    
+    }
     
 
 

@@ -39,7 +39,7 @@ title={"Terms of Services"}
 
 <ContentBottom
 title="Terms of Services"
-Content={ContentPrivacy}
+Content={"nothing"}
 />
 
 

@@ -4,7 +4,7 @@ const Endpoints ={
     loginNow:"login",
     fetchdeposit:"fetchdepositwithid",
     fetchallpackage:"fetchallpackage",
-    ImageBaseUrl:"https://www.tradingtubeimages.alphanitesofts.com/",
+    ImageBaseUrl:"https://posts.tradingtube.net/",
     AddInvestment:"add_investment_control",
     fetch_investment:"fetch_investment_uid",
     CollectInvestment:"update_investment",
@@ -13,7 +13,13 @@ const Endpoints ={
     get_the_team:"get_my_team",
     updateuser:"updateuserwithid",
     changepassword:"changepassword",
-    fetchall_tipsandtricks:"fetchall_tipsandtricks"
+    fetchall_tipsandtricks:"fetchall_tipsandtricks",
+    fetch_ticket:"fetch_ticket_by_userid",
+    post_ticket:"post_ticket",
+    post_reply:"post_reply",
+    fetch_reply_by_ticketid:"fetch_reply_by_ticketid",
+    LiveChatList:"chat_list",
+    sendLiveChat:"sendchat"
 }
 
 export default Endpoints

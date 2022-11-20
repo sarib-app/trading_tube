@@ -43,22 +43,32 @@ const textStyle={color:Colors.FontColorI,margin:15,marginTop:10,textAlign:'cente
     {/* <View style={styles.InnerLowerCart}> */}
         <ScrollView>
     
-        <Text style={textStyle}>It is a long established fact that a reader will be distractedby the readable content of a page when a for looking at itlayout. The point of using Lorem Ipsum is that it has a willmore-or-less normal distribution of letters, as opposed ofusing Content here, content here' making i look like more readable English.</Text>
+        <Text style={textStyle}>
 
-<Image source={graph}
-style={{width:182,height:105,alignSelf:'center'}}
-/>
-<Text style={textStyle}>It is a long established fact that a reader will be distractedby the readable content of a page when a for looking at itlayout. The point of using Lorem Ipsum is that it has a willmore-or-less normal distribution of letters, as opposed ofusing Content here, content here' making i look like more readable English.</Text>
+        Doing simple tasks through your phone such as ordering lunch, paying bills, and whatnot, phones have made every task of our lives easier. In this highly competitive realm of trading, everyone wants to earn money easily simply through their phones but not everyone knows how to earn and where to invest we have decided to make it easier for you. If you want to invest and grow your money in little or no time we are here to save you from loads and loads of tiring works trading tube helps you to grow and earn more than five lac per month
 
-    <Image source={tradingGraph}
-    style={{width:153,height:99,alignSelf:'center'}}
-    />
-    <Text style={textStyle}>It is a long established fact that a reader will be distractedby the readable content of a page when a for looking at itlayout. The point of using Lorem Ipsum is that it has a willmore-or-less normal distribution of letters, as opposed ofusing Content here, content here' making i look like more readable English.</Text>
+How does the trading tube do that?
 
-<Image source={graph}
-style={{width:182,height:105,alignSelf:'center'}}
-/>
-<Text style={textStyle}>It is a long established fact that a reader will be distractedby the readable content of a page when a for looking at itlayout. The point of using Lorem Ipsum is that it has a willmore-or-less normal distribution of letters, as opposed ofusing Content here, content here' making i look like more readable English.</Text>
+The trading tube is a company consisting of trading experts and business experts.
+We collect a small number of investments from our users and generate a big amount of money then our experts invest that in various businesses. this reduces the  chances of failure in this process
+Trading tube invests your money in different industries and earns profit for you. it maximizes your monkey without you even doing anything
+
+Packages offered by trading tube
+The trading tube offers different packages starting from two thousand rupees to ten lac. you can invest thousands of lacs and earn many folds. there is a reward feature in this app that allows our users to earn rewards starting from 3 thousand to  50 thousand
+Moreover, you can win bikes, cars, and other types of gifts just by participating in a lucky draw that trading tube offers. the minimum amount that you can invest is 2000 and the maximum is 20 lac earn 3000 to 50 lac per month with no work whatsoever.
+This application is a tool to earn money most easily with the cheapest of investments 
+
+How does the trading app work 
+It consists of different levels. Level 1 allows you to invest from. 2k to 22k different levels comes with different ranges of investments and earnings that's how you can more and more from it 
+This is a cycle of a maximum of 45 days of you are investing up to 2002k but the cycle period becomes less if the money you invest is less 
+Important note 
+You have to collect your earned money on daily basis otherwise you will lose it.
+
+
+
+
+
+        </Text>
 
     </ScrollView>
     

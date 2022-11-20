@@ -5,7 +5,8 @@ import {
   Image,
   View,
   Pressable,
-  TouchableOpacity
+  TouchableOpacity,
+  BackHandler
 
  
 } from 'react-native';
@@ -18,7 +19,7 @@ import Home from '../Home/Home';
 import homeIcon from '../../assets/icons/home.png'
 import investIcon from '../../assets/icons/invest.png'
 import TransactionIcon from '../../assets/icons/transactions.png'
-import EnergyIcon from '../../assets/icons/Energy.png'
+import EnergyIcon from '../../assets/icons/tradingGraph.png'
 
 import profile from '../../assets/icons/profile.png'
 import Colors from '../GlobalStyles/Color';
@@ -29,16 +30,28 @@ import InvestmentScreen from '../InvestmentScreen.js/InvestmentScreen';
 import BaseUrl from '../../Urls';
 import Endpoints from '../../EnDPoints';
 import getAsync from '../GetAsynData/getAsync';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
+function backButtonHandler() {
+    BackHandler.exitApp()
+
+  
+}
 function Main() {
 const asyncdata = getAsync()
-
+const focused = useIsFocused()
 const navigation = useNavigation()
 const [selected , setSelected]=useState(1)
 const [AllPackages,setAllPackages]=useState([])
+const [MyPackages,setMyPackages]=useState([])
+
 const [DailyIncomes,setDailyIncomes]=useState([])
 const [tip_Trick,setTipTricks]=useState([])
 
 const [currentDate,setCurrentDate]=useState("2022-9-9") 
+const [allTotal,setAllTotal]=useState("")
+const [allTotalTrasnaction,setAllTotalTransaction]=useState("")
+const [allComissions,setAllComissions]=useState([])
 
 
 function changeState(val){
@@ -46,17 +59,45 @@ function changeState(val){
 }
 
 
+useEffect(() => {
+  if(focused){
+    BackHandler.addEventListener("hardwareBackPress", backButtonHandler);
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", backButtonHandler);
+    };
+  }
+
+}, [backButtonHandler]);
 
 
 
 useEffect(()=>{
-  if(selected === 3 && AllPackages.length < 1){
-    FetchPackages()
+  if(selected === 3 ){
+    if(AllPackages.length <1){
+      FetchPackages()
+    
+    }
+    if(MyPackages.length <1){
+
+      FetchMyPackage()
+    }
   }
-  else if(selected === 4 && DailyIncomes.length < 1){
-    DailyIncome()
+  else if(selected === 4 ){
+    if(DailyIncome.length < 1){
+
+      DailyIncome()
+    }
+    if(allComissions.length < 1){
+
+      FetchMyTeamComission()
+    }
   }
-  },[selected])
+  else if(selected === 2 && allTotalTrasnaction === ""){
+    FetchAllTransactions()
+  }
+
+},[selected])
 
 
 
@@ -64,7 +105,94 @@ useEffect(()=>{
 
   useEffect(()=>{
     getTip_Tricks()
+    getAsyncData()
     },[])
+
+    async function getAsyncData () {
+      const user = await AsyncStorage.getItem('user')
+      const token = await AsyncStorage.getItem('token')
+      let userParsed=JSON.parse(user) 
+      if(token){
+    
+        FetchTotals(userParsed.id)
+    
+    
+      }
+    }
+  
+
+    function forceReload (){
+      if(selected === 3){
+        FetchPackages()
+        FetchMyPackage()
+        FetchTotals(asyncdata.user.id)
+      }
+      else if(selected === 4){
+        DailyIncome()
+        FetchMyTeamComission()
+        FetchTotals(asyncdata.user.id)
+      }
+      else if(selected === 2){
+        FetchAllTransactions()
+        
+        FetchTotals(asyncdata.user.id)
+      }
+      else{
+        FetchTotals(asyncdata.user.id)
+      }
+        }
+      
+
+
+
+function FetchTotals(id){
+
+  console.log(id)
+  var formdata = new FormData();
+formdata.append("user_id", id);
+
+var requestOptions = {
+  method: 'POST',
+  body: formdata,
+  redirect: 'follow'
+};
+
+fetch(`${BaseUrl}fetch_totals`, requestOptions)
+  .then(response => response.json())
+  .then(result => {
+    if(result.status === "200"){
+setAllTotal(result)
+console.log(result)
+
+    }
+    console.log(result)
+  })
+  .catch(error => console.log(  'error from fetch_totals', error));
+}
+
+
+
+function FetchAllTransactions(){
+  var formdata = new FormData();
+formdata.append("user_id", asyncdata.user.id);
+
+var requestOptions = {
+  method: 'POST',
+  body: formdata,
+  redirect: 'follow'
+};
+
+fetch(`${BaseUrl}total_lists`, requestOptions)
+  .then(response => response.json())
+  .then(result => {
+    if(result.status === "200"){
+      setAllTotalTransaction(result.totals)
+    } 
+  })
+  .catch(error => console.log('error', error));
+}
+
+
 
 
     function getTip_Tricks(){
@@ -79,19 +207,11 @@ useEffect(()=>{
           if(result.status==="200"){
             setTipTricks(result.Data)
           }
-          console.log(result)})
-        .catch(error => console.log('error', error));
+        })
+        .catch(error => console.log('error from tips_and_tricks', error));
     }
 
 
-  function forceReload (){
-if(selected === 3){
-  FetchPackages()
-}
-else if(selected === 4){
-  DailyIncome()
-}
-  }
 
 
   function FetchPackages(){
@@ -113,6 +233,28 @@ else if(selected === 4){
   }
 
 
+  function FetchMyPackage(){
+    var formdata = new FormData();
+formdata.append("investor_id", asyncdata.user.id);
+
+var requestOptions = {
+  method: 'POST',
+  body: formdata,
+  redirect: 'follow'
+};
+
+fetch(`${BaseUrl}fetchInvestment`, requestOptions)
+  .then(response => response.json())
+  .then(result => {
+    if(result.status==="200"){
+     
+      setMyPackages(result.data)
+
+    }
+   })
+  .catch(error => console.log('error', error));
+  }
+
 
   function DailyIncome(){
     var formdata = new FormData();
@@ -127,7 +269,6 @@ var requestOptions = {
 fetch(`${BaseUrl}${Endpoints.fetch_investment}`, requestOptions)
   .then(response => response.json())
   .then(result => {
-    console.log(result)
     if(result.status === "200"){
       setDailyIncomes(result.data)
       setCurrentDate(result.current_date)
@@ -138,7 +279,27 @@ fetch(`${BaseUrl}${Endpoints.fetch_investment}`, requestOptions)
   }
   
 
+function FetchMyTeamComission(){
+  var formdata = new FormData();
+formdata.append("user_id", asyncdata.user.id);
 
+var requestOptions = {
+  method: 'POST',
+  body: formdata,
+  redirect: 'follow'
+};
+
+fetch(`${BaseUrl}team_commission`, requestOptions)
+  .then(response => response.json())
+  .then(result => {
+    if(result.status==="200"){
+
+      console.log('Comission',result)
+    setAllComissions(result.data)  
+    }
+   })
+  .catch(error => console.log('error', error));
+}
 
 
 
@@ -207,7 +368,7 @@ onPressIn={()=> changeState(4)}
 
 <Image 
 source={EnergyIcon}
-style={{width:14,height:28,tintColor:selected===4?Colors.PrimaryColor:Colors.FontColorI}}
+style={{width:30,height:25,tintColor:selected===4?Colors.PrimaryColor:Colors.FontColorI}}
 />
 </TouchableOpacity>
 
@@ -235,11 +396,17 @@ style={{width:29,height:27,tintColor:selected===5?Colors.PrimaryColor:Colors.Fon
       selected === 1 && 
 <Home 
 data={tip_Trick}
+total_Record={allTotal}
 />
     }
     {
       selected === 2&&
-<Transactions/>
+<Transactions
+allTotalTrasnaction={allTotalTrasnaction}
+forceReload={forceReload}
+total_Record={allTotal}
+
+/>
 }
 {
       selected === 3&&
@@ -247,6 +414,9 @@ data={tip_Trick}
 AllPackages={AllPackages}
 forceReload={forceReload}
 currentDate={currentDate}
+MyPackages={MyPackages}
+total_Record={allTotal}
+
 
 />
 }
@@ -256,13 +426,20 @@ currentDate={currentDate}
 DailyIncomes={DailyIncomes}
 forceReload={forceReload}
 currentDate={currentDate}
+total_Record={allTotal}
+allComissions={allComissions}
+
 />
 }
 
 
 {
       selected === 5&&
-<ProfileScreen />
+<ProfileScreen
+total_Record={allTotal}
+forceReload={forceReload}
+
+/>
 }
 <BottomBar/>
 

@@ -32,7 +32,7 @@ return (
 </Text>
 
 <Pressable 
-onPress={()=> navigation.navigate("InvestmentPlans")}
+onPress={()=> navigation.navigate("SharePlans")}
 style={styles.OptionBox}>
   <Image
   source={HelpCenterIcon}
@@ -44,7 +44,7 @@ style={styles.OptionBox}>
 
 
 <Pressable 
-onPress={()=> navigation.navigate("SharePlans")}
+onPress={()=> navigation.navigate("InvestmentPlans")}
 
 style={styles.OptionBox}>
 <Image

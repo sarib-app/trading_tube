@@ -7,7 +7,7 @@ import {
   Pressable,
   TouchableHighlight,
   TouchableOpacity,
-
+Share
  
 } from 'react-native';
 import styles from './Styles';
@@ -21,7 +21,47 @@ import filterIcon from '../../assets/icons/filter.png';
 import GlobalStyles from '../GlobalStyles/GlobalStyles';
 import getAsync from '../GetAsynData/getAsync';
 function SharePlans() {
+    const navigation = useNavigation()
 const asyncdata = getAsync()
+
+
+
+
+
+
+const onShare = async () => {
+
+    try {
+      const result = await Share.share({
+        message:
+          `Hey there enter my refer code by hiting this URL https://tradingtube.co/HJPKLP`,
+      });
+  
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+
+
+
+
+
+
+
+
+
 
 function LowerCart(){
 
@@ -30,15 +70,30 @@ function LowerCart(){
     return(
         <View style={styles.LowerCart}>
     <View style={styles.InnerlowCart}>
-<Text style={styles.TxtClr}>Activity</Text>
+<Text style={styles.TxtClr}>Plans</Text>
 
     </View>
    
 
 <View style={GlobalStyles.HistoryCard}>
+    <ScrollView
+    showsVerticalScrollIndicator={false}
+    >
+
+<Text style={styles.DescriptionStyle}><Text style={{fontWeight:"bold"}}>1: </Text>If you refer someone they will be considered as 1st link and you will get 5% of their income.</Text>
+<Text style={styles.DescriptionStyle}><Text style={{fontWeight:"bold"}}>2: </Text>If your refered person refer someone they will be considered as 2nd Link and you will get 2% of their Income.</Text>
+<Text style={styles.DescriptionStyle}><Text style={{fontWeight:"bold"}}>3: </Text>You will only get comission from your 1st link and 2nd link no further links will be valuable for you.</Text>
+
+<Text style={styles.DescriptionStyle}><Text style={{fontWeight:"bold"}}>4: </Text>Please take note that you will start earning comission from your refered links after you reach Level 1</Text>
+<Text style={styles.DescriptionStyle}><Text style={{fontWeight:"bold"}}>5: </Text>Once total of your 10 refers invest in any package your level 1 will be unlocked and you will get <Text style={{color:Colors.PrimaryColor}}>3,000 Rs</Text> as reward.</Text>
+<Text style={styles.DescriptionStyle}><Text style={{fontWeight:"bold"}}>6: </Text>Once total of your 20 refers invest in any package your level 2 will be unlocked and you will get <Text style={{color:Colors.PrimaryColor}}>5,000 Rs</Text> as reward.</Text>
+<Text style={styles.DescriptionStyle}><Text style={{fontWeight:"bold"}}>7: </Text>Once total of your 30 refers invest in any package your level 1 will be unlocked and you will get <Text style={{color:Colors.PrimaryColor}}>8,000 Rs</Text> as reward.</Text>
+<Text style={styles.DescriptionStyle}><Text style={{fontWeight:"bold"}}>8: </Text>Once total of your 50 refers invest in any package your level 1 will be unlocked and you will get <Text style={{color:Colors.PrimaryColor}}>14,000 Rs</Text> as reward.</Text>
+<Text style={styles.DescriptionStyle}><Text style={{fontWeight:"bold"}}>9: </Text>Once total of your 80 refers invest in any package your level 1 will be unlocked and you will get <Text style={{color:Colors.PrimaryColor}}>20,000 Rs</Text> as reward.</Text>
 
 
-     
+
+</ScrollView>
  
 
 </View>
@@ -49,12 +104,15 @@ function LowerCart(){
 
   return (
     <View style={styles.Container}>  
-<Text style={styles.Text}>Wallet</Text>
+<Text style={styles.Text}>Share Plans</Text>
 
 
-<Text style={{color:Colors.placeHolder,marginLeft:15}}>BALANCE</Text>
-<Text style={[styles.Text,{marginTop:5}]}>PKR {20}</Text>
-<Text style={{color:Colors.PrimaryColor,fontWeight:'600',marginLeft:15,marginTop:-10}}>Deposit Via</Text>
+<Text style={{color:Colors.placeHolder,marginLeft:15}}>Your Referal Code</Text>
+<Text style={[styles.Text,{marginTop:5}]}>ZFIGHIJ</Text>
+<Text 
+onPress={()=> onShare()}
+
+style={{color:Colors.PrimaryColor,fontWeight:'600',marginLeft:15,marginTop:-10}}>Click here to invite your friend</Text>
 
 <LowerCart />
 

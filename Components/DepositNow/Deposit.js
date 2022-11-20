@@ -35,7 +35,6 @@ import BaseUrl from '../../Urls';
 import * as ImagePicker from 'react-native-image-picker';
 import getAsync from '../GetAsynData/getAsync';
 import SpinnerButton from 'react-native-spinner-button';
-import RNFetchBlob from 'rn-fetch-blob';
 import BankAllList from '../BankAllList/BankAllList';
 const WindowHeight = Dimensions.get('window').height; 
 

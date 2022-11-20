@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         marginTop:15
     },
     InnerLowerCart: {
-        width: WindowWidth,
+        width: WindowWidth/1.1,
         height: WindowHeight / 1.65,
         alignSelf:'center',
         // backgroundColor:'yellow'

@@ -32,6 +32,7 @@ import Filter from './Filter';
 import SpinnerButton from 'react-native-spinner-button';
 import Loader from '../Loader/Loader';
 import getAsync from '../GetAsynData/getAsync';
+import BackBtn from '../GlobalStyles/BackButton';
 function Recharge() {
 const asyncdata = getAsync()
 const navigation = useNavigation()
@@ -252,7 +253,9 @@ nestedScrollEnabled={true}
 
 
   return (
-    <View style={styles.Container}>  
+    <View style={styles.Container}>
+
+      <BackBtn />  
 <Text style={styles.Text}>Wallet</Text>
 <ScrollView
 nestedScrollEnabled={true}

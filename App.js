@@ -30,12 +30,14 @@ import DecideUpdate from './Components/UpdateProfile/DecideUpdate';
 import PlanDecider from './Components/Plans/Decider';
 import SharePlans from './Components/Plans/SharePlan';
 import InvestmentPlans from './Components/Plans/InvestmentPlans';
+import LevelRewards from './Components/LevelRewards/LevelRewards';
+import SplashScreen from './Components/Splash/Splash';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
 return( 
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="Register"   screenOptions={{
+    <Stack.Navigator initialRouteName="SplashScreen"   screenOptions={{
       headerShown: false
     }}
     >
@@ -61,6 +63,10 @@ return(
     <Stack.Screen name="PlanDecider" component={PlanDecider} />
     <Stack.Screen name="SharePlans" component={SharePlans} />
     <Stack.Screen name="InvestmentPlans" component={InvestmentPlans} />
+    <Stack.Screen name="LevelRewards" component={LevelRewards} />
+    <Stack.Screen name="SplashScreen" component={SplashScreen} />
+
+
 
 
     </Stack.Navigator>

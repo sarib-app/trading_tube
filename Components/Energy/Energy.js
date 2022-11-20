@@ -32,7 +32,9 @@ import getAsync from '../GetAsynData/getAsync';
 function EnergyScreen({
   DailyIncomes,
   forceReload,
-  currentDate
+  currentDate,
+  total_Record,
+  allComissions
 
 }) {
   const asyncdata = getAsync()
@@ -47,6 +49,7 @@ const start={x: 0.1, y: 0.8}
 const end = {x: 0, y: 0}
 
 
+// const LowerCardTitle = selected === "Income"?"Daily Income":"Team's Comission"
 const LowerCardTitle = selected === "Income"?"Daily Income":"Team's Comission"
 
 
@@ -78,11 +81,11 @@ function UpperCart(){
 
 
 <View style={styles.UpperCart}>
-<Text style={styles.balanceTitle}>Total {selected}</Text>
-<Text style={styles.BalanceTxt}>PKR 150,0000</Text>
+<Text style={styles.balanceTitle}>Total {"Income"}</Text>
+<Text style={styles.BalanceTxt}>PKR {total_Record !=""? total_Record.Total_income:0}</Text>
 
 <View style={styles.LvlContainer}>
-<Text style={styles.LvlTxt}>Level <Text style={styles.LvlinnerTxt}>1</Text></Text>
+<Text style={styles.LvlTxt}>Level <Text style={styles.LvlinnerTxt}>{total_Record !=""? total_Record.my_level:0}</Text></Text>
 </View>
 
 
@@ -159,7 +162,7 @@ Team Comission
 
 
 function LowerCart(){
-  const data = DailyIncomes
+  const data = selected=== "Income"? DailyIncomes.filter((item)=> item.earn_date === currentDate):allComissions
 
 
 
@@ -264,9 +267,18 @@ function onCollect(){
           onCollect()
 
         }
+        else{
+          forceReload()
+          onHideLoader()
+
+        }
           
         })
-        .catch(error => console.log('error', error));
+        .catch(error => {
+          forceReload()
+
+          onHideLoader()
+          console.log('error', error)});
     
     
     }
@@ -297,38 +309,40 @@ function onCollect(){
   
   
   <View style={styles.InnerTricks}>
-  <Text style={{fontWeight:'bold',fontSize:18,color:Colors.BgColor}}>Income</Text>
+  <Text style={{fontWeight:'bold',fontSize:18,color:Colors.BgColor}}>{selected === "Income" ? "Income":"Comission"}</Text>
   
+{
+  selected === "Income" ?
+
+  <>
+  <Text style={{color:Colors.bgIII}}>Package Id: {item.package_id}</Text>
+  <Text style={{color:Colors.bgIII}}>Cycle Ends at: {item.end_date}</Text>
+  <Text style={{color:Colors.bgIII}}>Available at: {item.earn_date}</Text>
+  </>:
+    <>
+    <Text style={{color:Colors.bgIII}}>Chain Name: {item.username}</Text>
+    <Text style={{color:Colors.bgIII}}>Chain Id: {item.commission_from}</Text>
+    </>
+}
 
 
-  <Text>Package Id: {item.package_id}</Text>
-  <Text>Cycle Ends at: {item.end_date}</Text>
-  
-  
 
-
-  
-
-
-
-   
-   
-  <Text>Available at: {item.earn_date}</Text>
-  
   </View>
   
   
   </View>
   
   <View style={{alignItems:"center"}}>
-  <Text style={[styles.TransactionText,{color:amountClr}]}>{operator}{item.single_earning} PKR{'\n'}</Text>
-  {
+  <Text style={[styles.TransactionText,{color:amountClr}]}>{operator}{selected === "Income"? item.single_earning:item.commission} PKR{'\n'}</Text>
+
+
+  {selected === "Income"?
     isGot === "0" ?
     <Text 
     onPress={()=> CollectIncome()}
     style={[styles.TransactionText,{color:Colors.deposit}]}>Collect Now</Text>
 :
-<Text style={[styles.TransactionText,{color:Colors.placeHolder}]}>Collected</Text>
+<Text style={[styles.TransactionText,{color:Colors.placeHolder}]}>Collected</Text>:null
 
   }
   </View>
@@ -391,7 +405,7 @@ data.map((item)=>{
 
 
 <View style={styles.Header}>
-    <Text style={styles.OuterTxt}>Weclcome To{'\n'} <Text style={styles.InnerTxt}>Energy Screen</Text></Text>
+    <Text style={styles.OuterTxt}>Weclcome To{'\n'} <Text style={styles.InnerTxt}>Daily Transaction</Text></Text>
    <Image source={Profile} style={{width:50,height:50}}/>
 </View>
 

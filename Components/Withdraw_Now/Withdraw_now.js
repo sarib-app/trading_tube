@@ -55,8 +55,12 @@ const [showBanks,setShowBank]=useState(false)
 
 function onWithdraw(){
    if(Acc_Title !="" && Acc_Number && Acc_Type && Account_Subtype && Amount ){
-alert("good")
-Withdraw()
+if(Amount < 500){
+  Alert.alert("Sorry","Minimum withdraw is 500 Rs.")
+}else{
+
+  Withdraw()
+}
    }else{
     setIsPressed(true)
    }
@@ -64,6 +68,7 @@ Withdraw()
 
 
 function Withdraw (){
+  const Percent_Amount = (Amount/100)*95
   setLoading(true)
 
   var formdata = new FormData();
@@ -72,7 +77,7 @@ function Withdraw (){
   formdata.append("account_subtype", Account_Subtype);
 
   formdata.append("account_number", Acc_Number);
-  formdata.append("requested_amount", Amount);
+  formdata.append("requested_amount", Percent_Amount);
   formdata.append("user_id", asyncdata.user.id);
   
   var requestOptions = {
@@ -135,6 +140,7 @@ const navigation = useNavigation()
 
 </Text>
 
+<Text style={{width:362,alignSelf:'center',textAlign:'left',color:Colors.danger,margin:5}}>Our Withdrawal fee is 5%</Text>
 
 {
   item.Acc_Type === "Binance" ||   item.Acc_Type === "OKX" ?

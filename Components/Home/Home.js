@@ -6,7 +6,8 @@ import {
   View,
 ScrollView,
 Pressable,
-TouchableOpacity
+TouchableOpacity,
+
  
 } from 'react-native';
 import styles from './Styles';
@@ -31,9 +32,14 @@ import gameIcon from '../../assets/icons/game.png'
 import {TopInvestors, TipsTricks} from '../data/TopInvestors';
 import { FlatList } from 'react-native-gesture-handler';
 import DropDwn from '../../assets/icons/dropdown.png'
-import promotion from '../../assets/icons/promotion.png'
+import Banner from '../../assets/icons/Banner.png'
 import WebView from 'react-native-webview';
-function Home({data}) {
+import Coming_Soon from '../Help/Comingg_Soon';
+
+function Home({data,total_Record}) {
+
+
+
 
 const navigation = useNavigation()
 
@@ -43,15 +49,19 @@ const end = {x: 0, y: 0}
 
 
 function UpperCart(){
+  const [showComingSoon,setShowComingSoon] = useState(false)
+  function onHideComingsoon(){
+setShowComingSoon((P)=> !P)
+  }
   return(
 
 
-<View style={styles.UpperCart}>
+<View style={[styles.UpperCart,{marginBottom:0}]}>
 <Text style={styles.balanceTitle}>Total Balance</Text>
-<Text style={styles.BalanceTxt}>PKR 150,0000</Text>
+<Text style={styles.BalanceTxt}>PKR {total_Record !=""? total_Record.Total_balance != null ? total_Record.Total_balance:0:0}</Text>
 
 <View style={styles.LvlContainer}>
-<Text style={styles.LvlTxt}>Level <Text style={styles.LvlinnerTxt}>1</Text></Text>
+<Text style={styles.LvlTxt}>Level <Text style={styles.LvlinnerTxt}>{total_Record.my_level}</Text></Text>
 </View>
 <View style={{height:80,marginTop:15}}>
 
@@ -159,7 +169,9 @@ style={{width:27,height:27}}
 
 
 
-<View style={styles.iconWrapper}>
+<Pressable 
+onPress={()=> setShowComingSoon(true)}
+style={styles.iconWrapper}>
 <LinearGradient 
  colors={[Colors.GoldII, Colors.GoldI]}
  start={start} end={end}     
@@ -175,13 +187,16 @@ style={{width:28,height:23}}
 
 </LinearGradient>
 <Text style={{color:"white"}}>Jobs</Text>
-</View>
+</Pressable>
 
 
 
 
 
-<View style={styles.iconWrapper}>
+<Pressable 
+onPress={()=> setShowComingSoon(true)}
+
+style={styles.iconWrapper}>
 <LinearGradient 
  colors={[Colors.GoldII, Colors.GoldI]}
  start={start} end={end}     
@@ -197,12 +212,15 @@ style={{width:30,height:24}}
 
 </LinearGradient>
 <Text style={{color:"white"}}>Games</Text>
-</View>
+</Pressable>
 
 
 
 
-<View style={styles.iconWrapper}>
+<Pressable 
+onPress={()=> setShowComingSoon(true)}
+
+style={styles.iconWrapper}>
 <LinearGradient 
  colors={[Colors.GoldII, Colors.GoldI]}
  start={start} end={end}     
@@ -218,12 +236,15 @@ style={{width:29,height:25}}
 
 </LinearGradient>
 <Text style={{color:"white"}}>Shop</Text>
-</View>
+</Pressable>
 
 
 
 
-<View style={styles.iconWrapper}>
+<Pressable 
+onPress={()=> setShowComingSoon(true)}
+
+style={styles.iconWrapper}>
 <LinearGradient 
  colors={[Colors.GoldII, Colors.GoldI]}
  start={start} end={end}     
@@ -239,7 +260,7 @@ style={{width:31,height:22}}
 
 </LinearGradient>
 <Text style={{color:"white"}}>Trading</Text>
-</View>
+</Pressable>
 
 
 
@@ -248,7 +269,10 @@ style={{width:31,height:22}}
 
 
 
-<View style={styles.iconWrapper}>
+<Pressable 
+onPress={()=> setShowComingSoon(true)}
+
+style={styles.iconWrapper}>
 <LinearGradient 
  colors={[Colors.GoldII, Colors.GoldI]}
  start={start} end={end}     
@@ -264,11 +288,14 @@ style={{width:30,height:28}}
 
 </LinearGradient>
 <Text style={{color:"white"}}>NFT</Text>
-</View>
+</Pressable>
 </ScrollView>
 </View>
 
-
+<Coming_Soon 
+IsVisible={showComingSoon}
+onHideModal={onHideComingsoon}
+/>
 </View>
 
   )
@@ -320,7 +347,7 @@ function LowerCart(){
   {
     isOpen === true &&
     <>
-  <Text style={{textAlign:'center',marginTop:10}}> 
+  <Text style={{textAlign:'center',marginTop:10,color:Colors.bgIII}}> 
   {item.body}
   </Text>
   <WebView 
@@ -395,7 +422,13 @@ data.map((item)=>{
 
 <View style={styles.Header}>
     <Text style={styles.OuterTxt}>Weclcome{'\n'} <Text style={styles.InnerTxt}>Username</Text></Text>
-   <Image source={Profile} style={{width:50,height:50}}/>
+  
+  <TouchableOpacity
+  onPress={()=> navigation.navigate("LevelRewards")}
+  >
+
+   <Image source={{uri:"https://img.icons8.com/glyph-neue/64/null/packaging.png"}} style={{width:35,height:35,tintColor:Colors.PrimaryColor}}/>
+  </TouchableOpacity>
 </View>
 
 
@@ -403,11 +436,25 @@ data.map((item)=>{
 
 >
 <UpperCart/>
+{/* <Pressable
+onPress={()=> navigation.navigate("PromotionScreen")}
 
+style={{backgroundColor:"red"}}
+>
+<Text style={{color:"white",fontWeight:"bold",fontSize:18,margin:10,alignSelf:"center"}}>
+  Kindly Collect Your 500 Rupees Now
+</Text>
+  
+</Pressable> */}
+<Image 
+source={Banner}
+style={styles.Banner}
+
+/>
 <LowerCart/>
 
 </ScrollView>
-<Pressable
+{/* <Pressable
 onPress={()=> navigation.navigate("PromotionScreen")}
 style={{right:0,top:100,position:'absolute'}}>
  
@@ -415,7 +462,7 @@ style={{right:0,top:100,position:'absolute'}}>
 source={promotion}
 style={{width:80,height:80}}
 />
-</Pressable>
+</Pressable> */}
 
     </SafeAreaView>
   )

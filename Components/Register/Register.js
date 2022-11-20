@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import {
 
   Text,
@@ -7,7 +7,8 @@ import {
   TextInput,
   ScrollView,
   ImageBackground,
-  Pressable
+  Pressable,
+  Alert
 
 } from 'react-native';
 import GlobalStyles from '../GlobalStyles/GlobalStyles';
@@ -32,6 +33,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Question } from '../data/TopInvestors';
 import { FlatList } from 'react-native-gesture-handler';
 import { Item } from 'react-native-paper/lib/typescript/components/List/List';
+import SpinnerButton from 'react-native-spinner-button';
+import CountryCode from './CountryCodes';
+import AccepDialogue from '../Help/AccepDialogue';
+
+
 
 function Register() {
 const [index,setIndex]=useState(1)
@@ -43,6 +49,8 @@ const [LastName,setLastName]=useState("")
 const [username,setUserName]=useState("")
 const [email,setEmail]=useState("")
 const [password,setPassword]=useState("")
+const [countryCode,setCountryCode]=useState(92)
+
 const [c_password,setC_Password]=useState("")
 const [cnic,setCnic]=useState()
 const [Phone,setPhone]=useState()
@@ -52,9 +60,11 @@ const [errorCode,setErrorCode]=useState("")
 
 const [isPressed,setIsPressed]=useState(false)
 const [loading,setLoading]=useState(false)
-
+const [random,setRandom]=useState('0000')
 const [question,setQuestion]=useState("")
 const [answer,setAnswer]=useState("")
+const [showCodes,setShowCodes]=useState(false)
+const [showDialgoue,setShowDialogue]=useState(true)
 
 
 const InputSty = {flex:1,color:Colors.FontColorI}
@@ -66,21 +76,38 @@ function ONpressNext(){
     CheckReferal()
 
     setIsPressed(false)
+    setErrorCode("Nan")
   }
   else if(index === 2 &&  firstName != "" && LastName != ""  && username != "" && email !=""){
     setIndex(index+1)
     setIsPressed(false)
+    setErrorCode("Nan")
+
   }
   else if(index === 3 &&  Phone && password != ""  && c_password != "" && cnic){
     setIndex(index+1)
     setIsPressed(false)
+    setErrorCode("Nan")
+
   }
   else if(index === 4 &&  question != "" && answer !=""){
     setIndex(index+1)
     setIsPressed(false)
+    GeneratingOtp()
+    setErrorCode("Nan")
+
   }
   else if(index === 5 &&  otp){
-    Register()
+
+    if(Number(otp) === Number(random)){
+
+      Register()
+    }else{
+      // setOtp("phone")
+      console.log(random)
+      setErrorMessage("Otp does not match")
+      setErrorCode("otp")
+    }
   }
   else{
 setIsPressed(true)
@@ -91,11 +118,11 @@ setIsPressed(true)
 ///////////on Hitting Api/////////////////
 
 
-
+console.log(countryCode+Phone)
 
 function Register(){
 
-
+setLoading(true)
 
   var formdata = new FormData();
   formdata.append("email", email);
@@ -109,6 +136,8 @@ function Register(){
   formdata.append("lastname", LastName);
   formdata.append("question", question);
   formdata.append("answer", answer);
+  formdata.append("role_id", "5");
+
   var requestOptions = {
     method: 'POST',
     body: formdata,
@@ -119,19 +148,24 @@ function Register(){
     .then(response => response.json())
     .then(result => {
       if(result.user){
-
+setLoading(false)
       AsyncStorage.setItem('user',JSON.stringify(result.user))
       AsyncStorage.setItem('token',result.token)
       navigation.navigate('Main')
 
     }
     if(result.status === '401'){
+      setLoading(false)
       Validator(result.error,result.message)
     }
 
       
       console.log(result)})
-    .catch(error => console.log('error', error));
+    .catch(error =>{
+      
+      setLoading(false)
+      Alert.alert("Sorry","An error occured please try again later.")
+      console.log('error', error)});
 
 
 }
@@ -200,10 +234,64 @@ setLoading(true)
 
 }
 
+function GeneratingOtp(){
+
+  var val = Math.floor(1000 + Math.random() * 9000);
+  setRandom(val)
+  setTimeout(() => {
+    SendOtp(val)
+   
+  },2000);
+
+
+}
+function SendOtp(val){
 
 
 
+    const options = {
+      method: 'POST',
+      headers: {
+        'X-RapidAPI-Key': 'be434c3026msh50dc650f31b5e59p1380e1jsn8889f821e46d',
+        'X-RapidAPI-Host': 'telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com'
+      }
+    };
+    
+    fetch(`https://telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com/sms-verification-code?phoneNumber=${countryCode+Phone}&verifyCode=${val}&appName=tradingtube`, options)
+      .then(response => response.json())
+      .then(response => {
+        if(response.message === "Invalid phone number"){
+          setErrorCode("phone")
+          setIndex(3)
+          setErrorMessage("Cannot send otp on this phone no please check no again.")
+        }
+        console.log(response)})
+      .catch(err => console.error(err));
 
+
+}
+
+useEffect(()=>{
+  getAsyncData()
+  },[])
+
+
+  async function getAsyncData () {
+    const Accepted = await AsyncStorage.getItem('Accepted')
+    
+    if(Accepted === "true"){
+  
+setShowDialogue(false)
+  
+  
+    }
+  }
+
+
+function onSelectBank(val){
+  setCountryCode(val)
+  setShowCodes((p)=> !p)
+}
 
 function OnPressBack(){
   if(index >=1){
@@ -213,6 +301,32 @@ function OnPressBack(){
 }
 
 
+function RegisterBtn(){
+  return(
+<>
+    {
+      index === 5 &&
+    <Pressable 
+    onPress={()=> ONpressNext()}
+    
+    >
+    
+    <ImageBackground 
+    source={longBtn}
+    style={GlobalStyles.Button}
+    
+    >
+    
+    <Text style={GlobalStyles.BtnText}>Register Now</Text>
+    
+    </ImageBackground>
+    </Pressable>
+    }
+
+</>
+
+  )
+}
 
 
 function NextBtn(){
@@ -257,6 +371,11 @@ function Allquestions({item}){
       <Text style={styles.TitleTxt}>{item.Question}</Text>
     </Pressable>
   )
+}
+
+function AcceptServices(){
+  AsyncStorage.setItem("Accepted","true")
+  setShowDialogue(false)
 }
 
   return (
@@ -392,12 +511,15 @@ onChangeText={(e)=>setEmail(e)}
 
   <View style={[GlobalStyles.TextInput,{borderColor:!Phone && isPressed === true?Colors.danger:Colors.PrimaryColor }]}>
 
-<Image
-source={phoneIcon}
-style={{width:13,height:22,margin:10}}
-/>
+<Pressable
+onPress={()=> setShowCodes(true)}
+style={{padding:10,marginLeft:10,borderRightColor:"white",borderRightWidth:1}}
+>
+<Text style={{color:Colors.FontColorI,fontWeight:'bold'}}>{countryCode}</Text>
+
+</Pressable>
 <TextInput
-placeholder='+92 XXXXXXX'
+placeholder='Number after country code i.e. 320 *******'
 placeholderTextColor={Colors.placeHolder}
 style={{flex:1,color:"white"}}
 
@@ -539,6 +661,13 @@ onChangeText={(e)=>setOtp(e)}
 
 />
 </View>
+
+{
+  errorMessage != "" && errorCode === "otp"  &&
+<Text style={{color:Colors.danger}}>{errorMessage}</Text>
+}
+
+
 </>
 }
 
@@ -550,25 +679,23 @@ onChangeText={(e)=>setOtp(e)}
 
 
 </View>
-{
-  index === 5 &&
-<Pressable 
-onPress={()=> ONpressNext()}
 
+{loading === true && index===5 ?
+
+<SpinnerButton
+                        buttonStyle={{  backgroundColor: Colors.PrimaryColor,
+                        borderRadius: 6}}
+                        isLoading={loading}
+                        spinnerType='PulseIndicator'
+                        indicatorCount={0}
 >
 
-<ImageBackground 
-source={longBtn}
-style={GlobalStyles.Button}
+</SpinnerButton>:
+<RegisterBtn/>
 
->
 
-<Text style={GlobalStyles.BtnText}>Register Now</Text>
 
-</ImageBackground>
-</Pressable>
 }
-
 
 
 <View style={{width:100,height:250}}>
@@ -577,7 +704,22 @@ style={GlobalStyles.Button}
 
 
 </ScrollView>
+
+
 <BottoMtext/>
+
+<CountryCode 
+isVisible={showCodes}
+onSelectBank={onSelectBank}
+
+/>
+
+{/* <AccepDialogue 
+IsVisible={showDialgoue}
+onHideModal={AcceptServices}
+
+/> */}
+
     </View>
   )
 }
