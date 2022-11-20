@@ -4,9 +4,10 @@ import {
   Image,
   View,
 ScrollView,
-Pressable,
+TouchableOpacity,
 ImageBackground,
-RefreshControl
+RefreshControl,
+
 
 } from 'react-native';
 import styles from './Styles';
@@ -33,7 +34,10 @@ import Confirmation from './ConfirmationModal';
 import getAsync from '../GetAsynData/getAsync';
 function InvestmentScreen({
   AllPackages,
-  forceReload
+  forceReload,
+  currentDate,
+  MyPackages,
+  total_Record
 }) {
    const asyncdata = getAsync()
   const [selected,setSelected]=useState("New") 
@@ -51,13 +55,15 @@ const end = {x: 0, y: 0}
 /////Functions////////////
 
 
-
+const dataFinal = selected === "New"? AllPackages :selected === "Pending"? MyPackages.filter((item)=> item.end_date != currentDate):selected === "Completed"? MyPackages.filter((item)=> item.end_date === currentDate):MyPackages
 
 const onRefresh = useCallback(() => {
+
   forceReload()
   setRefreshing(true)
-setTimeout(() => {
-setRefreshing(false)
+  setTimeout(() => {
+  setRefreshing(false)
+ 
 },2000);
 
 
@@ -78,7 +84,7 @@ function UpperCart(){
 
 function IconList ({item}){
   return(
-    <Pressable 
+    <TouchableOpacity 
 onPress={()=> {
   setSelected(item.name)
 }}
@@ -98,7 +104,7 @@ style={{width:item.width,height:item.height}}
 
 </LinearGradient>
 <Text style={{color:"white"}}>{item.name}</Text>
-</Pressable>
+</TouchableOpacity>
 
   )
 }
@@ -107,10 +113,10 @@ style={{width:item.width,height:item.height}}
   return(
 <View style={styles.UpperCart}>
 <Text style={styles.balanceTitle}>Total Investment</Text>
-<Text style={styles.BalanceTxt}>PKR 150,0000</Text>
+<Text style={styles.BalanceTxt}>PKR {total_Record !=""? total_Record.Total_investment:0}</Text>
 
 <View style={styles.LvlContainer}>
-<Text style={styles.LvlTxt}>Level <Text style={styles.LvlinnerTxt}>1</Text></Text>
+<Text style={styles.LvlTxt}>Level <Text style={styles.LvlinnerTxt}>{total_Record !=""? total_Record.my_level:0}</Text></Text>
 </View>
 
 
@@ -174,21 +180,26 @@ function onHideModal(){
       <View style={styles.InnerTricks}>
       <Text style={{fontWeight:'bold',fontSize:18,color:Colors.BgColor}}>{item.title}</Text>
       {/* <Text>please see the video.. below.......</Text> */}
-      <Text style={styles.ListingText}>Status: <Text style={{color:Colors.deposit}}>{item.status}</Text></Text>
+      {
+        selected === "New"?
+        <Text style={styles.ListingText}>Status: <Text style={{color:Colors.deposit}}>{item.status}</Text></Text>
+      :
+      <Text style={styles.ListingText}>Status: <Text style={{color:Colors.deposit}}>{item.end_date === currentDate ? "Completed":"Pending"}</Text></Text>
 
+      }
       </View>
-      <Pressable onPress={()=> setIsOpen((p)=>!p)}>
+      <TouchableOpacity onPress={()=> setIsOpen((p)=>!p)}>
       <Image 
       source={DropDwn}
       style={{width:15,height:12}}
       />
-      </Pressable>
+      </TouchableOpacity>
       
       </View>
       {
         isOpen === true &&
         <>
-      <Text style={{textAlign:'center',marginTop:10}}> 
+      <Text style={{textAlign:'center',marginTop:10,color:Colors.bgIII}}> 
       {item.description}
       
       </Text>
@@ -223,13 +234,17 @@ function onHideModal(){
     <Text style={styles.ListingTitle}>
     Status
     </Text>
-    <Text style={styles.ListingText}>{item.status}</Text>
+    {
+      selected === "New" ? 
+      <Text style={styles.ListingText}>{item.status}</Text>:
+      <Text style={styles.ListingText}>{item.end_date === currentDate ? "Completed":"Pending"}</Text>
+    }
 </View>
 <View style={{alignItems:"center"}}>
     <Text style={styles.ListingTitle}>
     Package Id
     </Text>
-    <Text style={styles.ListingText}>3</Text>
+    <Text style={styles.ListingText}>{item.id}</Text>
 </View>
 <View style={{alignItems:"center"}}>
     <Text style={styles.ListingTitle}>
@@ -241,8 +256,9 @@ function onHideModal(){
    </View>
 
 
-
-   <Pressable 
+{
+  item.status === "active" && selected === "New" ?
+   <TouchableOpacity 
 onPress={()=> {
   // setSelectedPackage(item)
 setShowConfirmation(true)
@@ -259,7 +275,9 @@ style={{alignSelf:'center',width:109,height:30,alignItems:'center'}}
 <Text style={GlobalStyles.BtnText}>Invest</Text>
 
 </ImageBackground>
-</Pressable>   
+</TouchableOpacity>   : null
+}
+
 {
   showConfirmation === true &&
 <Confirmation 
@@ -267,6 +285,7 @@ IsVisible={showConfirmation}
 onHideModal={onHideModal} 
 selectedPackage={item}
 user={asyncdata.user}
+currentDate={currentDate}
 />
 
 }
@@ -285,7 +304,7 @@ return(
 
   <ScrollView
 showsVerticalScrollIndicator={false}
-
+nestedScrollEnabled={true}
 // refreshControl={
 //   <RefreshControl
 //   refreshing={refreshing}
@@ -295,15 +314,15 @@ showsVerticalScrollIndicator={false}
 // }
 >
 {
-data ?
+dataFinal.length > 0 ?
 
-data.map((item)=>{
+dataFinal.map((item)=>{
   return(
     <InvestmentLists item={item} />
 
   )
 }) :
-<Text>No data available now</Text>
+<Text style={{color:Colors.BgColor,fontSize:18,marginTop:40,alignSelf:"center"}}>No data found!</Text>
 
 
 }

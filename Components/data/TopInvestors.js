@@ -226,7 +226,7 @@ const TransactionIcons = [
 
         id: 1,
         icon: allIcon,
-        name: "All",
+        name: "Investment",
         width: 21,
         height: 21
     },
@@ -652,6 +652,31 @@ const helpChat =[
 
 
 
+const Question =[
+    {
+        id:1,
+        Question:"What is your pet name"
+    },
+    {
+        id:2,
+        Question:"What is your best friend name"
+    },
+    {
+        id:3,
+        Question:"What is your father name"
+    },
+    {
+        id:4,
+        Question:"What is your school name"
+    },
+    {
+        id:5,
+        Question:"What is your hobby"
+    },
+]
+
+
+
 export { 
     TopInvestors, 
     TipsTricks, 
@@ -664,5 +689,6 @@ export {
     ProfileOptions,
     InvestmentIcons,
     INvestmentList,
-    MyTeamData
+    MyTeamData,
+    Question
 }

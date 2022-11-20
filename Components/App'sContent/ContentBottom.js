@@ -6,16 +6,20 @@ import {
   View,
 ScrollView,
 Pressable,
-ImageBackground
+ImageBackground,
+Dimensions
  
 } from 'react-native';
 import styles from './Styles';
+import { WebView } from 'react-native-webview';
 
 
 import { useNavigation } from '@react-navigation/native';
 import Colors from '../GlobalStyles/Color';
 import SettingsTit from '../../assets/icons/SettingsTit.png'
 import SmallBtn from '../../assets/icons/smallBtn.png'
+import RenderHtml from 'react-native-render-html';
+const WindowWidth = Dimensions.get('window').width
 
 function ContentBottom({title,Content}) {
 
@@ -36,9 +40,25 @@ return(
   <Text style={styles.L_Cart_Title}>{title}</Text>
   </View>
 <View style={styles.InnerLowerCart}>
-    <ScrollView>
+  <ScrollView>
+{
+  title === "Terms of Services"?
 
-<Text style={{color:Colors.FontColorI,margin:15,marginTop:0}}>{Content}</Text>
+  <WebView 
+style={{width:350,height:450}}
+source={{uri: "https://termsandservices.tradingtube.co/"}}
+javaScriptEnabled={true}
+domStorageEnabled={true}
+startInLoadingState={true}
+>
+</WebView>:
+
+<RenderHtml 
+
+contentWidth={WindowWidth / 2}
+source={Content}
+/>
+}
 </ScrollView>
 
 </View>
@@ -56,12 +76,19 @@ style={{width:20,height:20,marginRight:10}}
 <Text style={{fontWeight:'bold',color:Colors.PrimaryColor,fontSize:16}}>Decline</Text>
 
 </View>
+
+<Pressable
+
+onPress={()=> navigation.goBack()}
+>
+
 <ImageBackground 
 source={SmallBtn}
 style={{width:115,height:32,alignItems:'center',justifyContent:'center'}}
 >
   <Text style={{fontWeight:'bold',color:Colors.BgColor,fontSize:16}}>Accept</Text>
   </ImageBackground>
+  </Pressable>
 
 </View>
 
@@ -76,10 +103,6 @@ style={{width:115,height:32,alignItems:'center',justifyContent:'center'}}
 
 
   return (
-  
-
-
-
 
 <LowerCart/>
 

@@ -48,7 +48,6 @@ const [loading,setLoading]=useState(false)
 
 function onLoginPress(){
   if(phone && password){
-    navigation.navigate('Main')
 
     Login()
   }
@@ -179,7 +178,10 @@ secureTextEntry={true}
 }
 
 
-<Text style={styles.TitleTxt}>Forgot Password?</Text>
+<Text 
+
+onPress={()=> navigation.navigate("ForgetPassword")}
+style={styles.TitleTxt}>Forgot Password?</Text>
 </View>
 
 {

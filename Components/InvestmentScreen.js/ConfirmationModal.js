@@ -18,44 +18,44 @@ import { Item } from 'react-native-paper/lib/typescript/components/List/List';
 import GlobalProgressLoader from '../LoadingModal/LoadingModal';
 import BaseUrl from '../../Urls';
 import Endpoints from '../../EnDPoints';
+import moment from 'moment/moment';
 function Confirmation({
   IsVisible,
   onHideModal,
   selectedPackage,
-  user
+  user,
+  currentDate
 
 }) {
 
 
+
+
 const navigation = useNavigation()
 const [showProgressLoader,setshowProgressLoader]=useState(false)
-
 function onHideLoader(){
-setshowProgressLoader((p)=>!p)
+  
+  setshowProgressLoader((p)=>!p)
 }
-
-console.log(selectedPackage.single_payment)
-
-
 function InvestOnpackage(){
-  var date = new Date().getDate()+10;
-  var month = new Date().getMonth() + 1;
-  var year = new Date().getFullYear();
+  setshowProgressLoader(true)
 
-  //Alert.alert(date + '-' + month + '-' + year);
-  // You can turn it in to your desired format
-const currentDate = year+"-"+month+"-"+date;//format: d-m-y;
+  const newDate = moment(currentDate, "YYYY-MM-DD").add(Number(selectedPackage.cycle_duration),"days");
 
 
+console.log(selectedPackage.id,newDate.format('YYYY-MM-DD'),user.id,selectedPackage.single_payment)
 
-console.log(currentDate)
+
+
 
       var formdata = new FormData();
       formdata.append("package_id", selectedPackage.id);
       formdata.append("user_id", user.id);
-      formdata.append("end_date", currentDate);
-      formdata.append("single_earning",selectedPackage.single_payment);
-      
+      formdata.append("end_date", newDate.format('YYYY-MM-DD'));
+      formdata.append("single_earning",String(selectedPackage.single_payment));
+      formdata.append("applied_income",String(selectedPackage.cycle_income));
+      formdata.append("applied_price",String(selectedPackage.price));
+
       var requestOptions = {
         method: 'POST',
         body: formdata,
@@ -65,16 +65,25 @@ console.log(currentDate)
       fetch(`${BaseUrl}${Endpoints.AddInvestment}`, requestOptions)
         .then(response => response.json())
         .then(result => {
+          console.log(result)
           if(result.status==="200"){
-            console.log(result)
         
             setshowProgressLoader(false)
-            onHideLoader()
-            alert("cONGRATULATIONS !!!")
+            // onHideLoader()
+              Alert.alert("Congratulations!","You have successfully invested on this package.")
 
           }
+          else if(result.status==="401"){
+            setshowProgressLoader(false)
+            // onHideLoader()
+              Alert.alert("Sorry!",result.message)
+          }
         })
-        .catch(error => console.log('error', error));
+        .catch(error => {
+          setshowProgressLoader(false)
+          // onHideLoader()
+            Alert.alert("Sorry!","Something Went Wrong Try Again Later!")
+          console.log('error', error)});
 
 
 
@@ -134,7 +143,9 @@ style={styles.ModalTitles}>Close</Text>
   <Text 
   onPress={()=>  {
     InvestOnpackage()
-    setshowProgressLoader(true)}}
+    // setshowProgressLoader(true)
+  
+  }}
   
   style={[styles.ModalTXt,{color:Colors.send,marginTop:20,textDecorationLine:"underline"}]}>Yes, I want to Invest!</Text>
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 
   Text,
@@ -8,6 +8,7 @@ import {
   ImageBackground,
   Pressable,
   Dimensions,
+  Alert,
   
  
 } from 'react-native';
@@ -26,39 +27,156 @@ import Button from './../../assets/icons/longBtn.png'
 import malepic from '../../assets/icons/male.png'
 import BackBtn from '../GlobalStyles/BackButton';
 
-
-
-
 import emailIcon from '../../assets/icons/emailIcon.png'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import BaseUrl from '../../Urls';
+import Endpoints from '../../EnDPoints';
+import SpinnerButton from 'react-native-spinner-button';
 
 const WindowHeight = Dimensions.get('window').height; 
 
 
 
-function UpdateProfile() {
+function UpdateProfile(props) {
+const identifier = props.route.params.identifier
 
+console.log(identifier)
 
 const [Firstname,setFirstname]=useState()
 const [Lastname,setLastname]=useState()
-const [Email,setEmail]=useState("item.Email")
-const [Old_Password,setOldPassword]=useState("444")
+const [Email,setEmail]=useState()
+const [Old_Password,setOldPassword]=useState()
 const [NewPassword,setNewPassword]=useState()
-const [isPressed,setIsPressed]=useState(false)
+const [isPressed,setIsPressed]=useState(identifier === "password"?false:true)
+const [loading,setLoading]=useState(false)
+const [user_id,setUser_id]=useState(0)
+const [token,setToken]=useState("")
+const [erroMessage,setErroMessage]=useState("")
+
+const headertTitle = identifier === "password" ? "Change Password":"Update Profile"
+
+const navigation = useNavigation()
+
+useEffect(()=>{
+  getAsyncData()
+  },[])
+  async function getAsyncData () {
+    const user = await AsyncStorage.getItem('user')
+    const token = await AsyncStorage.getItem('token')
+    let userParsed=JSON.parse(user) 
+    if(token){
+      // setUser(userParsed)
+      setEmail(userParsed.email)
+      setToken(token)
+      setFirstname(userParsed.firstname)
+      setLastname(userParsed.lastname)
+      setUser_id(userParsed.id)
+    }
+  }
 
 
 
 
-
-function onDeposit(){
+function onUpdate(){
   
-   if(Firstname && Lastname && Email && Old_Password && NewPassword ){
-alert("good")
-   }else{
-    setIsPressed(true)
-   }
+if(identifier === "profile"){
+  if(Firstname && Lastname && Email){
+updateProfileCall()
+
+  }
+}
+else if(identifier === "password"){
+  if( Old_Password && NewPassword ){
+    ChnagePassword()
+       }
+       else{
+        setIsPressed(true)
+       }
+}
+
+   
+}
 
 
+
+
+function updateProfileCall(){
+  setLoading(true)
+
+  var formdata = new FormData();
+  formdata.append("email", Email);
+  formdata.append("firstname", Firstname);
+  formdata.append("lastname",Lastname);
+  
+  var requestOptions = {
+    method: 'POST',
+    body: formdata,
+    redirect: 'follow'
+  };
+  
+  fetch(`${BaseUrl}${Endpoints.updateuser}/${user_id}`, requestOptions)
+    .then(response => response.json())
+    .then(result =>{
+      
+      if(result.status === "200"){
+        console.log(result)
+        setLoading(false)
+        AsyncStorage.setItem('user',JSON.stringify(result.user))
+
+        navigation.navigate('Main')
+        Alert.alert("Congratulation","Profile Updated Successfully!")
+      }
+      else{
+        setLoading(false)
+      }
+      console.log(result)})
+    .catch(error => {
+      Alert.alert("Sorry","Something went wrong try again in 1 minute.")
+setLoading(false)
+      console.log('error', error)});
+
+
+}
+
+
+function ChnagePassword(){
+  setLoading(true)
+  var myHeaders = new Headers();
+myHeaders.append("Authorization", `Bearer ${token}`);
+
+var formdata = new FormData();
+formdata.append("old_password", Old_Password);
+formdata.append("password", NewPassword);
+formdata.append("confirm_password", NewPassword);
+formdata.append("id", user_id);
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: formdata,
+  redirect: 'follow'
+};
+
+fetch(`${BaseUrl}${Endpoints.changepassword}`, requestOptions)
+  .then(response => response.json())
+  .then(result => {
+    if(result.status === "200"){
+      console.log(result)
+      setLoading(false)
+      navigation.navigate('Main')
+      Alert.alert("Congratulation","Password Changed Successfully!")
+      setErroMessage("")
+    }
+    else{
+      setErroMessage("Old password is incorrect.")
+      setLoading(false)
+
+    }
+    console.log(result)})
+  .catch(error => {
+    setLoading(false)
+    Alert.alert("Sorry","Something went wrong try again in 1 minute.")
+    console.log('error', error)});
 }
 
 
@@ -68,16 +186,18 @@ alert("good")
 
 
 
-const navigation = useNavigation()
-
 
   return (
 <SafeAreaView style={styles.Container}>
     <BackBtn />
 <ScrollView>
 
-<Text style={[styles.TxtColor,{marginTop:10}]}>Update Profile</Text>
 
+
+<Text style={[styles.TxtColor,{marginTop:10}]}>{headertTitle}</Text>
+{
+  identifier === "profile"&&
+<>
 <Image
 source={malepic}
 style={{width:106,height:106,borderRadius:1000,alignSelf:'center'}}
@@ -137,17 +257,6 @@ cursorColor={Colors.PrimaryColor}
 
 </View>
 
-
-
-
-
-
-
-
-
-
-
-
 <Text style={styles.TxtInputTitle}>
   Email Address
 </Text>
@@ -168,14 +277,20 @@ placeholderTextColor={Colors.placeHolder}
 style={{flex:1,color:Colors.FontColorI,marginLeft:10}}
 cursorColor={Colors.PrimaryColor}
 // secureTextEntry={true}
-editable={false}
 
 />
 
 </View>
 
+</>
 
 
+}
+
+
+{
+  identifier === "password" &&
+  <>
 
 
 
@@ -198,14 +313,15 @@ onChangeText={(e)=> setOldPassword(e)}
 placeholderTextColor={Colors.placeHolder}
 style={{flex:1,color:Colors.FontColorI,marginLeft:10}}
 cursorColor={Colors.PrimaryColor}
-editable={false}
 // secureTextEntry={true}
 
 />
 
 </View>
-
-
+{
+  erroMessage !=""&&
+<Text style={{color:Colors.danger,marginLeft:30 }}>{erroMessage}</Text>
+}
 
 <Text style={styles.TxtInputTitle}>
   New Password
@@ -222,7 +338,6 @@ style={{width:17,height:17,marginLeft:10  }}
 <TextInput
 placeholder='Enter New Password'
 value={NewPassword}
-keyboardType={'numeric'}
 onChangeText={(e)=> setNewPassword(e)}
 placeholderTextColor={Colors.placeHolder}
 style={{flex:1,color:Colors.FontColorI,marginLeft:10}}
@@ -234,13 +349,18 @@ cursorColor={Colors.PrimaryColor}
 </View>
 
 
+</>
+
+}
 
 
 
+
+{loading === false ?
 
 
 <Pressable 
-onPress={()=> onDeposit()}
+onPress={()=> onUpdate()}
 >
 
 <ImageBackground 
@@ -253,6 +373,17 @@ style={[GlobalStyles.Button,{alignSelf:'center'}]}
 
 </ImageBackground>
 </Pressable>
+:
+<SpinnerButton
+                        buttonStyle={{  backgroundColor: Colors.PrimaryColor,
+                        borderRadius: 6}}
+                        isLoading={loading}
+                        spinnerType='PulseIndicator'
+                        indicatorCount={0}
+>
+
+</SpinnerButton>
+}
 
 
 <View style={{width:50,height:100}}></View>

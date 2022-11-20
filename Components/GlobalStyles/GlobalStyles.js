@@ -85,7 +85,8 @@ TransactionWrapper:{
   justifyContent:'center',
   alignItems:'center',
   width:WindowWidth/5,
-  height:WindowHeight/25
+  height:WindowHeight/25,
+  marginTop:4
 },
 TitlesWrapper:{
   justifyContent:"center",
@@ -97,7 +98,7 @@ TitleText:{
   color:Colors.FontColorI,
   fontSize:17
 },
-ScndTxt:{color:Colors.placeHolder}
+ScndTxt:{color:Colors.placeHolder},
 
 ////////////end///////////////
 

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState,useCallback } from 'react';
 import {
 
   Text,
   Image,
   View,
 ScrollView,
-Pressable
+Pressable,
+RefreshControl,
+
  
 } from 'react-native';
 import styles from './Styles';
@@ -25,14 +27,38 @@ import debited from '../../assets/icons/debited.png'
 import {TipsTricks,DepositTransaction} from '../data/TopInvestors';
 import { FlatList } from 'react-native-gesture-handler'; 
 import { TransactionIcons } from '../data/TopInvestors';
-function Transactions() {
-  const [selected,setSelected]=useState("All")
+import moment from 'moment';
+function Transactions({allTotalTrasnaction,forceReload,total_Record}) {
+  const [selected,setSelected]=useState("Investment")
+  const [refreshing, setRefreshing] = useState(false);
 
 const navigation = useNavigation()
 
 
 const start={x: 0.1, y: 0.8}
 const end = {x: 0, y: 0}
+
+const onRefresh = useCallback(() => {
+
+  forceReload()
+  setRefreshing(true)
+  setTimeout(() => {
+  setRefreshing(false)
+ 
+},2000);
+
+
+}, [])
+
+
+
+
+const data = allTotalTrasnaction !=""?  selected === "Deposit"? allTotalTrasnaction.deposits : selected === "Income" ? allTotalTrasnaction.incomes 
+: selected === "Withdraw" ? allTotalTrasnaction.withdrawls : allTotalTrasnaction.investments :""
+
+
+console.log(data)
+
 
 function UpperCart(){
 
@@ -66,13 +92,17 @@ style={{width:item.width,height:item.height}}
 }
 
 
+
+
+
   return(
 <View style={styles.UpperCart}>
-<Text style={styles.balanceTitle}>Total {selected==="All"?"Income":selected}</Text>
-<Text style={styles.BalanceTxt}>PKR 150,0000</Text>
+<Text style={styles.balanceTitle}>Total {selected}</Text>
+<Text style={styles.BalanceTxt}>PKR {selected === "Deposit"? total_Record !=""? total_Record.Total_deposit:0 : selected === "Income" ? total_Record !=""? total_Record.Total_income:0 
+: selected === "Withdraw" ? total_Record !=""? total_Record.Total_withdrawl:0 : total_Record !=""? total_Record.Total_investment:0}</Text>
 
 <View style={styles.LvlContainer}>
-<Text style={styles.LvlTxt}>Level <Text style={styles.LvlinnerTxt}>1</Text></Text>
+<Text style={styles.LvlTxt}>Level <Text style={styles.LvlinnerTxt}>{total_Record !=""? total_Record.my_level:0}</Text></Text>
 </View>
 
 
@@ -108,12 +138,12 @@ item={item}
 
 
 function LowerCart(){
-  const data = selected==="All"?DepositTransaction:DepositTransaction.filter((item)=>item.type===selected)
+  // const data = selected==="All"?DepositTransaction:DepositTransaction.filter((item)=>item.type===selected)
   const TransactionList =({item})=>{
 
-  const amountClr= item.type === "Deposit"?Colors.deposit:item.type === "Withdraw"?Colors.danger:Colors.send
-  const transIcon = item.type === "Deposit"?credited:debited
-  const operator = item.type ==="Withdraw"?"-":"+"
+  const amountClr= selected === "Deposit"?Colors.deposit:selected === "Withdraw"?Colors.danger:Colors.send
+  const transIcon =selected === "Deposit"?credited:debited
+  const operator = selected ==="Withdraw"?"-":"+"
 
     const [isOpen ,setIsOpen]=useState(false)
   
@@ -135,8 +165,8 @@ function LowerCart(){
   
   
   <View style={styles.InnerTricks}>
-  <Text style={{fontWeight:'bold',fontSize:18,color:Colors.BgColor}}>{item.type}</Text>
-  <Text>{item.time}</Text>
+  <Text style={{fontWeight:'bold',fontSize:18,color:Colors.BgColor}}>{selected}</Text>
+  <Text style={{color:Colors.BgColorII}}>{moment(item.created_at).format('YYYY-MM-DD')}</Text>
   
   </View>
   
@@ -144,7 +174,8 @@ function LowerCart(){
   </View>
   
   
-  <Text style={[styles.TransactionText,{color:amountClr}]}>{operator}{item.amount} PKR</Text>
+  <Text style={[styles.TransactionText,{color:amountClr}]}>{operator}{selected === "Deposit"? item.amount : selected === "Income" ? item.single_earning 
+: selected === "Withdraw" ? item.requested_amount : item.applied_price} PKR</Text>
   
   
   </View>
@@ -164,12 +195,15 @@ return(
 showsVerticalScrollIndicator={false}
 nestedScrollEnabled={true}
 >
-{data.map((item)=>{
+{ data !="" ? data.length <1 ?
+
+<Text style={{color:Colors.BgColor,fontSize:18,marginTop:40,alignSelf:"center"}}>No data found!</Text>:
+data.map((item)=>{
   return(
     <TransactionList item={item} />
 
   )
-})}
+}):<Text style={{color:Colors.BgColor,fontSize:18,marginTop:40,alignSelf:"center"}}>No data found!</Text>}
 <View style={{height:150,width:100}}>
 
 </View>
@@ -198,7 +232,15 @@ nestedScrollEnabled={true}
 
 
 <ScrollView nestedScrollEnabled={true}
+ refreshControl={
+  <RefreshControl
+  refreshing={refreshing}
+  onRefresh={onRefresh}
+  
 
+
+  />
+}
 >
 <UpperCart/>
 

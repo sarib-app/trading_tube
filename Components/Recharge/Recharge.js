@@ -31,8 +31,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Filter from './Filter';
 import SpinnerButton from 'react-native-spinner-button';
 import Loader from '../Loader/Loader';
+import getAsync from '../GetAsynData/getAsync';
+import BackBtn from '../GlobalStyles/BackButton';
 function Recharge() {
-
+const asyncdata = getAsync()
 const navigation = useNavigation()
 const [selected , setSelected]=useState(1)
 
@@ -108,7 +110,7 @@ async function getData(id){
 console.log(id) 
 
   var formdata = new FormData();
-  formdata.append("payer_id", "44");
+  formdata.append("payer_id", id);
 
   var requestOptions = {
     method: 'POST',
@@ -122,7 +124,7 @@ console.log(id)
       if(result.status ==="200"){
         setdeposits(result.data)
         setLoading(false)
-        setBalance(result.Total_amount)
+        setBalance(result.total_deposit)
       }
       
       console.log(result)})
@@ -251,7 +253,9 @@ nestedScrollEnabled={true}
 
 
   return (
-    <View style={styles.Container}>  
+    <View style={styles.Container}>
+
+      <BackBtn />  
 <Text style={styles.Text}>Wallet</Text>
 <ScrollView
 nestedScrollEnabled={true}

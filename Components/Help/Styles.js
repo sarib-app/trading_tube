@@ -106,14 +106,40 @@ borderWidth:0.5,
        InputBox:{
         width:WindowWidth/1.2,
         height:WindowHeight/14,
+        alignItems:'center',
         padding:10,
         backgroundColor:Colors.BgColorII,
         borderRadius:10,
         position:'absolute',
         bottom:50,
         alignSelf:'center'
-    
        },
+       InputBoxIv:{
+        width:WindowWidth/1.2,
+        height:WindowHeight/14,
+        // padding:10,
+        borderWidth:1,
+        backgroundColor:Colors.BgColorII,
+        borderRadius:10,
+        alignSelf:'center'
+       },
+       
+
+TicketBox:{
+    justifyContent:"center",
+    alignItems:"center",
+    width:WindowWidth/1.1,
+    // height:WindowHeight/3.5,
+    backgroundColor:Colors.bgIII,
+    padding:20,
+    alignSelf:"center",
+    marginTop:40,
+    borderRadius:20,
+    elevation:10,
+    shadowColor:Colors.BgColor       
+},
+
+
        OptionBox:{
         justifyContent:"center",
         alignItems:"center",

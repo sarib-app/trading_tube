@@ -18,7 +18,7 @@ import malepic from '../../assets/icons/male.png'
 import Colors from '../GlobalStyles/Color';
 import dropdown from '../../assets/icons/dropdown.png'
 
-function TeamDetail({IsVisible,onHideModal}) {
+function TeamDetail({IsVisible,onHideModal,item}) {
 
 
 
@@ -59,8 +59,8 @@ style={{width:100,height:100,borderRadius:10}}
 
 />
 <View style={{marginLeft:10}}>
-  <Text style={styles.ModalTitles}>@Username</Text>
-  <Text style={styles.ModalTitles}>email@gmail.com</Text>
+  <Text style={styles.ModalTitles}>{item.username}</Text>
+  <Text style={styles.ModalTitles}>{item.email}</Text>
 
 </View>
 
@@ -70,7 +70,7 @@ style={{width:100,height:100,borderRadius:10}}
 
 </View>
 <View style={{marginLeft:30}}>
-<Text style={styles.ModalTitles}>Level: <Text style={{color:Colors.PrimaryColor}}>1</Text></Text>
+<Text style={styles.ModalTitles}>Level: <Text style={{color:Colors.PrimaryColor}}>0</Text></Text>
 <Text style={styles.ModalTitles}>Total Earning: <Text style={{color:Colors.PrimaryColor}}>PKR 10,0000</Text></Text>
 </View>
 

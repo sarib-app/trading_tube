@@ -10,7 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.17.10",
+    "@react-native-async-storage/async-storage": "^1.15.15",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/bottom-tabs": "^6.0.9",
     "@react-navigation/native": "^6.0.8",
@@ -23,14 +23,17 @@
     "react-native-image-picker": "^4.10.0",
     "react-native-linear-gradient": "^2.6.2",
     "react-native-paper": "^4.11.2",
+    "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.10.2",
     "react-native-side-drawer": "^2.0.0",
     "react-native-spinner-button": "^1.0.9",
+    "react-native-splash-screen": "^3.3.0",
     "react-native-svg": "^13.2.0",
     "react-native-text-gradient": "^0.1.7",
     "react-native-vector-icons": "^8.1.0",
-    "react-native-webview": "^11.23.1"
+    "react-native-webview": "^11.23.1",
+    "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

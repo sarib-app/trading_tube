@@ -20,6 +20,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 20
     },
+    Banner:{
+      width:WindowWidth,
+      height:WindowHeight/10   
+    },
     InnerTxt: { fontWeight: 'bold', fontSize: 20 },
     OuterTxt: { color: Colors.FontColorI, textAlign: "left" },
     UpperCart: {

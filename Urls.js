@@ -1,2 +1,2 @@
-const BaseUrl = "https://tradingtubeapi.alphanitesofts.com/api/"
+const BaseUrl = "https://apis.tradingtube.net/api/"
 export default BaseUrl
