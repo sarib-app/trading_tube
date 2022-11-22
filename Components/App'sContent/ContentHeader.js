@@ -23,7 +23,7 @@ function ContentHeader({icon,width,height,title}) {
 <>
 
 
-<BackBtn/>
+{/* <BackBtn/> */}
 <View style={{margin:15, flexDirection:'row',alignItems:'center'}}>
 <Image source={icon}
 style={{width:width,height:height,tintColor:Colors.FontColorI,marginRight:10}} />

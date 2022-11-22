@@ -66,61 +66,16 @@ useEffect(()=>{
       let userParsed=JSON.parse(user) 
     if(token){
       setUser(userParsed)
-      getChatLoop(userParsed)
+      getChat(userParsed)
       console.log(userParsed.id)
 
-          const chats = await AsyncStorage.getItem(`Chat`)
-          // console.log('what',chats)
-          let ChatParsed = JSON.parse(chats)
-          if(ChatParsed){
-            setChat(ChatParsed)
-
-            const timer = setTimeout(() => {
-              onScrollDown()
-          },
-        
-          3000);
-           return () => clearTimeout(timer);
-
-          }
-          console.log('this is chat',ChatParsed)
-        
-       
 
       
     }
     }
 
 
-    function getChatLoop(userParsed){
-      
-//       const interval = setInterval(() => {
-        
-//         const focus =  focused ? true : false
-// console.log(focus,"ok")
-//        getChat(userParsed)
-    
-
-  
-// }, 5000);
-// return () => clearInterval(interval);
-
-
-
-var timePerInterval = 7000;
-$(document).ready(function() {
-    setInterval(function(){
-        if ( document.hasFocus() ) {
-            // code to be run every 7 seconds, but only when tab is focused
-            console.log("running")
-        }
-    }, timePerInterval );
-});
-
-
-  
-}
-
+ 
     function getChat(userParsed){
         var formdata = new FormData();
         formdata.append("user_id", userParsed.id);
@@ -136,22 +91,24 @@ $(document).ready(function() {
           .then(result => {
             if(result.status === "200"){
                 // setChat(result.messages)
-                AsyncStorage.setItem(`Chat`,JSON.stringify(result.messages))
                 setChat(result.messages)
+                if(result.messages.length > 5){
+
                 const timer = setTimeout(() => {
                     onScrollDown()
                 },
               
-                1500);
+                1000);
                   return () => clearTimeout(timer);
-            }
+                }
+
+                }
             else{
               console.log(result)
             }
             })
           .catch(error => console.log('error', error));
     }
-
 function sendChat(){
 
 const Obj ={
@@ -164,7 +121,10 @@ const Obj ={
    "receiver_id": "1001",
 }
 setChat(p=>[...p,Obj])
-// onScrollDown()
+{chat.length > 5 && 
+
+   onScrollDown()
+}
 
     setChatInput("")
     var formdata = new FormData();
@@ -190,15 +150,6 @@ setChat(p=>[...p,Obj])
         })
       .catch(error => console.log('error', error));
 }
-
-
-
-
-
-
-
-
-
 
 const onScrollDown=()=>{
     flatlistRef.current.scrollToEnd({animating: true});

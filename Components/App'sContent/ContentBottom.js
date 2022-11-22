@@ -7,7 +7,8 @@ import {
 ScrollView,
 Pressable,
 ImageBackground,
-Dimensions
+Dimensions,
+Modal
  
 } from 'react-native';
 import styles from './Styles';
@@ -21,7 +22,7 @@ import SmallBtn from '../../assets/icons/smallBtn.png'
 import RenderHtml from 'react-native-render-html';
 const WindowWidth = Dimensions.get('window').width
 
-function ContentBottom({title,Content}) {
+function ContentBottom({title,Content,onHide}) {
 
 const navigation = useNavigation()
 
@@ -30,6 +31,7 @@ const navigation = useNavigation()
 function LowerCart(){
 
 return(
+
   <View style={styles.LowerCart}>
     <View style={{flexDirection:'row',margin:15,alignItems:'center'}}>
 
@@ -73,13 +75,13 @@ style={{width:20,height:20,marginRight:10}}
 
 <View style={styles.ButtonsCart} >
 <View style={{width:115,height:32,borderRadius:20,borderColor:Colors.PrimaryColor,borderWidth:1,alignItems:'center',justifyContent:'center'}}>
-<Text style={{fontWeight:'bold',color:Colors.PrimaryColor,fontSize:16}}>Decline</Text>
+<Text style={{fontWeight:'bold',color:Colors.PrimaryColor,fontSize:16,textDecorationLine:"line-through",textDecorationColor:'black'}}>Decline</Text>
 
 </View>
 
 <Pressable
 
-onPress={()=> navigation.goBack()}
+onPress={()=> onHide()}
 >
 
 <ImageBackground 

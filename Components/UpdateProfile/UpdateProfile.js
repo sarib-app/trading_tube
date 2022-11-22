@@ -9,12 +9,15 @@ import {
   Pressable,
   Dimensions,
   Alert,
+  Platform,
+  PermissionsAndroid
   
  
 } from 'react-native';
 import styles from '../DepositNow/Styles';
 ;
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as ImagePicker from 'react-native-image-picker';
 
 import { useNavigation } from '@react-navigation/native';
  
@@ -52,6 +55,9 @@ const [loading,setLoading]=useState(false)
 const [user_id,setUser_id]=useState(0)
 const [token,setToken]=useState("")
 const [erroMessage,setErroMessage]=useState("")
+const [pro_pic , setPro_Pic]=useState("")
+const [pro_pic_changed , setPro_Pic_changed]=useState("")
+
 
 const headertTitle = identifier === "password" ? "Change Password":"Update Profile"
 
@@ -71,6 +77,7 @@ useEffect(()=>{
       setFirstname(userParsed.firstname)
       setLastname(userParsed.lastname)
       setUser_id(userParsed.id)
+      setPro_Pic(userParsed.pro_pic)
     }
   }
 
@@ -103,11 +110,34 @@ else if(identifier === "password"){
 function updateProfileCall(){
   setLoading(true)
 
+  
+
+  const uri = pro_pic_changed != "" ?
+  Platform.OS === "android"
+    ? pro_pic_changed.uri
+    : pro_pic_changed.uri.replace("file://", ""):"uri"
+const filename = pro_pic_changed != "" && pro_pic_changed.uri.split("/").pop();
+const match = pro_pic_changed != "" && /\.(\w+)$/.exec( String(filename));
+const ext = pro_pic_changed != "" && match?.[1];
+const type = pro_pic_changed != "" && match ? `image/${match[1]}` : `image`;
+
+
+
+
+
+
+
+
   var formdata = new FormData();
   formdata.append("email", Email);
   formdata.append("firstname", Firstname);
   formdata.append("lastname",Lastname);
-  
+  pro_pic_changed != "" && formdata.append("pro_pic", {
+    uri:uri,
+    name: `pro_pic.${ext}`,
+    type:type,
+  } );
+
   var requestOptions = {
     method: 'POST',
     body: formdata,
@@ -185,6 +215,77 @@ fetch(`${BaseUrl}${Endpoints.changepassword}`, requestOptions)
 
 
 
+const permissionForGallery=async ()=>{
+  if (Platform.OS === 'ios') {
+      SelectFromGallery();
+    } else {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission Required',
+            message:
+              'Application needs access to your storage to download File',
+          }
+        );
+
+
+        const grantedRead = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission Required',
+            message:
+              'Application needs access to your storage to upload file',
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED && grantedRead === PermissionsAndroid.RESULTS.GRANTED) {
+          // Start downloading
+          SelectFromGallery();
+          
+alert("Download started please wait")
+
+        } else {
+          // If permission denied then show alert
+          Alert.alert('Error','Storage Permission Not Granted');
+        }
+      } catch (err) {
+        // To handle permission related exception
+        console.log("++++"+err);
+      }
+    }
+ }
+ async function SelectFromGallery(){
+  ImagePicker.launchImageLibrary({ mediaType: 'image', includeBase64: false, }, (response) => {
+      if(response.didCancel !=true){
+        setPro_Pic_changed(response.assets[0])
+        // setProofImageTemp(response.assets[0].uri)
+          
+      }
+      else{
+          console.log("jedhfk")
+      }
+
+  })
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   return (
@@ -198,10 +299,27 @@ fetch(`${BaseUrl}${Endpoints.changepassword}`, requestOptions)
 {
   identifier === "profile"&&
 <>
+<Pressable
+onPress={()=> permissionForGallery()}
+>
+
+{
+pro_pic_changed !="" ?<Image
+source={{uri:pro_pic_changed.uri}}
+style={{width:106,height:106,borderRadius:1000,alignSelf:'center'}}
+/>:
+pro_pic === "" || pro_pic === "default"?
 <Image
 source={malepic}
 style={{width:106,height:106,borderRadius:1000,alignSelf:'center'}}
 />
+:
+<Image
+source={{uri:Endpoints.ImageBaseUrl+pro_pic}}
+style={{width:106,height:106,borderRadius:1000,alignSelf:'center'}}
+/>
+}
+</Pressable>
 
 <Text style={styles.TxtInputTitle}>
   First Name

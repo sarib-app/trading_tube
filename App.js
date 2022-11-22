@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React,{useEffect,useState} from 'react';
 import {
   StyleSheet,
 
@@ -31,13 +31,37 @@ import PlanDecider from './Components/Plans/Decider';
 import SharePlans from './Components/Plans/SharePlan';
 import InvestmentPlans from './Components/Plans/InvestmentPlans';
 import LevelRewards from './Components/LevelRewards/LevelRewards';
-import SplashScreen from './Components/Splash/Splash';
+import SplashScreen from "react-native-splash-screen"; //import SplashScreen
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import StateChanger from './Components/StateChanger/StateChanger';
+import Notification from './Components/Notification/notification';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  const [loggedin,setLoggedIn]=useState(true)
+
+  useEffect(() => {
+    SplashScreen.hide(); //hides the splash screen on app load.
+    getAsyncData()
+  }, []);
+
+
+  async function getAsyncData () {
+    const token = await AsyncStorage.getItem('token')
+    if(token){
+      setLoggedIn(true)
+      
+      console.log("yes")
+    }
+    
+  }
+const route = loggedin === true ? "Main":"Register"
+console.log(loggedin)
+
+
 return( 
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="SplashScreen"   screenOptions={{
+    <Stack.Navigator initialRouteName="StateChanger" screenOptions={{
       headerShown: false
     }}
     >
@@ -64,9 +88,8 @@ return(
     <Stack.Screen name="SharePlans" component={SharePlans} />
     <Stack.Screen name="InvestmentPlans" component={InvestmentPlans} />
     <Stack.Screen name="LevelRewards" component={LevelRewards} />
-    <Stack.Screen name="SplashScreen" component={SplashScreen} />
-
-
+    <Stack.Screen name="StateChanger" component={StateChanger} />
+    <Stack.Screen name="Notification" component={Notification} />
 
 
     </Stack.Navigator>

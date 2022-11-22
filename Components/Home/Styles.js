@@ -10,7 +10,9 @@ const styles = StyleSheet.create({
     Container: {
         width: WindowWidth,
         height: WindowHeight,
-        backgroundColor: Colors.BgColor,
+        // backgroundColor: Colors.BgColor,
+        backgroundColor: "#0D0B0D",
+
         alignItems: "center",
 
     },
@@ -21,8 +23,10 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     Banner:{
-      width:WindowWidth,
-      height:WindowHeight/10   
+      width:320,
+      height:120,
+      margin:10,
+      alignSelf:"center"  
     },
     InnerTxt: { fontWeight: 'bold', fontSize: 20 },
     OuterTxt: { color: Colors.FontColorI, textAlign: "left" },

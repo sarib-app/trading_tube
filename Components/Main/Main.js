@@ -32,12 +32,8 @@ import Endpoints from '../../EnDPoints';
 import getAsync from '../GetAsynData/getAsync';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
-function backButtonHandler() {
-    BackHandler.exitApp()
 
-  
-}
-function Main() {
+function Main({onChangeState}) {
 const asyncdata = getAsync()
 const focused = useIsFocused()
 const navigation = useNavigation()
@@ -59,16 +55,7 @@ function changeState(val){
 }
 
 
-useEffect(() => {
-  if(focused){
-    BackHandler.addEventListener("hardwareBackPress", backButtonHandler);
 
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", backButtonHandler);
-    };
-  }
-
-}, [backButtonHandler]);
 
 
 
@@ -438,6 +425,7 @@ allComissions={allComissions}
 <ProfileScreen
 total_Record={allTotal}
 forceReload={forceReload}
+onChangeState={onChangeState}
 
 />
 }

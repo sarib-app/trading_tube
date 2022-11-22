@@ -25,6 +25,8 @@ import gobackIcon from '../../assets/icons/gobackIcon.png'
 import getAsync from '../GetAsynData/getAsync';
 import BaseUrl from '../../Urls';
 import Endpoints from '../../EnDPoints';
+import PrivacyPolicy from '../App\'sContent/PrivacyPolicy';
+import Tos from '../App\'sContent/Tos';
 const WindowHeight = Dimensions.get('window').height;
 
 function AccepDialogue({IsVisible,onHideModal}) {
@@ -33,7 +35,18 @@ function AccepDialogue({IsVisible,onHideModal}) {
 
 const navigation = useNavigation()
 
+const [showPrivacy, setShowPrivacy] = useState(false);
+const [showTos, setShowTos] = useState(false);
 
+
+
+function onHideTos(){
+setShowTos((p)=> !p)
+}
+function onHidePrivacy(){
+  setShowPrivacy((p)=> !p)
+
+}
 
 return (
     <Modal
@@ -57,12 +70,12 @@ style={[styles.ModalTitles,{margin:20,fontSize:30,textAlign:"center"}]}>Terms Of
     To continue please accept our terms of services and privacy policy.
 </Text>
 <Text 
-onPress={()=> navigation.navigate('Tos')}
+onPress={()=> setShowTos(true)}
 style={{color:Colors.PrimaryColor,textAlign:"center",textDecorationLine:"underline"}}>
     Terms of Services
 </Text>
 <Text 
-onPress={()=> navigation.navigate('PrivacyPolicy')}
+onPress={()=> setShowPrivacy(true)}
 
 style={{color:Colors.PrimaryColor,textAlign:"center",textDecorationLine:"underline"}}>
     Privacy Policy
@@ -81,6 +94,21 @@ style={{color:Colors.PrimaryColor,textAlign:"center",textDecorationLine:"underli
 </View>
 
 </View>
+
+
+
+<PrivacyPolicy
+isVisible={showPrivacy}
+onHide={onHidePrivacy}
+
+/>
+
+<Tos 
+isVisible={showTos}
+onHide={onHideTos}
+
+/>
+
     </SafeAreaView>
     </Modal>
   )
