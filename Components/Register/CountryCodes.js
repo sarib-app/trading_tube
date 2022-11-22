@@ -6,13 +6,16 @@ import {
   Pressable,
   Modal,
 FlatList,
-TextInput
+TextInput,
+Image
  
 } from 'react-native';
 import styles from '../BankAllList/Styles';
 
 import BankList   from '../data/BankList';
 import Colors from '../GlobalStyles/Color';
+import gobackIcon from '../../assets/icons/gobackIcon.png'
+
 import countries from '../data/CountryCode';
 function CountryCode({
     isVisible,
@@ -28,8 +31,10 @@ function BanksLists({item}){
         <Pressable 
         onPress={()=> onSelectBank(item.code)}
         style={styles.ListContainer}> 
+              <Text style={{color:"white",fontSize:16,fontWeight:'bold'}}>+{item.code}</Text>  
 
-      <Text style={{color:"white"}}>{item.code}</Text>  
+      <Text style={{color:"white",fontSize:16,fontWeight:'500'}}>{item.name}</Text>  
+
         </Pressable>
       )
 
@@ -41,7 +46,19 @@ return (
     transparent={true}
     >
 
-    <View style={styles.Container}>  
+    <View style={styles.Container}> 
+
+    <Pressable
+    onPress={()=> onSelectBank(92)}
+    
+    style={{flexDirection:"row",marginTop:10,alignSelf:'flex-start',left:15,alignItems:'center'}}>
+      <Image  source={gobackIcon}
+      style={{width:12,height:15}}
+      />
+    <Text style={{color:Colors.PrimaryColor}}> Go Back</Text>
+    </Pressable>
+
+
 <Text style={styles.TitleText}>Select Country COde</Text>
 <View style={styles.InputBox}>
 <TextInput

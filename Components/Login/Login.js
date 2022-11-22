@@ -30,21 +30,33 @@ import BaseUrl from '../../Urls';
 import Endpoints from '../../EnDPoints';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SpinnerButton from 'react-native-spinner-button';
+import CountryCode from '../Register/CountryCodes';
 
-function Login() {
+function Login({
+
+  onNavigate,
+  onChangeState
+  
+}) {
 
 const navigation = useNavigation()
 
 
 const [errorMessage,setErrorMessage]=useState("")
 const [errorCode,setErrorCode]=useState("")
+const [countryCode,setCountryCode]=useState(92)
 
 const [phone, setPhone]=useState()
 const [password , setPassword]= useState("")
 const [loginPressed , setLoginPressed]= useState(false)
 
 const [loading,setLoading]=useState(false)
+const [showCodes,setShowCodes]=useState(false)
 
+function onSelectBank(val){
+  setCountryCode(val)
+  setShowCodes((p)=> !p)
+}
 
 function onLoginPress(){
   if(phone && password){
@@ -61,7 +73,7 @@ function Login(){
   setLoading(true)
   
   var formdata = new FormData();
-formdata.append("phone", phone);
+formdata.append("phone", countryCode+phone);
 formdata.append("password", password);
 
 var requestOptions = {
@@ -82,8 +94,9 @@ fetch(`${BaseUrl}${Endpoints.loginNow}`, requestOptions)
     else if(result.user){
       AsyncStorage.setItem('user',JSON.stringify(result.user))
       AsyncStorage.setItem('token',result.token)
-      navigation.navigate('Main')
-      setLoading(false)
+     // navigation.navigate('Main')
+     onChangeState() 
+     setLoading(false)
     }
     else{
       setLoading(false)
@@ -118,31 +131,27 @@ fetch(`${BaseUrl}${Endpoints.loginNow}`, requestOptions)
 
 <Text style={[styles.TitleTxt,{marginTop:40}]}>Phone No</Text>
 
-<View
-style={[GlobalStyles.TextInput,{borderColor:!phone  && loginPressed===true ? Colors.danger :Colors.PrimaryColor}]}
+<View style={[GlobalStyles.TextInput,{borderColor:!phone && loginPressed === true?Colors.danger:Colors.PrimaryColor }]}>
+
+<Pressable
+onPress={()=> setShowCodes(true)}
+style={{padding:10,marginLeft:10,borderRightColor:"white",borderRightWidth:1}}
 >
+<Text style={{color:Colors.FontColorI,fontWeight:'bold'}}>+{countryCode}</Text>
 
-<Image
-source={phoneIcon}
-style={{width:17,height:17,marginLeft:10  }}
-/>
-
+</Pressable>
 <TextInput
-placeholder='Enter Phone'
-cursorColor={Colors.PrimaryColor}
-onChangeText={(e)=> setPhone(e)}
+placeholder='Number after country code i.e. 320 *******'
+placeholderTextColor={Colors.placeHolder}
+style={{flex:1,color:"white"}}
 
 value={phone}
-placeholderTextColor={Colors.placeHolder}
-style={{flex:1,color:Colors.FontColorI,marginLeft:10}}
-// collapsable={true}
-// cursorColor={Colors.PrimaryColor}
 keyboardType="numeric"
 
+onChangeText={(e)=>setPhone(e)}
+
 />
-
 </View>
-
 {
   errorMessage != "" && errorCode === "phone"  &&
 <Text style={{color:Colors.danger}}>{errorMessage}</Text>
@@ -163,6 +172,7 @@ style={{width:17,height:17,marginLeft:10  }}
 <TextInput
 placeholder='Enter Password'
 value={password}
+autoCapitalize="none"
 onChangeText={(e)=> setPassword(e)}
 placeholderTextColor={Colors.placeHolder}
 style={{flex:1,color:Colors.FontColorI,marginLeft:10}}
@@ -217,7 +227,7 @@ style={GlobalStyles.Button}
 <Text style={[styles.TitleTxt,{marginTop:20,marginBottom:20}]}>OR</Text>
 
 <Pressable 
-onPress={()=> navigation.navigate('Register')}
+onPress={()=> onNavigate()}
 style={styles.RegisterBtn}>
 <Text style={styles.TitleTxt}>Register</Text>
 
@@ -233,6 +243,11 @@ style={styles.RegisterBtn}>
 <Text style={[styles.PrivacyTxt,{position:'absolute',bottom:50}]}>
   Copyright 2014-2021 Alphanite. All rights reserved.
 </Text>
+<CountryCode 
+isVisible={showCodes}
+onSelectBank={onSelectBank}
+
+/>
 
 
 

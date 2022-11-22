@@ -22,12 +22,16 @@ import LinearGradient from 'react-native-linear-gradient';
 import plansIcon from '../../assets/icons/plans.png'
 import RechargeIcon from '../../assets/icons/Recharge.png'
 import withdrawIcon from '../../assets/icons/withdraw.png'
+import promotion from '../../assets/gif/promotion.gif'
+
 import helpIcon from '../../assets/icons/help.png'
 import jobsIcon from '../../assets/icons/jobs.png'
 import nftIcon from '../../assets/icons/nft.png'
 import tradeIcon from '../../assets/icons/trade.png'
 import TipsIcon from '../../assets/icons/tips.png'
 import shopIcon from '../../assets/icons/shop.png'
+import notification from '../../assets/icons/notification.png'
+
 import gameIcon from '../../assets/icons/game.png'
 import {TopInvestors, TipsTricks} from '../data/TopInvestors';
 import { FlatList } from 'react-native-gesture-handler';
@@ -322,7 +326,10 @@ function LowerCart(){
   
   return(
     <View style={styles.TrickContainer}>
-  <View style={styles.TrickContainerInner}>
+  <Pressable 
+  
+  onPress={()=> setIsOpen((p)=>!p)}
+  style={styles.TrickContainerInner}>
   
   
   
@@ -343,7 +350,7 @@ function LowerCart(){
   />
   </TouchableOpacity>
   
-  </View>
+  </Pressable>
   {
     isOpen === true &&
     <>
@@ -422,6 +429,15 @@ data.map((item)=>{
 
 <View style={styles.Header}>
     <Text style={styles.OuterTxt}>Weclcome{'\n'} <Text style={styles.InnerTxt}>Username</Text></Text>
+
+    <View style={{flexDirection:'row'}}>
+<TouchableOpacity
+  onPress={()=> navigation.navigate("Notification")}
+
+>
+
+    <Image source={notification} style={{width:35,height:35,tintColor:Colors.PrimaryColor}}/>
+</TouchableOpacity>
   
   <TouchableOpacity
   onPress={()=> navigation.navigate("LevelRewards")}
@@ -429,6 +445,9 @@ data.map((item)=>{
 
    <Image source={{uri:"https://img.icons8.com/glyph-neue/64/null/packaging.png"}} style={{width:35,height:35,tintColor:Colors.PrimaryColor}}/>
   </TouchableOpacity>
+
+  </View>
+
 </View>
 
 
@@ -446,11 +465,19 @@ style={{backgroundColor:"red"}}
 </Text>
   
 </Pressable> */}
-<Image 
-source={Banner}
-style={styles.Banner}
+<Pressable
+onPress={()=> navigation.navigate("PromotionScreen")}
+>
 
+<Image 
+source={require("../../assets/gif/promotionn.gif")}
+style={{ width:320,
+  height:120,
+  margin:10,
+  alignSelf:"center"  }}
 />
+</Pressable>
+
 <LowerCart/>
 
 </ScrollView>

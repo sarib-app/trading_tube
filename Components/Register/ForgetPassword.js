@@ -87,10 +87,16 @@ function ONpressNext(){
   }
 
   else if(index === 4 &&  otp){
-    if(otp === random){
+    if(Number(otp) === Number(random)){
       changePassword()
 
     }
+    else{
+      setErrorCode("otp")
+      setErrorMessage("Otp Does not match")
+      console.log(random)
+    }
+    
   }
   else{
 setIsPressed(true)
@@ -103,8 +109,13 @@ setIsPressed(true)
 function FetchQuestion(){
     setLoading(true)
 
+
+
+console.log(countryCode+Phone)
+
+
     var formdata = new FormData();
-formdata.append("phone", Phone);
+formdata.append("phone", countryCode+Phone);
 
 var requestOptions = {
   method: 'POST',
@@ -137,7 +148,7 @@ Alert.alert("somethign went wrong")
 function CheckAnswer(){
     setLoading(true)
     var formdata = new FormData();
-    formdata.append("phone",Phone);
+    formdata.append("phone",countryCode+Phone);
     formdata.append("question", question);
     formdata.append("answer", answer);
     var requestOptions = {
@@ -176,10 +187,11 @@ Alert.alert("somethign went wrong")
 
 function changePassword(){
 setLoading(true)
+console.log(countryCode+password)
     var formdata = new FormData();
     formdata.append("password", password);
     formdata.append("confirm_password", c_password);
-    formdata.append("phone", Phone);
+    formdata.append("phone", countryCode+Phone);
     
     var requestOptions = {
       method: 'POST',
@@ -574,6 +586,10 @@ onChangeText={(e)=>setOtp(e)}
 
 />
 </View>
+{
+  errorMessage != "" && errorCode === "otp"  &&
+<Text style={{color:Colors.danger}}>{errorMessage}</Text>
+}
 </>
 }
 

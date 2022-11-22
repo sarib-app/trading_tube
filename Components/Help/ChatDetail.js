@@ -64,11 +64,14 @@ const onScrollDown=()=>{
           .then(result => {
             if(result.status === "200"){
                 setChat(result.Reply)
-                const timer = setTimeout(() => {
+                if(result.Reply.length > 5){
+                  const timer = setTimeout(() => {
                     onScrollDown()
                 }, 1000);
                 //   setStartCounter(true)
                   return () => clearTimeout(timer);
+                }
+            
             }
             console.log(result)})
           .catch(error => console.log('error', error));
@@ -83,7 +86,8 @@ const Obj ={
     "body": ChatInput
 }
 setChat(p=>[...p,Obj])
-onScrollDown()
+{chat.length > 5 && 
+onScrollDown()}
 
     setChatInput("")
     var formdata = new FormData();

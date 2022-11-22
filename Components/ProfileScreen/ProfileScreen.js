@@ -22,9 +22,12 @@ import updateProfIcon from '../../assets/icons/updateProfIcon.png'
 import { ProfileOptions, TopInvestors } from '../data/TopInvestors';
 import { FlatList } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Endpoints from '../../EnDPoints';
+import PrivacyPolicy from '../App\'sContent/PrivacyPolicy';
+import Tos from '../App\'sContent/Tos';
 const WindowWidth = Dimensions.get('window').width
 
-function ProfileScreen({total_Record,forceReload}) {
+function ProfileScreen({total_Record,forceReload,onChangeState}) {
   const [selected,setSelected]=useState("All")
   const [refreshing, setRefreshing] = useState(false);
 
@@ -44,20 +47,15 @@ function ProfileScreen({total_Record,forceReload}) {
   }, [])
 
 
+
+
 const navigation = useNavigation()
-function Navigator(route){
-  navigation.navigate(route)
-  if(route==="Login"){
-    AsyncStorage.clear()
-  }
-}
-
-
 
 const [user,setUser]=useState({
    firstname:"",
    lastname:"",
-   phone:""
+   phone:"",
+   pro_pic:""
   
 })
 
@@ -125,6 +123,34 @@ function LowerCart(){
 
   
 function OptionList({item}){
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [showTos, setShowTos] = useState(false);
+
+
+  
+  function onHideTos(){
+  setShowTos((p)=> !p)
+  }
+  function onHidePrivacy(){
+    setShowPrivacy((p)=> !p)
+  
+  }
+  function Navigator(route){
+    if(route==="Login"){
+      AsyncStorage.clear()
+      onChangeState()
+    }
+    else if(route === "PrivacyPolicy"){
+  setShowPrivacy(true)
+    }
+    else if(route === "Tos"){
+      setShowTos(true)
+        }
+    else{
+    navigation.navigate(route)
+  
+    }
+  }
   return(
     <Pressable 
     onPress={()=> Navigator(item.rout_to)}
@@ -137,6 +163,21 @@ function OptionList({item}){
    />
     </View>
 <Text style={{color:Colors.BgColor,textAlign:'center',fontWeight:"bold"}}>{item.title}</Text>
+
+
+<PrivacyPolicy
+isVisible={showPrivacy}
+onHide={onHidePrivacy}
+
+/>
+
+<Tos 
+isVisible={showTos}
+onHide={onHideTos}
+
+/>
+
+
     </Pressable>
 
   )
@@ -181,11 +222,16 @@ return (
 
 <View style={styles.Header}>
     <View style={{flexDirection:'row',alignItems:'center'}}>
-    <Image source={Profile} style={{width:50,height:50}}/>
+      { user.pro_pic === "" || user.pro_pic === "default"?
+        
+        <Image source={Profile} style={{width:50,height:50}}/>
+      :  
+      <Image source={{uri:Endpoints.ImageBaseUrl+user.pro_pic}} style={{width:50,height:50,borderRadius:1000}}/>
 
+      }
 <Text style={styles.InnerTxt}>{user.firstname} {user.lastname}{'\n'} <Text style={styles.OuterTxt}>{user.phone}</Text></Text>
     </View>
-<Pressable onPress={()=> Navigator('DecideUpdate')}>
+<Pressable onPress={()=> navigation.navigate('DecideUpdate')}>
 <Image source={updateProfIcon} style={{width:29,height:21}}/>
 
 </Pressable>

@@ -39,7 +39,10 @@ import AccepDialogue from '../Help/AccepDialogue';
 
 
 
-function Register() {
+function Register({
+  onNavigate,
+  onChangeState
+}) {
 const [index,setIndex]=useState(1)
 const navigation = useNavigation()
 
@@ -64,7 +67,7 @@ const [random,setRandom]=useState('0000')
 const [question,setQuestion]=useState("")
 const [answer,setAnswer]=useState("")
 const [showCodes,setShowCodes]=useState(false)
-const [showDialgoue,setShowDialogue]=useState(true)
+const [showDialgoue,setShowDialogue]=useState(false)
 
 
 const InputSty = {flex:1,color:Colors.FontColorI}
@@ -85,9 +88,15 @@ function ONpressNext(){
 
   }
   else if(index === 3 &&  Phone && password != ""  && c_password != "" && cnic){
-    setIndex(index+1)
-    setIsPressed(false)
-    setErrorCode("Nan")
+    if(password === c_password ){
+
+      setIndex(index+1)
+      setIsPressed(false)
+      setErrorCode("Nan")
+    }else{
+      setErrorCode("password")
+      setErrorMessage("Password does not match.")
+    }
 
   }
   else if(index === 4 &&  question != "" && answer !=""){
@@ -125,10 +134,10 @@ function Register(){
 setLoading(true)
 
   var formdata = new FormData();
-  formdata.append("email", email);
+  formdata.append("email", email === ""? "noemail@tradingtube.co":email);
   formdata.append("username", username);
   formdata.append("cnic", cnic);
-  formdata.append("phone", Phone);
+  formdata.append("phone", countryCode+Phone);
   formdata.append("password", password);
   formdata.append("password_confirmation", c_password);
   formdata.append("code", refer);
@@ -151,8 +160,8 @@ setLoading(true)
 setLoading(false)
       AsyncStorage.setItem('user',JSON.stringify(result.user))
       AsyncStorage.setItem('token',result.token)
-      navigation.navigate('Main')
-
+      //navigation.navigate('Main')
+      onChangeState()
     }
     if(result.status === '401'){
       setLoading(false)
@@ -241,7 +250,7 @@ function GeneratingOtp(){
   setTimeout(() => {
     SendOtp(val)
    
-  },2000);
+  },1500);
 
 
 }
@@ -284,6 +293,8 @@ useEffect(()=>{
 setShowDialogue(false)
   
   
+    }else{
+      setShowDialogue(true)
     }
   }
 
@@ -355,7 +366,7 @@ function BottoMtext(){
   return(
     <Text style={{color:Colors.FontColorI,margin:15,alignSelf:'center',position:'absolute',bottom:30}}>
   Already have an account? <Text 
-  onPress={()=> navigation.navigate("Login")}
+  onPress={()=> onNavigate()}
   style={{color:Colors.PrimaryColor,fontWeight:"bold",fontSize:16}}>Sign In</Text>
 </Text> 
   )
@@ -515,7 +526,7 @@ onChangeText={(e)=>setEmail(e)}
 onPress={()=> setShowCodes(true)}
 style={{padding:10,marginLeft:10,borderRightColor:"white",borderRightWidth:1}}
 >
-<Text style={{color:Colors.FontColorI,fontWeight:'bold'}}>{countryCode}</Text>
+<Text style={{color:Colors.FontColorI,fontWeight:'bold'}}>+{countryCode}</Text>
 
 </Pressable>
 <TextInput
@@ -549,7 +560,7 @@ style={{width:17,height:17,margin:10}}
 placeholder='Password'
 placeholderTextColor={Colors.placeHolder}
 style={{flex:1,color:"white"}}
-
+autoCapitalize="none"
 value={password}
 secureTextEntry={true}
 onChangeText={(e)=>setPassword(e)}
@@ -570,6 +581,7 @@ style={{width:17,height:17,margin:10}}
 placeholder='Confirm Password'
 placeholderTextColor={Colors.placeHolder}
 style={{flex:1,color:"white"}}
+autoCapitalize="none"
 
 value={c_password}
 secureTextEntry={true}
@@ -577,6 +589,11 @@ onChangeText={(e)=>setC_Password(e)}
 
 />
 </View>
+
+{
+  errorMessage != "" && errorCode === "password"  &&
+<Text style={{color:Colors.danger}}>{errorMessage}</Text>
+}
 
 <Text style={styles.TitleTxt}>Cnic</Text>
 
@@ -714,11 +731,11 @@ onSelectBank={onSelectBank}
 
 />
 
-{/* <AccepDialogue 
+<AccepDialogue 
 IsVisible={showDialgoue}
 onHideModal={AcceptServices}
 
-/> */}
+/>
 
     </View>
   )

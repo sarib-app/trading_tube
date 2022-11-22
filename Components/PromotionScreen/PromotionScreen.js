@@ -31,6 +31,8 @@ import BaseUrl from '../../Urls';
 import * as ImagePicker from 'react-native-image-picker';
 import getAsync from '../GetAsynData/getAsync';
 import SpinnerButton from 'react-native-spinner-button';
+import upload_img_icon from '../../assets/icons/upload_img.png'
+import referenceCnic from '../../assets/icons/referenceCnic.png'
 
 const WindowWidth = Dimensions.get('window').width
 const WindowHeight = Dimensions.get('window').height;
@@ -38,6 +40,9 @@ function PromotionScreen() {
   const asyndata = getAsync()
   const [loading, setLoading]=useState(false)
   const [proof_image,setProofImage]=useState()
+
+  const [cnicimg,setCnicimg]=useState()
+  const [isPressed,setIspressed]=useState(false)
 
 
   const permissionForGallery=async ()=>{
@@ -82,8 +87,9 @@ function PromotionScreen() {
    async function SelectFromGallery(){
     ImagePicker.launchImageLibrary({ mediaType: 'image', includeBase64: false, }, (response) => {
         if(response.didCancel !=true){
-          UploadScreenShot(response.assets[0])
-            
+          // UploadScreenShot(response.assets[0])
+            setProofImage(response.assets[0])
+
         }
         else{
             console.log("jedhfk")
@@ -91,19 +97,117 @@ function PromotionScreen() {
   
     })
    }
-  function UploadScreenShot (imagee){
+
+
+
+
+
+
+
+   const permissionForGalleryII=async ()=>{
+    if (Platform.OS === 'ios') {
+        SelectFromGalleryII();
+      } else {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            {
+              title: 'Storage Permission Required',
+              message:
+                'Application needs access to your storage to download File',
+            }
+          );
+  
+  
+          const grantedRead = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+            {
+              title: 'Storage Permission Required',
+              message:
+                'Application needs access to your storage to upload file',
+            }
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED && grantedRead === PermissionsAndroid.RESULTS.GRANTED) {
+            // Start downloading
+            SelectFromGalleryII();
+            
+  alert("Download started please wait")
+  
+          } else {
+            // If permission denied then show alert
+            Alert.alert('Error','Storage Permission Not Granted');
+          }
+        } catch (err) {
+          // To handle permission related exception
+          console.log("++++"+err);
+        }
+      }
+   }
+   async function SelectFromGalleryII(){
+    ImagePicker.launchImageLibrary({ mediaType: 'image', includeBase64: false, }, (response) => {
+        if(response.didCancel !=true){
+          // UploadScreenShot(response.assets[0])
+            setCnicimg(response.assets[0])
+
+        }
+        else{
+            console.log("jedhfk")
+        }
+  
+    })
+   }
+
+
+
+
+
+
+
+
+
+function CheckImages(){
+  if(!proof_image && !cnicimg){
+    
+     setIspressed(true)
+
+  }else{
+    UploadScreenShot()
+  }
+}
+
+
+
+
+  function UploadScreenShot (){
   setLoading(true)
     const uri =
     Platform.OS === "android"
-      ? imagee.uri
-      : imagee.uri.replace("file://", "");
-  const filename = imagee.uri.split("/").pop();
+      ? cnicimg.uri
+      : cnicimg.uri.replace("file://", "");
+  const filename = cnicimg.uri.split("/").pop();
   const match = /\.(\w+)$/.exec( String(filename));
   const ext = match?.[1];
   const type = match ? `image/${match[1]}` : `image`;
   
-  console.log(uri+ "  " + ext + "  " + type )
-  
+
+
+
+
+
+  const uriII =
+  Platform.OS === "android"
+    ? proof_image.uri
+    : proof_image.uri.replace("file://", "");
+const filenameI = proof_image.uri.split("/").pop();
+const matchI = /\.(\w+)$/.exec( String(filenameI));
+const extI = matchI?.[1];
+const typeI = matchI ? `image/${matchI[1]}` : `image`;
+
+
+
+
+
+  console.log(asyndata.user.id)
   
   
   var formdata = new FormData();
@@ -113,6 +217,11 @@ function PromotionScreen() {
     uri:uri,
     name: `image.${ext}`,
     type:type,
+  } );
+  formdata.append("image_2", {
+    uri:uriII,
+    name: `image_2.${extI}`,
+    type:typeI,
   } );
   formdata.append("amount", "500");
   
@@ -232,7 +341,6 @@ style={{width:278,height:128,marginTop:40,alignSelf:"center"}}
 
 <ScrollView
 contentContainerStyle={{alignItems:"center"}}
-
 >
 
 <Text style={styles.TitleText}>Congratulations !</Text>
@@ -248,17 +356,19 @@ contentContainerStyle={{alignItems:"center"}}
 <Text style={styles.DetailTitle}>2 : <Text style={styles.DetailTxt}>Give us five start on play store</Text></Text>
 <Text style={styles.DetailTitle}>3 : <Text style={styles.DetailTxt}>Take ScreenShot of review and 5 stars</Text></Text>
 <Text style={styles.DetailTitle}>4 : <Text style={styles.DetailTxt}>Capture a selfie which shows your face and your CNIC clearly just like an example shown below.</Text></Text>
-<Text style={styles.DetailTitle}>5 : <Text style={styles.DetailTxt}></Text></Text>
+<Image 
+source={referenceCnic}
+style={{width:200,height:200}}
+/>
+
+
+<Text style={styles.DetailTitle}>5 : <Text style={styles.DetailTxt}>Upload that screenshot and selfie by hitting the buttons below and submit</Text></Text>
+
+<Text style={styles.DetailTitle}>6 : <Text style={styles.DetailTxt}>Thats it, your 500 RS will be available in your withdraw.</Text></Text>
 
 
 
-<Text style={styles.DetailTitle}>6 : <Text style={styles.DetailTxt}>Upload that screenshot and selfie by hitting the buttons below and submit</Text></Text>
-
-<Text style={styles.DetailTitle}>7 : <Text style={styles.DetailTxt}>Thats it, your 500 RS will be available in your withdraw.</Text></Text>
-
-
-
-<Pressable 
+{/* <Pressable 
 onPress={()=> permissionForGallery()}
 >
 
@@ -271,10 +381,81 @@ style={GlobalStyles.Button}
 <Text style={GlobalStyles.BtnText}>Upload ScreenShot</Text>
 
 </ImageBackground>
+</Pressable> */}
+
+
+
+
+
+
+<Text style={styles.TxtInputTitle}>
+ Upload Proof Screenshot
+</Text>
+<Pressable
+onPress={()=>permissionForGallery()}
+style={[GlobalStyles.TextInput,{borderColor: !proof_image &&isPressed === true ? Colors.danger:Colors.BgColorII
+
+,justifyContent:"center",alignItems:'center',height:WindowHeight/4
+}]}
+>
+{
+  proof_image? <Image
+  source={{uri:proof_image.uri}}
+  style={{width:300,height:150,marginLeft:10  }}
+  />:
+  <Image
+source={upload_img_icon}
+style={{width:115,height:104,marginLeft:10  }}
+/>
+}
+
+
+
 </Pressable>
 
 
-<Pressable 
+
+
+
+
+
+
+
+
+<Text style={styles.TxtInputTitle}>
+ Upload CNIC image
+</Text>
+<Pressable
+onPress={()=>permissionForGalleryII()}
+style={[GlobalStyles.TextInput,{borderColor: !cnicimg &&isPressed === true ? Colors.danger:Colors.BgColorII
+
+,justifyContent:"center",alignItems:'center',height:WindowHeight/4
+}]}
+>
+{
+  cnicimg? <Image
+  source={{uri:cnicimg.uri}}
+  style={{width:300,height:150,marginLeft:10}}
+  />:
+  <Image
+source={upload_img_icon}
+style={{width:115,height:104,marginLeft:10}}
+/>
+}
+
+
+
+</Pressable>
+
+
+
+
+
+
+
+
+
+{/* <Pressable 
 onPress={()=> permissionForGallery()}
 >
 
@@ -287,7 +468,7 @@ style={GlobalStyles.Button}
 <Text style={GlobalStyles.BtnText}>Upload Selfie</Text>
 
 </ImageBackground>
-</Pressable>
+</Pressable> */}
 
 
 
@@ -296,7 +477,7 @@ style={GlobalStyles.Button}
   loading === false ?
   
   <Pressable 
-onPress={()=> permissionForGallery()}
+onPress={()=> CheckImages()}
 >
 
 <ImageBackground 

@@ -7,6 +7,7 @@ ScrollView,
 TouchableOpacity,
 ImageBackground,
 RefreshControl,
+Pressable,
 
 
 } from 'react-native';
@@ -169,7 +170,9 @@ function onHideModal(){
 
       return(
         <View style={styles.TrickContainer}>
-      <View style={styles.TrickContainerInner}>
+      <Pressable
+      onPress={()=> setIsOpen((p)=>!p)}
+      style={styles.TrickContainerInner}>
  
       <Image 
       style={{width:49,height:49}} 
@@ -195,7 +198,7 @@ function onHideModal(){
       />
       </TouchableOpacity>
       
-      </View>
+      </Pressable>
       {
         isOpen === true &&
         <>

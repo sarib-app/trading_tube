@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import {
 
+  Modal,
   Text,
-
+  Pressable,
+  Image
  
 } from 'react-native';
 import styles from './Styles';
@@ -15,8 +17,14 @@ import ContentPrivacy from './PrivacyContent';
 import ContentHeader from './ContentHeader';
 import ContentBottom from './ContentBottom';
 import RenderHtml from 'react-native-render-html';
+import gobackIcon from '../../assets/icons/gobackIcon.png'
+import Colors from '../GlobalStyles/Color';
 
-function PrivacyPolicy() {
+function PrivacyPolicy({
+  isVisible,
+onHide
+
+}) {
 
 const navigation = useNavigation()
 
@@ -110,23 +118,45 @@ const source = {
 
 
   return (
+    <Modal
+
+    visible={isVisible}
+     transparent={true}
+     animationType="slide"
+     
+     
+    >
+
     <SafeAreaView style={styles.Container}>
+    <Pressable
+    onPress={()=> onHide()}
+    
+    style={{flexDirection:"row",marginTop:10,alignSelf:'flex-start',left:15,alignItems:'center'}}>
+      <Image  source={gobackIcon}
+      style={{width:12,height:15}}
+      />
+    <Text style={{color:Colors.PrimaryColor}}> Go Back</Text>
+    </Pressable>
 
 
 <ContentHeader 
-icon ={privacy_icon}
-width={47}
-height={52}
-title={"Privacy and Policy"}
+icon = {privacy_icon}
+width = {47}
+height = {52}
+title = {"Privacy and Policy"}
+// onHide ={ onHide}
 />
 
 <ContentBottom
 title="Privacy & Policy"
 Content={source}
+onHide={onHide}
 />
 
 
     </SafeAreaView>
+    </Modal>
+
   )
 }
 export default PrivacyPolicy;

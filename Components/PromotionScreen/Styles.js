@@ -28,8 +28,16 @@ const styles = StyleSheet.create({
         fontSize:16
     },
     DetailTitle:{fontSize:24,color:Colors.PrimaryColor,fontWeight:'bold',margin:10,alignSelf:"flex-start"},
-    DetailTxt:{color:"white",fontWeight:'400',fontSize:18}
+    DetailTxt:{color:"white",fontWeight:'400',fontSize:18},
+    
 
+    TxtInputTitle:{
+        color:Colors.FontColorI,
+        fontWeight:'bold',
+        fontSize:16,
+        marginLeft:25,
+        marginTop:10
+    }
 
 
 });
