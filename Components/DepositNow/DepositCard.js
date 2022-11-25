@@ -25,11 +25,29 @@ const WindowWidth = Dimensions.get('window').width
 
 
 function Cardd({
-  AccountTitle,
-  Acc_numberr,
-  Bank_Type,
+  item,
+  methods,
   type
 }){
+
+
+
+
+
+
+
+  const AccountTitle= item.Acc_Type === "OKX" ?"OKX" : item.Acc_Type === "Binance" ?"Binance" : "VISA" 
+  const Acc_numberr= item.Acc_Type === "OKX" ?methods ?  methods.okx_address:"" : item.Acc_Type === "Binance" ?methods ?  methods.binance_address:"" : methods ? methods.bank_account_no:"" 
+  
+  
+  
+  const Bank_Type= item.Acc_Type === "OKX" ?"TRADING TUBE" : item.Acc_Type === "Binance" ?"TRADING TUBE" : methods ? methods.bank_account_type:"TRADING TUBE" 
+
+
+
+
+
+
   return(
     <>
     <ImageBackground 
@@ -49,7 +67,10 @@ style={{width:362,height:194,alignSelf:'center'}}
 
     <Text style={[styles.CardHeadTxt,{textAlign:'center'}]}>Account Title{'\n'}{AccountTitle}</Text>
 
-<Text style={[styles.CardHeadTxt,{color:Colors.BgColorII,textAlign:'center'}]}>Account Number{'\n'}{Acc_numberr}</Text>
+<Text 
+selectable={true}
+
+style={[styles.CardHeadTxt,{color:Colors.BgColorII,textAlign:'center'}]}>Account Number{'\n'}{Acc_numberr}</Text>
 
     </View>
 

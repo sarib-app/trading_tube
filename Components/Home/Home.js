@@ -53,6 +53,9 @@ const end = {x: 0, y: 0}
 
 
 function UpperCart(){
+
+  const totalBalance = Number(total_Record !=""? total_Record.Total_balance != null ? total_Record.Total_balance:0:0)
+
   const [showComingSoon,setShowComingSoon] = useState(false)
   function onHideComingsoon(){
 setShowComingSoon((P)=> !P)
@@ -62,7 +65,7 @@ setShowComingSoon((P)=> !P)
 
 <View style={[styles.UpperCart,{marginBottom:0}]}>
 <Text style={styles.balanceTitle}>Total Balance</Text>
-<Text style={styles.BalanceTxt}>PKR {total_Record !=""? total_Record.Total_balance != null ? total_Record.Total_balance:0:0}</Text>
+<Text style={styles.BalanceTxt}>PKR {totalBalance.toFixed(2)}</Text>
 
 <View style={styles.LvlContainer}>
 <Text style={styles.LvlTxt}>Level <Text style={styles.LvlinnerTxt}>{total_Record.my_level}</Text></Text>

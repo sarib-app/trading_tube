@@ -71,8 +71,7 @@ useEffect(()=>{
     }
   }
   else if(selected === 4 ){
-    if(DailyIncome.length < 1){
-
+    if(DailyIncomes.length < 1){
       DailyIncome()
     }
     if(allComissions.length < 1){
@@ -244,6 +243,7 @@ fetch(`${BaseUrl}fetchInvestment`, requestOptions)
 
 
   function DailyIncome(){
+    console.log(asyncdata.user.id)
     var formdata = new FormData();
 formdata.append("user_id",asyncdata.user.id);
 
@@ -258,11 +258,12 @@ fetch(`${BaseUrl}${Endpoints.fetch_investment}`, requestOptions)
   .then(result => {
     if(result.status === "200"){
       setDailyIncomes(result.data)
-      setCurrentDate(result.current_date)
+      
+      // setCurrentDate(result.current_date)
     }
   
   })
-  .catch(error => console.log('error', error));
+  .catch(error => console.log('error in DailyIncome', error));
   }
   
 

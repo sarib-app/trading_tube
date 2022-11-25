@@ -173,7 +173,7 @@ function LowerCart(){
     <View style={GlobalStyles.TitlesWrapper}>
       
       <Text style={GlobalStyles.TitleText}>Deposit Via {item.account_type}</Text>
-      <Text style={GlobalStyles.ScndTxt}>4 days ago</Text>
+      <Text style={GlobalStyles.ScndTxt}>{item.Idate}</Text>
   
       <Text style={[GlobalStyles.ScndTxt,{color:item.status === "approved"?Colors.send:Colors.danger}]}>{item.status}</Text>
        </View>

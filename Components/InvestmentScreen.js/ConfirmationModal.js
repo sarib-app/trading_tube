@@ -55,6 +55,7 @@ console.log(selectedPackage.id,newDate.format('YYYY-MM-DD'),user.id,selectedPack
       formdata.append("single_earning",String(selectedPackage.single_payment));
       formdata.append("applied_income",String(selectedPackage.cycle_income));
       formdata.append("applied_price",String(selectedPackage.price));
+      formdata.append("days", String(selectedPackage.cycle_duration));
 
       var requestOptions = {
         method: 'POST',

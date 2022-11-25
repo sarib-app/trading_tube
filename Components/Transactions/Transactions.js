@@ -62,6 +62,7 @@ console.log(data)
 
 function UpperCart(){
 
+  const totalIncome = Number(total_Record !=""? total_Record.Total_income:0)
 
 
 function IconList ({item}){
@@ -98,7 +99,7 @@ style={{width:item.width,height:item.height}}
   return(
 <View style={styles.UpperCart}>
 <Text style={styles.balanceTitle}>Total {selected}</Text>
-<Text style={styles.BalanceTxt}>PKR {selected === "Deposit"? total_Record !=""? total_Record.Total_deposit:0 : selected === "Income" ? total_Record !=""? total_Record.Total_income:0 
+<Text style={styles.BalanceTxt}>PKR {selected === "Deposit"? total_Record !=""? total_Record.Total_deposit:0 : selected === "Income" ? total_Record !=""? totalIncome.toFixed(2):0 
 : selected === "Withdraw" ? total_Record !=""? total_Record.Total_withdrawl:0 : total_Record !=""? total_Record.Total_investment:0}</Text>
 
 <View style={styles.LvlContainer}>
