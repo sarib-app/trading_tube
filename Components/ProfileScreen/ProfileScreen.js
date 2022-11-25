@@ -84,18 +84,19 @@ useEffect(()=>{
 function UpperCart(){
 
 
-
+const totalBalance = Number(total_Record !=""? total_Record.Total_balance != null ? total_Record.Total_balance:0:0)
+const totalIncome = Number(total_Record !=""? total_Record.Total_income:0)
 
   return(
 <View style={styles.UpperCart}>
 <View style={styles.uperInnerCart}>
 <View style={{alignItems:'center'}}>
 <Text style={styles.balanceTitle}>Total Balance</Text>
-<Text style={styles.BalanceTxt}>{total_Record !=""? total_Record.Total_balance != null ? total_Record.Total_balance:0:0}</Text>
+<Text style={styles.BalanceTxt}>{totalBalance.toFixed(2)}</Text>
 </View>
 <View style={{alignItems:'center'}}>
 <Text style={styles.balanceTitle}>Total Income</Text>
-<Text style={styles.BalanceTxt}>{total_Record !=""? total_Record.Total_income:0}</Text>
+<Text style={styles.BalanceTxt}>{totalIncome.toFixed(2)}</Text>
 </View>
 </View>
 

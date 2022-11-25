@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
 
   Text,
@@ -40,6 +40,14 @@ const WindowHeight = Dimensions.get('window').height;
 
 
 
+
+
+
+
+
+
+
+
 function DepositScreen({route}) {
 const asyncData = getAsync()
   const item = route.params.item
@@ -54,6 +62,7 @@ const [Amount,setAmount]=useState()
 const [isPressed,setIsPressed]=useState(false)
 const [loading,setLoading]=useState(false)
 const [showBanks,setShowBank]=useState(false)
+const [getMethods,setMethods]=useState()
 
 function onDeposit(){
   
@@ -75,12 +84,40 @@ function onSelectBank (val){
 
 
 
-const AccountTitle= item.Acc_Type === "OKX" ?"OKX" : item.Acc_Type === "Binance" ?"Binance" : "Bilal Butt" 
-const Acc_numberr= item.Acc_Type === "OKX" ?"Adress of OkX" : item.Acc_Type === "Binance" ?"Adress of Binance" : "IBAN XXXX XXXX XXX" 
 
 
 
-const Bank_Type= item.Acc_Type === "OKX" ?"TRADING TUBE" : item.Acc_Type === "Binance" ?"TRADING TUBE" : "ANY BANK" 
+
+
+
+
+
+
+
+
+
+
+useEffect(()=>{
+getBanks()
+  },[])
+
+
+
+function getBanks(){
+  var requestOptions = {
+    method: 'GET',
+    redirect: 'follow'
+  };
+  
+  fetch("https://apis.tradingtube.net/api/fetch_payment", requestOptions)
+    .then(response => response.json())
+    .then(result => {
+      if(result.status === "200"){
+        setMethods(result.Data[0])
+      }
+      console.log(result)})
+    .catch(error => console.log('error', error));
+}
 
 
 
@@ -280,9 +317,8 @@ const navigation = useNavigation()
 <ScrollView>
 
 <Cardd
-AccountTitle={AccountTitle}
-Acc_numberr={Acc_numberr}
-Bank_Type={Bank_Type}
+item={item}
+methods={getMethods}
 type={item.Acc_Type}
 />
 {

@@ -162,6 +162,31 @@ IconWrapper:{
     scrollViewII:{
         height:WindowHeight/1.8
         
+    },
+    SingleIncome:{
+        width:WindowWidth/1.1,
+        padding:10,
+        // height:WindowHeight/8,
+        backgroundColor:"white",
+        elevation:4,
+        shadowColor:"black",
+        margin:10,
+        alignSelf:"center",
+        borderRadius:10,
+        flexDirection:"row",
+        justifyContent:"space-between",
+
+        alignItems:"center"
+    },
+    SingleII:{
+     marginLeft:10,
+     width:WindowWidth/1.6,
+    //  backgroundColor:"yellow"
+    },
+    SingleIncomeText:{
+        color:Colors.BgColor,
+        fontWeight:'bold'
+        
     }
 
 
