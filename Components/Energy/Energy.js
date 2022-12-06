@@ -1,4 +1,4 @@
-import React, { useState,useCallback } from 'react';
+import React, { useState,useCallback ,useEffect} from 'react';
 import {
 
   Text,
@@ -31,6 +31,7 @@ import Endpoints from '../../EnDPoints';
 import moment from 'moment';
 import GlobalProgressLoader from '../LoadingModal/LoadingModal';
 import getAsync from '../GetAsynData/getAsync';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 function EnergyScreen({
   DailyIncomes,
   forceReload,
@@ -39,10 +40,21 @@ function EnergyScreen({
   allComissions
 
 }) {
+  const [user,setUser]=useState({
+    firstname:"",
+    lastname:"",
+    phone:"",
+    pro_pic:""
+   
+ })
   const asyncdata = getAsync()
   const [refreshing, setRefreshing] = useState(false);
 
   const [selected,setSelected]=useState("Income")
+  const [utcDate,setUtcDate]=useState("00")
+  const [utcTime,setUtcTime]=useState("00")
+
+
  
 const navigation = useNavigation()
 
@@ -70,6 +82,32 @@ const onRefresh = useCallback(() => {
 
 }, [])
 
+useEffect(()=>{
+
+  getUtcHours()
+
+  getAsyncData()
+  },[])
+
+
+  function getUtcHours(){
+    var date = moment()
+    .utcOffset('+00:00')
+    .format('YYYY-MM-DD  hh:mm:ss a');
+
+setUtcDate(date)
+
+  }
+
+  async function getAsyncData () {
+    const user = await AsyncStorage.getItem('user')
+    const token = await AsyncStorage.getItem('token')
+    let userParsed=JSON.parse(user) 
+    if(token){
+      setUser(userParsed)
+    // getData(userParsed.id) 
+    }
+  }
 
 
 
@@ -344,6 +382,27 @@ setshowProgressLoader(true)
 <Text style={styles.SingleIncomeText}>
   Last Time: {item.start_time}
 </Text>
+
+
+
+
+<Text style={styles.SingleIncomeText}>
+  Package Start Date: {item.start_date}
+</Text>
+<Text style={styles.SingleIncomeText}>
+  Package Start Time: {item.started_time}
+</Text>
+<Text style={styles.SingleIncomeText}>
+  Package End Date: {item.end_date}
+</Text>
+<Text style={styles.SingleIncomeText}>
+  Package End Time: {item.end_time}
+</Text>
+<Text style={styles.SingleIncomeText}>
+  Esitmated Earning: {item.cycle_earning}
+</Text>
+
+
 {refreshing === true ?
 
 <Text style={[styles.SingleIncomeText,{color:Colors.deposit,textDecorationLine:'underline'}]}>
@@ -415,6 +474,8 @@ onHideLoader={onHideLoader}
 return(
   <View style={styles.LowerCart}>
   <Text style={styles.L_Cart_Title}>{LowerCardTitle}</Text>
+  <Text style={{color:Colors.danger,marginLeft:20,fontWeight:'bold',fontSize:17}}>Note:<Text style={{color:Colors.BgColor,fontWeight:'500',fontSize:14}}> Daily income refreshes at 00 of UTC time clock.{'\n'}{"(12 of midnight.)"}</Text></Text>
+  <Text style={{color:Colors.BgColor,marginLeft:20,fontWeight:"bold"}}>Current <Text style={{fontWeight:'bold',color:Colors.danger}}>UTC</Text> Date and Time: <Text style={{color:Colors.send}}>{utcDate}</Text></Text>
 
 
 
@@ -465,7 +526,21 @@ data.map((item)=>{
 
 <View style={styles.Header}>
     <Text style={styles.OuterTxt}>Weclcome To{'\n'} <Text style={styles.InnerTxt}>Daily Transaction</Text></Text>
-   <Image source={Profile} style={{width:50,height:50}}/>
+
+
+
+
+    { user.pro_pic === "" || user.pro_pic === "default"?
+        
+        <Image source={Profile} style={{width:50,height:50}}/>
+      :  
+      <Image source={{uri:Endpoints.ImageBaseUrl+user.pro_pic}} style={{width:50,height:50,borderRadius:1000}}/>
+
+      }
+
+
+
+
 </View>
 
 

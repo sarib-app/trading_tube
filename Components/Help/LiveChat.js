@@ -175,8 +175,6 @@ function ChatList({item}){
     </Text>
 </View>
 </>
-
-
     )
 }
 

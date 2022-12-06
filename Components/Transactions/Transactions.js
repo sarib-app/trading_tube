@@ -1,4 +1,4 @@
-import React, { useState,useCallback } from 'react';
+import React, { useState,useCallback,useEffect } from 'react';
 import {
 
   Text,
@@ -27,12 +27,35 @@ import debited from '../../assets/icons/debited.png'
 import {TipsTricks,DepositTransaction} from '../data/TopInvestors';
 import { FlatList } from 'react-native-gesture-handler'; 
 import { TransactionIcons } from '../data/TopInvestors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
+import Endpoints from '../../EnDPoints';
 function Transactions({allTotalTrasnaction,forceReload,total_Record}) {
   const [selected,setSelected]=useState("Investment")
   const [refreshing, setRefreshing] = useState(false);
 
 const navigation = useNavigation()
+const [user,setUser]=useState({
+  firstname:"",
+  lastname:"",
+  phone:"",
+  pro_pic:""
+ 
+})
+useEffect(()=>{
+  getAsyncData()
+  },[])
+
+
+  async function getAsyncData () {
+    const user = await AsyncStorage.getItem('user')
+    const token = await AsyncStorage.getItem('token')
+    let userParsed=JSON.parse(user) 
+    if(token){
+      setUser(userParsed)
+    // getData(userParsed.id) 
+    }
+  }
 
 
 const start={x: 0.1, y: 0.8}
@@ -175,7 +198,7 @@ function LowerCart(){
   </View>
   
   
-  <Text style={[styles.TransactionText,{color:amountClr}]}>{operator}{selected === "Deposit"? item.amount : selected === "Income" ? item.single_earning 
+  <Text style={[styles.TransactionText,{color:amountClr}]}>{operator}{selected === "Deposit"? item.amount : selected === "Income" ? Number(item.balance_got).toFixed(2) 
 : selected === "Withdraw" ? item.requested_amount : item.applied_price} PKR</Text>
   
   
@@ -228,8 +251,13 @@ data.map((item)=>{
 
 <View style={styles.Header}>
     <Text style={styles.OuterTxt}>Weclcome To{'\n'} <Text style={styles.InnerTxt}>Transactions</Text></Text>
-   <Image source={Profile} style={{width:50,height:50}}/>
-</View>
+    { user.pro_pic === "" || user.pro_pic === "default"?
+        
+        <Image source={Profile} style={{width:50,height:50}}/>
+      :  
+      <Image source={{uri:Endpoints.ImageBaseUrl+user.pro_pic}} style={{width:50,height:50,borderRadius:1000}}/>
+
+      }</View>
 
 
 <ScrollView nestedScrollEnabled={true}

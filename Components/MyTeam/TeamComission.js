@@ -112,10 +112,25 @@ return(
     <View style={{flexDirection:'row',alignItems:"center"}}>
     <View style={styles.IconWrapper}>
     
-    <Image 
-    style={{width:50,height:50,}} 
-    source={Profile}
-    />
+    {
+  item.pro_pic != "default" ?
+
+<Image 
+source={{uri:Endpoints.ImageBaseUrl+item.pro_pic}}
+style={{width:50,height:50,borderRadius:1000}}
+
+/>
+
+:
+
+<Image 
+source={Profile}
+style={{width:50,height:50,borderRadius:10}}
+
+/>
+
+
+}
     
     
     </View>
@@ -124,7 +139,10 @@ return(
     
     <View style={styles.InnerTricks}>
     <Text style={{fontWeight:'bold',fontSize:18,color:Colors.FontColorI}}>{item.username}</Text>
-    <Text style={{fontWeight:'500',fontSize:14,color:Colors.PrimaryColor}}>Level 2</Text>
+    <Text style={{fontWeight:'bold',fontSize:18,color:Colors.FontColorI}}>Phone: {item.phone}</Text>
+
+
+    <Text style={{fontWeight:'500',fontSize:14,color:Colors.PrimaryColor}}>Level: {item.level}</Text>
 
     
     </View>
@@ -138,8 +156,16 @@ return(
     
     style={[styles.TransactionText,{color:Colors.PrimaryColor}]}>View</Text>
     
-    <ComissionDetail IsVisible={showDetail} onHideModal={onHideModal} item={item}/>
+    {
+      showDetail === true &&
+    <ComissionDetail 
+    IsVisible={showDetail} 
+    onHideModal={onHideModal}
+    itemID={item.id}
+    
+/>
 
+  }
     </View>
 )
 }
@@ -153,7 +179,17 @@ return (
 <Text style={styles.HeaderText}>
     Team's Comission
 </Text>
+<View style={styles.TrickContainer}>
+<Text 
+onPress={()=> setIsSelected(1)}
+style={[styles.TextStyle,{color:selected===1 ? Colors.FontColorI:Colors.bgIII}]}>1st Refer</Text>
+<Text
+onPress={()=> setIsSelected(2)}
 
+
+style={[styles.TextStyle,{color:selected===2 ? Colors.FontColorI:Colors.bgIII}]}>2nd Refer</Text>
+
+</View>
 <FlatList 
 data={data}
 renderItem={({item})=>

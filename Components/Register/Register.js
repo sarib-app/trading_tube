@@ -68,15 +68,24 @@ const [question,setQuestion]=useState("")
 const [answer,setAnswer]=useState("")
 const [showCodes,setShowCodes]=useState(false)
 const [showDialgoue,setShowDialogue]=useState(false)
-
+const [OtpSending , setOtpSending]=useState(false)
+const [OtpCounting,setOtpCounting]=useState()
 
 const InputSty = {flex:1,color:Colors.FontColorI}
 
-
+useEffect(() => {
+  if (OtpCounting < 60) {
+    const timer = setTimeout(() => {
+      setOtpCounting(OtpCounting + 1)
+    }, 1000);
+    return () => clearTimeout(timer);
+  }
+}, [OtpCounting]);
 ////////on Press Button///////////////////
 function ONpressNext(){
   if(index ===1 &&  refer !=""){
     CheckReferal()
+    // setIndex(index+1)
 
     setIsPressed(false)
     setErrorCode("Nan")
@@ -85,14 +94,23 @@ function ONpressNext(){
     setIndex(index+1)
     setIsPressed(false)
     setErrorCode("Nan")
+    GeneratingOtp()
 
   }
   else if(index === 3 &&  Phone && password != ""  && c_password != "" && cnic){
-    if(password === c_password ){
+  if(cnic.length < 13){
+    setErrorCode("Cnic")
+    setErrorMessage("CNIC should be atleast 13 digits.")
+  }
+    else if(password === c_password ){
 
       setIndex(index+1)
       setIsPressed(false)
       setErrorCode("Nan")
+  
+        SendOtp(random)
+       
+    
     }else{
       setErrorCode("password")
       setErrorMessage("Password does not match.")
@@ -102,9 +120,13 @@ function ONpressNext(){
   else if(index === 4 &&  question != "" && answer !=""){
     setIndex(index+1)
     setIsPressed(false)
-    GeneratingOtp()
     setErrorCode("Nan")
-
+    setOtpSending(true)
+    setTimeout(() => {
+      setOtpSending(false)
+     
+    },60000);
+    setOtpCounting(0)
   }
   else if(index === 5 &&  otp){
 
@@ -113,7 +135,6 @@ function ONpressNext(){
       Register()
     }else{
       // setOtp("phone")
-      console.log(random)
       setErrorMessage("Otp does not match")
       setErrorCode("otp")
     }
@@ -127,7 +148,6 @@ setIsPressed(true)
 ///////////on Hitting Api/////////////////
 
 
-console.log(countryCode+Phone)
 
 function Register(){
 
@@ -169,7 +189,7 @@ setLoading(false)
     }
 
       
-      console.log(result)})
+    })
     .catch(error =>{
       
       setLoading(false)
@@ -223,7 +243,6 @@ setLoading(true)
     .then(result => {
       
       
-      console.log(result)
     if(result.status==="200"){
       setIndex(index+1)
       setLoading(false)
@@ -238,7 +257,10 @@ setLoading(true)
     
     
     })
-    .catch(error => console.log('error', error));
+    .catch(error => {
+      setLoading(false)
+Alert.alert("Network Error","Please check your internet connection and try again later!")
+      console.log('error', error)});
 
 
 }
@@ -247,15 +269,11 @@ function GeneratingOtp(){
 
   var val = Math.floor(1000 + Math.random() * 9000);
   setRandom(val)
-  setTimeout(() => {
-    SendOtp(val)
-   
-  },1500);
+
 
 
 }
 function SendOtp(val){
-
 
 
     const options = {
@@ -267,14 +285,16 @@ function SendOtp(val){
     };
     
     fetch(`https://telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com/sms-verification-code?phoneNumber=${countryCode+Phone}&verifyCode=${val}&appName=tradingtube`, options)
-      .then(response => response.json())
+      .then(response => response.json()
+      )
       .then(response => {
         if(response.message === "Invalid phone number"){
           setErrorCode("phone")
           setIndex(3)
           setErrorMessage("Cannot send otp on this phone no please check no again.")
         }
-        console.log(response)})
+        console.log(response)
+      })
       .catch(err => console.error(err));
 
 
@@ -424,7 +444,6 @@ style={{flex:1,color:"white"}}
   errorMessage != "" && errorCode === "refer"  &&
 <Text style={{color:Colors.danger}}>{errorMessage}</Text>
 }
-<Text style={{color:Colors.FontColorI}}>If you don't have any refer code try this: <Text style={{color:Colors.PrimaryColor,fontWeight:'bold'}}>7IDPFK</Text></Text>
 
 
 </>
@@ -607,7 +626,7 @@ style={{width:15,height:15,margin:10}}
 placeholder='i.e. 3520XXX4X7XXX'
 placeholderTextColor={Colors.placeHolder}
 style={{flex:1,color:"white"}}
-
+maxLength={13}
 value={cnic}
 onChangeText={(e)=>setCnic(e)}
 keyboardType="numeric"
@@ -678,7 +697,14 @@ onChangeText={(e)=>setOtp(e)}
 
 />
 </View>
+{
+  OtpSending === true ? <Text style={{color:Colors.send}}>"Haven't recieved OTP yet ? try again {OtpCounting}/60</Text>
+:
+<Text 
+onPress={()=> SendOtp(random)}
+style={{color:Colors.send}}>Resend OTP by clicking here.</Text>
 
+}
 {
   errorMessage != "" && errorCode === "otp"  &&
 <Text style={{color:Colors.danger}}>{errorMessage}</Text>

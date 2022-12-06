@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect} from 'react';
 import {
 
   Text,
@@ -43,6 +43,34 @@ function PromotionScreen() {
 
   const [cnicimg,setCnicimg]=useState()
   const [isPressed,setIspressed]=useState(false)
+
+
+const [result,setResult] = useState("")
+
+
+
+  useEffect(()=>{
+    var requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+    };
+    
+    fetch(`${BaseUrl}gettitle`, requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        if(result.status === "200"){
+
+          setResult(result.data)
+        }
+        console.log(result)
+      })
+      .catch(error => console.log('error', error));
+  },[])
+ 
+
+
+
+
 
 
   const permissionForGallery=async ()=>{
@@ -256,67 +284,7 @@ const typeI = matchI ? `image/${matchI[1]}` : `image`;
       console.log('error', error)});
   
   
-  
-  
-  
-  
-    
-    
-  //     RNFetchBlob.fetch(
-  //       'POST',
-  //       `${BaseUrl}addDeposit`,
-  // {
-    
-  // },
-  //       [
-  
-  
-  
-  //         { name: 'payer_id', data: "44"},
-  //         { name: 'amount', data: "4" },
-  //         { name: 'account_no', data: "4"},
-  //         { name: 'account_title', data:"4" },
-  //         // { name: 'status', data: "4" },
-  //         { name: 'account_subtype', data:"4" },
-  //         { name: 'account_type', data: "4" },
-  
-  
-  //         {
-  //           name: "proof_image",
-  //           filename: `proof_image.${ext}`,
-  //           type: `proof_image/${type}`,
-  //           data:  RNFetchBlob.wrap(uri),
-  //         },
-  
-  
-  
-  
-  //       ],
-  //     ).then(response => response.text())
-  //       .then(result => {
-          // if(result.status === "200"){
-          //   setLoading(false)
-          //   Alert.alert("Congratulations")
-          //   console.log(result)
-          //   navigation.navigate("Main")
-          // }
-          // else{
-          //   setLoading(false)
-          // }
-  //     console.log("result",result)
-  //       })
-  //       .catch(err => {
-  //         setLoading(false)
-  //         console.log('err >>>', err);
-      
-  //       });
-  
-  
-  
-  
-  
-  
-  
+
   
   
   
@@ -330,13 +298,7 @@ const typeI = matchI ? `image/${matchI[1]}` : `image`;
 
   return (
     <SafeAreaView style={styles.Container}>
-{/* 
 
-<Image
-source={Congrat}
-style={{width:278,height:128,marginTop:40,alignSelf:"center"}}
-
-/> */}
 <BackBtn/>
 
 <ScrollView
@@ -346,23 +308,20 @@ contentContainerStyle={{alignItems:"center"}}
 <Text style={styles.TitleText}>Congratulations !</Text>
 <Text style={styles.DescriptTxt}>You have won promotion reward on registration, Please follow the steps below to withdraw your amount.</Text>
     
-    {/* <Image 
-    source={steps}
-    style={{width:WindowWidth/1.15,height:WindowHeight/1.85,marginTop:20}}
-    /> */}
+ 
 
-<Text style={styles.DetailTitle}>1 : <Text style={styles.DetailTxt}>Give us a good review on playstore</Text></Text>
+<Text style={styles.DetailTitle}>1 : <Text style={styles.DetailTxt}>{result !="" ?result.text1:"Search for any electricity bill at your home." }</Text></Text>
 
-<Text style={styles.DetailTitle}>2 : <Text style={styles.DetailTxt}>Give us five start on play store</Text></Text>
-<Text style={styles.DetailTitle}>3 : <Text style={styles.DetailTxt}>Take ScreenShot of review and 5 stars</Text></Text>
-<Text style={styles.DetailTitle}>4 : <Text style={styles.DetailTxt}>Capture a selfie which shows your face and your CNIC clearly just like an example shown below.</Text></Text>
+<Text style={styles.DetailTitle}>2 : <Text style={styles.DetailTxt}>{result !="" ?result.text2:"Take a picture of that Bill." }</Text></Text>
+<Text style={styles.DetailTitle}>3 : <Text style={styles.DetailTxt}>{result !="" ?result.text3:"Upload that picture below." }</Text></Text>
+<Text style={styles.DetailTitle}>4 : <Text style={styles.DetailTxt}>Capture a selfie which shows your face and your CNIC clearly just like an example shown below. "THIS IS REQUIRED TO PREVENT SCAMS"</Text></Text>
 <Image 
 source={referenceCnic}
 style={{width:200,height:200}}
 />
 
 
-<Text style={styles.DetailTitle}>5 : <Text style={styles.DetailTxt}>Upload that screenshot and selfie by hitting the buttons below and submit</Text></Text>
+<Text style={styles.DetailTitle}>5 : <Text style={styles.DetailTxt}>{result !="" ?result.text4:"Upload that selfie by hitting the button below and submit." }</Text></Text>
 
 <Text style={styles.DetailTitle}>6 : <Text style={styles.DetailTxt}>Thats it, your 500 RS will be available in your withdraw.</Text></Text>
 
@@ -389,7 +348,7 @@ style={GlobalStyles.Button}
 
 
 <Text style={styles.TxtInputTitle}>
- Upload Proof Screenshot
+{result !="" ?result.text5:"Upload Bill's Picture." }
 </Text>
 <Pressable
 onPress={()=>permissionForGallery()}

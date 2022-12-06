@@ -113,10 +113,25 @@ return(
     <View style={{flexDirection:'row',alignItems:"center"}}>
     <View style={styles.IconWrapper}>
     
-    <Image 
-    style={{width:50,height:50,}} 
-    source={Profile}
-    />
+    {
+  item.pro_pic != "default" ?
+
+<Image 
+source={{uri:Endpoints.ImageBaseUrl+item.pro_pic}}
+style={{width:50,height:50,borderRadius:1000}}
+
+/>
+
+:
+
+<Image 
+source={Profile}
+style={{width:50,height:50,borderRadius:10}}
+
+/>
+
+
+}
     
     
     </View>
@@ -125,7 +140,8 @@ return(
     
     <View style={styles.InnerTricks}>
     <Text style={styles.TextStyle}>{item.username}</Text>
-    
+    <Text style={{fontWeight:'bold',fontSize:18,color:Colors.FontColorI}}>Phone: {item.phone}</Text>
+
     </View>
     
     
@@ -133,16 +149,21 @@ return(
     
     
     <Text 
-    onPress={()=> setShowDetail(true)}
+    onPress={()=>{
+      console.log("sasd")
+      setShowDetail(true)}}
     
     style={[styles.TransactionText,{color:Colors.PrimaryColor}]}>View</Text>
+    {
+      showDetail === true &&
     <TeamDetail 
     IsVisible={showDetail} 
     onHideModal={onHideModal}
-    item={item}
-
+    itemID={item.id}
+    
 />
 
+  }
     
     </View>
 )

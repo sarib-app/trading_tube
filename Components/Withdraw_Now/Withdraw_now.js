@@ -140,7 +140,9 @@ const navigation = useNavigation()
 
 </Text>
 
-<Text style={{width:362,alignSelf:'center',textAlign:'left',color:Colors.danger,margin:5}}>Our Withdrawal fee is 5%</Text>
+<Text style={{width:362,alignSelf:'center',textAlign:'left',color:Colors.FontColorI,margin:5}}>Our Withdrawal fee is <Text style={{fontWeight:"bold",fontSize:18,color:Colors.danger}}>5%</Text></Text>
+<Text style={{width:362,alignSelf:'center',textAlign:'left',color:Colors.FontColorI,margin:5}}>Minimum withdraw is Rs <Text style={{fontWeight:"bold",fontSize:18,color:Colors.send}}>500</Text></Text>
+
 
 {
   item.Acc_Type === "Binance" ||   item.Acc_Type === "OKX" ?
