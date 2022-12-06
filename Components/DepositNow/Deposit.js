@@ -54,7 +54,7 @@ const asyncData = getAsync()
   const [Acc_Title,setAcc_title]=useState(item.Acc_Type === "OKX" || item.Acc_Type === "Binance"? item.Acc_Type:"")
 const [Acc_Number,setAcc_Number]=useState(item.Acc_Type === "OKX" || item.Acc_Type === "Binance"? "N/A":"")
 const [Acc_Type,setAcc_Type]=useState(item.Acc_Type)
-const [Account_Subtype,setAcc_SubType]=useState(item.Acc_Type === "VISA" || item.Acc_Type === "OKX" || item.Acc_Type === "Binance"? "":item.Acc_Type)
+const [Account_Subtype,setAcc_SubType]=useState(item.Acc_Type === "VISA" ? "": item.Acc_Type === "OKX" || item.Acc_Type === "Binance"?"USDT TRON (TRC 20)":item.Acc_Type)
 const [ProofImage,setProofImage]=useState()
 const [ProofImageTemp,setProofImageTemp]=useState()
 
@@ -365,7 +365,7 @@ editable={false}
   Currency Type
 </Text>
 <Pressable
-onPress={()=> setShowBank(true)}
+// onPress={()=> setShowBank(true)}
 
 style={[GlobalStyles.TextInput,{borderColor: !Account_Subtype &&isPressed === true ? Colors.danger:Colors.BgColorII}]}
 >

@@ -8,8 +8,7 @@ import {
  
 } from 'react-native';
 import styles from './Styles';
-;
-
+import Clipboard from '@react-native-clipboard/clipboard';
 import Card from '../../assets/icons/card.png'
 import Colors from '../GlobalStyles/Color';
 
@@ -36,16 +35,52 @@ function Cardd({
 
 
 
-  const AccountTitle= item.Acc_Type === "OKX" ?"OKX" : item.Acc_Type === "Binance" ?"Binance" : "VISA" 
-  const Acc_numberr= item.Acc_Type === "OKX" ?methods ?  methods.okx_address:"" : item.Acc_Type === "Binance" ?methods ?  methods.binance_address:"" : methods ? methods.bank_account_no:"" 
+  const AccountTitle= methods ?               
   
   
+  item.Acc_Type === "OKX" ?  
   
-  const Bank_Type= item.Acc_Type === "OKX" ?"TRADING TUBE" : item.Acc_Type === "Binance" ?"TRADING TUBE" : methods ? methods.bank_account_type:"TRADING TUBE" 
+  "OKX": item.Acc_Type === "Binance" ?  
+  
+  "BINANCE": item.Acc_Type === "VISA" ?  
+  
+  methods.bank_account_title: item.Acc_Type === "Jazzcash" ?  
+  methods.jazzcash_title: item.Acc_Type === "EasyPaisa" ? 
+  
+  methods.easypaisa_title:""                              
+  
+  
+  :"000000000000"
 
+ 
+  // const Acc_numberr= item.Acc_Type === "OKX" ?methods ?  methods.okx_address:"" : item.Acc_Type === "Binance" ?methods ?  methods.binance_address:"" : methods ? methods.bank_account_no:"" 
+  const Acc_numberr=
+  
+  methods ?               
+  
+  
+  item.Acc_Type === "OKX" ?  
+  
+  methods.okx_address: item.Acc_Type === "Binance" ?  
+  
+  methods.binance_address: item.Acc_Type === "VISA" ?  
+  
+  methods.bank_account_no: item.Acc_Type === "Jazzcash" ?  
+  methods.jazzcash_no: item.Acc_Type === "EasyPaisa" ? 
+  
+  methods.easypaisa_no:""                              
+  
+  
+  :"TRADING TUBE"
 
+  const Bank_Type=methods ? item.Acc_Type === "VISA" ?methods.bank_account_type:item.Acc_Type:item.Acc_Type
+  
+  
 
-
+  const copyToClipboard = () => {
+    Clipboard.setString('hello world')
+    console.log("sdasd")
+  }
 
 
   return(
@@ -63,14 +98,22 @@ style={{width:362,height:194,alignSelf:'center'}}
 <Text style={[styles.CardHeadTxt,{color:Colors.BgColorII}]}>{Bank_Type}</Text>
 
     </View>
-    <View style={[styles.UpperCardTxt,{marginTop:50, width:WindowWidth/1.15}]}>
+    <View style={[styles.UpperCardTxt,{marginTop:50, width:WindowWidth/1.25}]}>
 
     <Text style={[styles.CardHeadTxt,{textAlign:'center'}]}>Account Title{'\n'}{AccountTitle}</Text>
 
+
+<View>
+
 <Text 
 selectable={true}
+style={[styles.CardHeadTxt,{color:Colors.BgColorII,textAlign:'center'}]}>Account Number{'\n'}{Acc_numberr}
+</Text>
 
-style={[styles.CardHeadTxt,{color:Colors.BgColorII,textAlign:'center'}]}>Account Number{'\n'}{Acc_numberr}</Text>
+
+</View>
+
+
 
     </View>
 

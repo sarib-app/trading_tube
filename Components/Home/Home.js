@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
 
   Text,
@@ -17,7 +17,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Profile from '../../assets/icons/5.png'
 import Colors from '../GlobalStyles/Color';
-
+import BaseUrl from '../../Urls';
 import LinearGradient from 'react-native-linear-gradient';
 import plansIcon from '../../assets/icons/plans.png'
 import RechargeIcon from '../../assets/icons/Recharge.png'
@@ -39,8 +39,54 @@ import DropDwn from '../../assets/icons/dropdown.png'
 import Banner from '../../assets/icons/Banner.png'
 import WebView from 'react-native-webview';
 import Coming_Soon from '../Help/Comingg_Soon';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Home({data,total_Record}) {
+const [username,setUsername]=useState("username")
+const [isPromotion,setIspromotion]=useState("0")
+  useEffect(()=>{
+    var requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+    };
+    
+    fetch(`${BaseUrl}getcheck`, requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        if(result.status === "200"){
+setIspromotion(result.check)
+          console.log(result.check)
+        }
+      })
+      .catch(error => console.log('error', error));
+  },[])
+ 
+
+
+
+
+
+
+
+
+
+  useEffect(()=>{
+    getAsyncData()
+    },[])
+  
+  
+    async function getAsyncData () {
+      const user = await AsyncStorage.getItem('user')
+      const token = await AsyncStorage.getItem('token')
+      let userParsed=JSON.parse(user) 
+      if(token){
+        setUsername(userParsed.username)
+      // getData(userParsed.id) 
+      }
+    }
+  
+  
+
 
 
 
@@ -63,7 +109,7 @@ setShowComingSoon((P)=> !P)
   return(
 
 
-<View style={[styles.UpperCart,{marginBottom:0}]}>
+<View style={[styles.UpperCart,{marginBottom:isPromotion === "0" ? 0 :25}]}>
 <Text style={styles.balanceTitle}>Total Balance</Text>
 <Text style={styles.BalanceTxt}>PKR {totalBalance.toFixed(2)}</Text>
 
@@ -431,7 +477,7 @@ data.map((item)=>{
 
 
 <View style={styles.Header}>
-    <Text style={styles.OuterTxt}>Weclcome{'\n'} <Text style={styles.InnerTxt}>Username</Text></Text>
+    <Text style={styles.OuterTxt}>Weclcome{'\n'} <Text style={styles.InnerTxt}>{username}</Text></Text>
 
     <View style={{flexDirection:'row'}}>
 <TouchableOpacity
@@ -441,13 +487,14 @@ data.map((item)=>{
 
     <Image source={notification} style={{width:35,height:35,tintColor:Colors.PrimaryColor}}/>
 </TouchableOpacity>
-  
+ 
   <TouchableOpacity
   onPress={()=> navigation.navigate("LevelRewards")}
   >
 
    <Image source={{uri:"https://img.icons8.com/glyph-neue/64/null/packaging.png"}} style={{width:35,height:35,tintColor:Colors.PrimaryColor}}/>
   </TouchableOpacity>
+  
 
   </View>
 
@@ -468,7 +515,12 @@ style={{backgroundColor:"red"}}
 </Text>
   
 </Pressable> */}
-<Pressable
+
+
+
+   {
+    isPromotion === "0"&&
+    <Pressable
 onPress={()=> navigation.navigate("PromotionScreen")}
 >
 
@@ -480,6 +532,8 @@ style={{ width:320,
   alignSelf:"center"  }}
 />
 </Pressable>
+
+}
 
 <LowerCart/>
 

@@ -1,4 +1,4 @@
-import React, { useState,useCallback } from 'react';
+import React, { useState,useCallback,useEffect } from 'react';
 import {
   Text,
   Image,
@@ -33,6 +33,7 @@ import { InvestmentIcons } from '../data/TopInvestors';
 import Endpoints from '../../EnDPoints';
 import Confirmation from './ConfirmationModal';
 import getAsync from '../GetAsynData/getAsync';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 function InvestmentScreen({
   AllPackages,
   forceReload,
@@ -46,8 +47,41 @@ function InvestmentScreen({
 
   const [refreshing, setRefreshing] = useState(false);
 
-
+  const [user,setUser]=useState({
+    firstname:"",
+    lastname:"",
+    phone:"",
+    pro_pic:""
+   
+ })
 const navigation = useNavigation()
+
+
+
+
+
+
+
+
+useEffect(()=>{
+  getAsyncData()
+  },[])
+
+
+  async function getAsyncData () {
+    const user = await AsyncStorage.getItem('user')
+    const token = await AsyncStorage.getItem('token')
+    let userParsed=JSON.parse(user) 
+    if(token){
+      setUser(userParsed)
+    // getData(userParsed.id) 
+    }
+  }
+
+
+
+
+
 
 
 const start={x: 0.1, y: 0.8}
@@ -56,7 +90,7 @@ const end = {x: 0, y: 0}
 /////Functions////////////
 
 
-const dataFinal = selected === "New"? AllPackages :selected === "Pending"? MyPackages.filter((item)=> item.end_date != currentDate):selected === "Completed"? MyPackages.filter((item)=> item.end_date === currentDate):MyPackages
+const dataFinal = selected === "New"? AllPackages.sort((a,b)=> a.price - b.price) :selected === "Pending"? MyPackages.filter((item)=> item.end_date != currentDate):selected === "Completed"? MyPackages.filter((item)=> item.end_date === currentDate):MyPackages
 
 const onRefresh = useCallback(() => {
 
@@ -185,7 +219,11 @@ function onHideModal(){
       {/* <Text>please see the video.. below.......</Text> */}
       {
         selected === "New"?
-        <Text style={styles.ListingText}>Status: <Text style={{color:Colors.deposit}}>{item.status}</Text></Text>
+        <>
+        <Text style={styles.ListingText}>Status: <Text style={{color:Colors.send}}>{item.status}</Text></Text>
+        <Text style={styles.ListingText}>Price: <Text style={{color:Colors.deposit}}>{item.price}</Text></Text>
+
+        </>
       :
       <Text style={styles.ListingText}>Status: <Text style={{color:Colors.deposit}}>{item.end_date === currentDate ? "Completed":"Pending"}</Text></Text>
 
@@ -213,13 +251,13 @@ function onHideModal(){
     <Text style={styles.ListingTitle}>
     Profit
     </Text>
-    <Text style={styles.ListingText}>{item.profit_income}</Text>
+    <Text style={styles.ListingText}>{selected==="New" ? item.profit_income:item.applied_income}</Text>
 </View>
 <View style={{alignItems:"center"}}>
     <Text style={styles.ListingTitle}>
     Price
     </Text>
-    <Text style={styles.ListingText}>{item.price}</Text>
+    <Text style={styles.ListingText}>{selected ==="New"?item.price:item.applied_price}</Text>
 </View>
 <View style={{alignItems:"center"}}>
     <Text style={styles.ListingTitle}>
@@ -247,7 +285,7 @@ function onHideModal(){
     <Text style={styles.ListingTitle}>
     Package Id
     </Text>
-    <Text style={styles.ListingText}>{item.id}</Text>
+    <Text style={styles.ListingText}>{selected === "New"? item.id:item.package_id}</Text>
 </View>
 <View style={{alignItems:"center"}}>
     <Text style={styles.ListingTitle}>
@@ -344,7 +382,20 @@ dataFinal.map((item)=>{
 
 <View style={styles.Header}>
     <Text style={styles.OuterTxt}>Weclcome To{'\n'} <Text style={styles.InnerTxt}>Investment Screen</Text></Text>
-   <Image source={Profile} style={{width:50,height:50}}/>
+  
+
+
+
+
+
+    { user.pro_pic === "" || user.pro_pic === "default"?
+        
+        <Image source={Profile} style={{width:50,height:50}}/>
+      :  
+      <Image source={{uri:Endpoints.ImageBaseUrl+user.pro_pic}} style={{width:50,height:50,borderRadius:1000}}/>
+
+      }
+  
 </View>
 
 
