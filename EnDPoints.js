@@ -1,5 +1,6 @@
 const Endpoints ={
     registeration : "register",
+    cehckRegister:"check_register",
     checkingrefer:"checkcode",
     loginNow:"login",
     fetchdeposit:"fetchdepositwithid",
