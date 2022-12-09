@@ -36,6 +36,7 @@ import { Item } from 'react-native-paper/lib/typescript/components/List/List';
 import SpinnerButton from 'react-native-spinner-button';
 import CountryCode from './CountryCodes';
 import AccepDialogue from '../Help/AccepDialogue';
+import auth from '@react-native-firebase/auth';
 
 
 
@@ -70,6 +71,7 @@ const [showCodes,setShowCodes]=useState(false)
 const [showDialgoue,setShowDialogue]=useState(false)
 const [OtpSending , setOtpSending]=useState(false)
 const [OtpCounting,setOtpCounting]=useState()
+const [confirm, setConfirm] = useState(null);
 
 const InputSty = {flex:1,color:Colors.FontColorI}
 
@@ -108,7 +110,6 @@ function ONpressNext(){
       setIsPressed(false)
       setErrorCode("Nan")
   
-        SendOtp(random)
        
     
     }else{
@@ -118,26 +119,18 @@ function ONpressNext(){
 
   }
   else if(index === 4 &&  question != "" && answer !=""){
-    setIndex(index+1)
-    setIsPressed(false)
-    setErrorCode("Nan")
-    setOtpSending(true)
-    setTimeout(() => {
-      setOtpSending(false)
-     
-    },60000);
-    setOtpCounting(0)
+    CheckRegister()
   }
   else if(index === 5 &&  otp){
+    confirmCode()
+    // if(Number(otp) === Number(random)){
 
-    if(Number(otp) === Number(random)){
-
-      Register()
-    }else{
-      // setOtp("phone")
-      setErrorMessage("Otp does not match")
-      setErrorCode("otp")
-    }
+    //   Register()
+    // }else{
+    //   // setOtp("phone")
+      // setErrorMessage("Otp does not match")
+      // setErrorCode("otp")
+    // }
   }
   else{
 setIsPressed(true)
@@ -147,11 +140,58 @@ setIsPressed(true)
 
 ///////////on Hitting Api/////////////////
 
+function CheckRegister(){
+  setLoading(true)
 
+  var formdata = new FormData();
+  formdata.append("email", email === ""? "noemail@tradingtube.co":email);
+  formdata.append("username", username);
+  formdata.append("cnic", cnic);
+  formdata.append("phone", countryCode+Phone);
+
+
+  var requestOptions = {
+    method: 'POST',
+    body: formdata,
+    redirect: 'follow'
+  };
+  
+  fetch(`${BaseUrl}${Endpoints.cehckRegister}`, requestOptions)
+    .then(response => response.json())
+    .then(result => {
+      if(result.status === '401'){
+        setLoading(false)
+        Validator(result.error,result.message)
+      }
+      else if(result.status === "200"){
+        setLoading(false)
+
+        setIndex(index+1)
+        setIsPressed(false)
+        SendOtp()
+    
+        setErrorCode("Nan")
+        setOtpSending(true)
+        setTimeout(() => {
+          setOtpSending(false)
+         
+        },60000);
+        setOtpCounting(0)
+      }
+
+      
+    })
+    .catch(error =>{
+      
+      setLoading(false)
+      Alert.alert("Sorry","Internet issue maybe, please try againt later.")
+      console.log('error', error)});
+
+}
 
 function Register(){
 
-setLoading(true)
+//setLoading(true)
 
   var formdata = new FormData();
   formdata.append("email", email === ""? "noemail@tradingtube.co":email);
@@ -273,32 +313,63 @@ function GeneratingOtp(){
 
 
 }
-function SendOtp(val){
+async function SendOtp(){
+try{
+  await auth().signInWithPhoneNumber(`+${String(countryCode+Phone)}`).then((confirmation)=>{
+    console.log("ss")
+
+    setConfirm(confirmation)
+  }).catch((err)=>{
 
 
-    const options = {
-      method: 'POST',
-      headers: {
-        'X-RapidAPI-Key': 'be434c3026msh50dc650f31b5e59p1380e1jsn8889f821e46d',
-        'X-RapidAPI-Host': 'telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com'
-      }
-    };
-    
-    fetch(`https://telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com/sms-verification-code?phoneNumber=${countryCode+Phone}&verifyCode=${val}&appName=tradingtube`, options)
-      .then(response => response.json()
-      )
-      .then(response => {
-        if(response.message === "Invalid phone number"){
-          setErrorCode("phone")
-          setIndex(3)
-          setErrorMessage("Cannot send otp on this phone no please check no again.")
-        }
-        console.log(response)
-      })
-      .catch(err => console.error(err));
+    console.log("this is err",err)
+    setErrorCode("phone")
+    setIndex(3)
+    setErrorMessage("Try again later! You have sent too many requests.")
+  
+  
+  });
+  // console.log(confirmation);
+
+}catch{
+  console.log("cound not send")
+  setErrorCode("phone")
+  setIndex(3)
+  setErrorMessage("Cannot send otp please re check your no and try again.")
+}
 
 
 }
+
+
+async function confirmCode() {
+  console.log("confirming")
+  setLoading(true)
+  try {
+    await confirm.confirm(otp).then((e)=>
+    {
+      console.log(e)
+      Register()
+
+    }
+    ).catch((err)=>
+    {
+
+      setLoading(false)
+      setErrorMessage("Otp does not match or expired!")
+        setErrorCode("otp")
+      console.log('Invalid code.');
+      console.log(err)
+    }
+    ) ;
+  } catch (error) {
+    setLoading(false)
+    setErrorMessage("Otp does not match or expired!")
+      setErrorCode("otp")
+    console.log('Invalid code.');
+  }
+}
+
 
 useEffect(()=>{
   getAsyncData()
@@ -701,7 +772,20 @@ onChangeText={(e)=>setOtp(e)}
   OtpSending === true ? <Text style={{color:Colors.send}}>"Haven't recieved OTP yet ? try again {OtpCounting}/60</Text>
 :
 <Text 
-onPress={()=> SendOtp(random)}
+onPress={()=> {
+  
+  setIsPressed(false)
+
+
+  setErrorCode("Nan")
+  setOtpSending(true)
+  setTimeout(() => {
+    setOtpSending(false)
+   
+  },60000);
+  setOtpCounting(0)
+  SendOtp()
+}}
 style={{color:Colors.send}}>Resend OTP by clicking here.</Text>
 
 }
@@ -741,7 +825,7 @@ style={{color:Colors.send}}>Resend OTP by clicking here.</Text>
 }
 
 
-<View style={{width:100,height:250}}>
+<View style={{width:100,height:400}}>
 
 </View>
 

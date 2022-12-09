@@ -35,6 +35,8 @@ import { FlatList } from 'react-native-gesture-handler';
 import { Item } from 'react-native-paper/lib/typescript/components/List/List';
 import SpinnerButton from 'react-native-spinner-button';
 import CountryCode from './CountryCodes';
+import auth from '@react-native-firebase/auth';
+
 function ForgetPassword() {
 const [index,setIndex]=useState(1)
 const navigation = useNavigation()
@@ -53,6 +55,7 @@ const [c_password,setC_Password]=useState("")
 const [showCodes,setShowCodes]=useState(false)
 const [countryCode,setCountryCode]=useState(92)
 const [random,setRandom]=useState('0000')
+const [confirm, setConfirm] = useState(null);
 
 const InputSty = {flex:1,color:Colors.FontColorI}
 function onSelectBank(val){
@@ -78,7 +81,7 @@ function ONpressNext(){
     if(password === c_password){
         setIndex(index+1)
         setIsPressed(false)
-        GeneratingOtp()
+        SendOtp()
     }
     else{
         setErrorMessage("Password does not match.")
@@ -87,15 +90,13 @@ function ONpressNext(){
   }
 
   else if(index === 4 &&  otp){
-    if(Number(otp) === Number(random)){
-      changePassword()
-
-    }
-    else{
-      setErrorCode("otp")
-      setErrorMessage("Otp Does not match")
-      console.log(random)
-    }
+    confirmCode()
+ 
+  
+      // setErrorCode("otp")
+      // setErrorMessage("Otp Does not match")
+      // console.log(random)
+    
     
   }
   else{
@@ -228,29 +229,6 @@ console.log(countryCode+password)
 
 
 
-function Validator(error,message){
-
-if(error === "username"){
-  setErrorCode(error)
-  setIndex(2)
-setErrorMessage(message)
-}
-else if(error === "email"){
-  setErrorCode(error)
-  setIndex(2)
-setErrorMessage(message)
-}
-else if(error === "phone"){
-  setErrorCode(error)
-  setIndex(3)
-setErrorMessage(message)
-}
-else if(error === "Cnic"){
-  setErrorCode(error)
-  setIndex(3)
-setErrorMessage(message)
-}
-}
 
 
 
@@ -296,39 +274,36 @@ style={styles.NextTextSTyle} >{loading === true ? "Loading....":"Next >"}</Text>
 
 
 
-function GeneratingOtp(){
 
-  var val = Math.floor(1000 + Math.random() * 9000);
-  setRandom(val)
-  setTimeout(() => {
-    SendOtp(val)
-   
-  },2000);
-
-
-}
-function SendOtp(val){
+async function SendOtp(al){
 
 
 
-    const options = {
-      method: 'POST',
-      headers: {
-        'X-RapidAPI-Key': 'be434c3026msh50dc650f31b5e59p1380e1jsn8889f821e46d',
-        'X-RapidAPI-Host': 'telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com'
-      }
-    };
+  try{
+    await auth().signInWithPhoneNumber(`+${String(countryCode+Phone)}`).then((confirmation)=>{
+      console.log("ss")
+  
+      setConfirm(confirmation)
+    }).catch((err)=>{
+  
+  
+      console.log("this is err",err)
+      setErrorCode("phone")
+      setIndex(3)
+      setErrorMessage("Try again later! You have sent too many requests.")
+
     
-    fetch(`https://telesign-telesign-send-sms-verification-code-v1.p.rapidapi.com/sms-verification-code?phoneNumber=${countryCode+Phone}&verifyCode=${val}&appName=tradingtube`, options)
-      .then(response => response.json())
-      .then(response => {
-        if(response.message === "Invalid phone number"){
-          setErrorCode("phone")
-          setIndex(3)
-          setErrorMessage("Cannot send otp on this phone no please check no again.")
-        }
-        console.log(response)})
-      .catch(err => console.error(err));
+    
+    });
+    // console.log(confirmation);
+  
+  }catch{
+    console.log("cound not send")
+    setErrorCode("phone")
+    setIndex(3)
+    setErrorMessage("Cannot send otp please re check your no and try again.")
+  }
+
 
 
 }
@@ -336,26 +311,32 @@ function SendOtp(val){
 
 
 
-function BottoMtext(){
-  return(
-    <Text style={{color:Colors.FontColorI,margin:15,alignSelf:'center',position:'absolute',bottom:30}}>
-  Already have an account? <Text 
-  onPress={()=> navigation.navigate("Login")}
-  style={{color:Colors.PrimaryColor,fontWeight:"bold",fontSize:16}}>Sign In</Text>
-</Text> 
-  )
-}
+async function confirmCode() {
+  console.log("confirming")
+  setLoading(true)
+  try {
+    await confirm.confirm(otp).then((e)=>
+    {
+      console.log(e)
+      changePassword()
 
+    }
+    ).catch((err)=>
+    {
 
-
-function Allquestions({item}){
-  return(
-    <Pressable 
-    onPress={()=> setQuestion(item.Question)}
-    style={[styles.QuestionBox,{backgroundColor:item.Question === question ? Colors.send :Colors.bgIII}]}>
-      <Text style={styles.TitleTxt}>{item.Question}</Text>
-    </Pressable>
-  )
+      setLoading(false)
+      setErrorMessage("Otp does not match or expired!")
+        setErrorCode("otp")
+      console.log('Invalid code.');
+      console.log(err)
+    }
+    ) ;
+  } catch (error) {
+    setLoading(false)
+    setErrorMessage("Otp does not match or expired!")
+      setErrorCode("otp")
+    console.log('Invalid code.');
+  }
 }
 
 

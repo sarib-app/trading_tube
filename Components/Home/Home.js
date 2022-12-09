@@ -44,6 +44,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 function Home({data,total_Record}) {
 const [username,setUsername]=useState("username")
 const [isPromotion,setIspromotion]=useState("0")
+const [refer,setRefer]=useState("N/A")
+
   useEffect(()=>{
     var requestOptions = {
       method: 'GET',
@@ -80,6 +82,7 @@ setIspromotion(result.check)
       const token = await AsyncStorage.getItem('token')
       let userParsed=JSON.parse(user) 
       if(token){
+        setRefer(userParsed.referal_code)
         setUsername(userParsed.username)
       // getData(userParsed.id) 
       }
@@ -477,7 +480,7 @@ data.map((item)=>{
 
 
 <View style={styles.Header}>
-    <Text style={styles.OuterTxt}>Weclcome{'\n'} <Text style={styles.InnerTxt}>{username}</Text></Text>
+    <Text style={styles.OuterTxt}>Weclcome{'\n'} <Text style={styles.InnerTxt}>{username}<Text style={{color:Colors.placeHolder,fontSize:14}}>  {`( ${refer} )`}</Text></Text></Text>
 
     <View style={{flexDirection:'row'}}>
 <TouchableOpacity

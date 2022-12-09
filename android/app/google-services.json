@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "575329565062",
+    "project_id": "tradingtubee",
+    "storage_bucket": "tradingtubee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:575329565062:android:e6554423c90bff788e9407",
+        "android_client_info": {
+          "package_name": "com.tradingtube"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "575329565062-850esrfme4h5gnd0190nidt6nqo64uh0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM5CScM6-bKhF78uPiXa_iCVpAlX4UKCk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "575329565062-850esrfme4h5gnd0190nidt6nqo64uh0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

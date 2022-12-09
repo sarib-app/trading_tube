@@ -104,11 +104,29 @@ style={{width:362,height:194,alignSelf:'center'}}
 
 
 <View>
+{
+  item.Acc_Type === "OKX" || item.Acc_Type === "Binance"?
+<>
+  <Text 
+selectable={true}
+style={[styles.CardHeadTxt,{color:Colors.BgColorII,textAlign:'center'}]}>Account Number
+</Text>
 
+<Text 
+selectable={true}
+style={{color:"black",textAlign:'center',marginLeft:-60,fontSize:12,fontWeight:"bold"}}>{Acc_numberr}
+</Text>
+</>
+:
 <Text 
 selectable={true}
 style={[styles.CardHeadTxt,{color:Colors.BgColorII,textAlign:'center'}]}>Account Number{'\n'}{Acc_numberr}
 </Text>
+}
+{/* <Text 
+selectable={true}
+style={[styles.CardHeadTxt,{color:Colors.BgColorII,textAlign:'center'}]}>Account Number{'\n'}{Acc_numberr}
+</Text> */}
 
 
 </View>
