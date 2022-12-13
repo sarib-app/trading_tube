@@ -29,6 +29,12 @@ target 'tradingtube' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-async-storage/async-storage'
 
+  pod 'react-native-notifications', :path => '../node_modules/react-native-notifications'
+
+  pod 'react-native-pusher-push-notifications', :path => '../node_modules/react-native-pusher-push-notifications'
+
+  pod 'RNFBApp', :path => '../node_modules/@react-native-firebase/app'
+
   target 'tradingtubeTests' do
     inherit! :complete
     # Pods for testing

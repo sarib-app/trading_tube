@@ -35,6 +35,8 @@ import SplashScreen from "react-native-splash-screen"; //import SplashScreen
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import StateChanger from './Components/StateChanger/StateChanger';
 import Notification from './Components/Notification/notification';
+import { Notifications } from 'react-native-notifications';
+
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -43,6 +45,11 @@ const App = () => {
   useEffect(() => {
     SplashScreen.hide(); //hides the splash screen on app load.
     getAsyncData()
+    Notifications.postLocalNotification({
+      title: "Welcome",
+      body: "Welcome to trading tube best investment platform",
+      extra: "data"
+  })
   }, []);
 
 

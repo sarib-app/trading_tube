@@ -4,6 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
+import com.b8ne.RNPusherPushNotifications.RNPusherPushNotificationsPackage;
+import com.wix.reactnativenotifications.RNNotificationsPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
@@ -17,6 +20,7 @@ import com.facebook.soloader.SoLoader;
 import com.tradingtube.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import com.wix.reactnativenotifications.RNNotificationsPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
