@@ -1,4 +1,7 @@
 {
   "name": "tradingtube",
-  "displayName": "Trading Tube"
+  "displayName": "Trading Tube",
+   "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-7224745157985009~1056777861"
+  }
 }

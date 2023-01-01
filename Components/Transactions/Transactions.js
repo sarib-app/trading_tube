@@ -30,6 +30,9 @@ import { TransactionIcons } from '../data/TopInvestors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import Endpoints from '../../EnDPoints';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7224745157985009/9676971080';
+
 function Transactions({allTotalTrasnaction,forceReload,total_Record}) {
   const [selected,setSelected]=useState("Investment")
   const [refreshing, setRefreshing] = useState(false);
@@ -190,7 +193,7 @@ function LowerCart(){
   
   <View style={styles.InnerTricks}>
   <Text style={{fontWeight:'bold',fontSize:18,color:Colors.BgColor}}>{selected}</Text>
-  <Text style={{color:Colors.BgColorII}}>{moment(item.created_at).format('YYYY-MM-DD')}</Text>
+  <Text style={{color:Colors.BgColorII}}>{ selected === "Income" ?  moment(item.earn_date).format('YYYY-MM-DD'):moment(item.created_at).format('YYYY-MM-DD')}</Text>
   
   </View>
   
@@ -260,6 +263,16 @@ data.map((item)=>{
       }</View>
 
 
+
+
+<BannerAd
+      unitId={adUnitId}
+      size={BannerAdSize.FULL_BANNER}
+      requestOptions={{
+        requestNonPersonalizedAdsOnly: true,
+      }}
+      
+      />
 <ScrollView nestedScrollEnabled={true}
  refreshControl={
   <RefreshControl

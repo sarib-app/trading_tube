@@ -1,6 +1,6 @@
 apply plugin: "com.android.application"
-
 apply plugin: 'com.google.gms.google-services' // <- Add this line
+
 
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
@@ -140,10 +140,10 @@ android {
         applicationId "com.tradingtube"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 13
-        versionName "4"
+        versionCode 17
+        versionName "4.4"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
-
+        // multiDexEnabled true
         if (isNewArchitectureEnabled()) {
             // We configure the NDK build only if you decide to opt-in for the New Architecture.
             externalNativeBuild {
@@ -275,12 +275,51 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'com.google.firebase:firebase-messaging:21.1.0'
-    // implementation project(':react-native-pusher-push-notifications')
+//     implementation 'com.google.firebase:firebase-messaging:20.0.0'
+//     implementation  (project(':react-native-pusher-push-notifications')){
+// exclude group: 'com.google.android.gms'
+
+//     }
+//     implementation 'com.pusher:push-notifications-android:1.9.0'
+
+
+
+
+
+
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation project(':react-native-pusher-push-notifications')
     implementation 'com.pusher:push-notifications-android:1.9.0'
+
+    implementation project(':react-native-version-info')
+
+implementation 'com.google.firebase:firebase-iid:16.0.0'
+//   implementation 'com.google.android.gms:play-services-ads:21.4.0'
+
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
     
+// implementation(project(':react-native-camera')){
+// }
+//   implementation 'androidx.multidex:multidex:2.0.1'  // <-- ADD THIS DEPENDENCY
+    //     implementation 'com.google.firebase:firebase-analytics:21.2.0'
+
+    // implementation 'com.google.firebase:firebase-crashlytics:18.3.0'
+    // implementation 'com.google.android.gms:play-services-measurement-api:21.2.0'
+    // implementation 'com.google.android.gms:play-services-measurement-base:21.2.0'
+    // implementation 'com.google.android.gms:play-services-measurement-impl:21.2.0'
+    // implementation 'com.google.android.gms:play-services-measurement-sdk:21.2.0'
+    // implementation 'com.google.android.gms:play-services-measurement-sdk-api:21.2.0'
+
+
+
+// implementation ('com.google.android.gms:play-services-measurement:21.2.0') {
+//              exclude group: "com.google.android.gms", module: "play-services-measurement-base"
+//     exclude group: "com.google.android.gms", module: "play-services-measurement-api"
+//   exclude group: "com.google.android.gms", module: "play-services-measurement-impl"
+//   exclude group: "com.google.android.gms", module: "play-services-measurement"
+//   exclude group: "com.google.android.gms", module: "play-services-measurement-sdk-api"
+// }    
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
   implementation 'com.facebook.fresco:animated-gif:2.6.0'
         debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
@@ -303,7 +342,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
-      implementation 'com.android.support:support-core-utils:24.2.1'
+    //   implementation 'com.android.support:support-core-utils:24.2.1'
+    implementation 'com.google.firebase:firebase-core:16.0.0'
        implementation project(':react-native-notifications')
 
 
@@ -312,10 +352,10 @@ dependencies {
 
     // implementation 'com.google.firebase:firebase-functions'
     // implementation 'com.google.firebase:firebase-messaging'
-    implementation 'com.google.firebase:firebase-iid:21.1.0'
-    // implementation 'com.google.firebase:firebase-core:16.0.0'
-implementation 'com.google.firebase:firebase-analytics:18.0.3'
-implementation 'com.google.firebase:firebase-ml-vision:24.0.0'
+    // implementation 'com.google.firebase:firebase-iid:21.1.0'
+    // implementation 'com.google.firebase:firebase-analytics:21.2.0'
+// implementation 'com.google.firebase:firebase-analytics:18.0.3'
+// implementation 'com.google.firebase:firebase-ml-vision:24.0.0'
 // implementation 'com.google.android.gms:play-services-ads:20.0.0'
 
 

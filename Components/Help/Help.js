@@ -123,7 +123,7 @@ return(
     
     
     <View style={styles.InnerTricks}>
-    <Text style={{fontWeight:'400',fontSize:16,color:Colors.FontColorI}}>I dont know how to withdraw my income</Text>
+    <Text style={{fontWeight:'400',fontSize:16,color:Colors.FontColorI}}>{item.title}</Text>
     {/* <Text style={{fontWeight:'500',fontSize:14,color:Colors.PrimaryColor}}>Level 2</Text> */}
 
     

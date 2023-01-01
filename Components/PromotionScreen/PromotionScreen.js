@@ -34,6 +34,12 @@ import SpinnerButton from 'react-native-spinner-button';
 import upload_img_icon from '../../assets/icons/upload_img.png'
 import referenceCnic from '../../assets/icons/referenceCnic.png'
 
+
+
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7224745157985009/9676971080';
+
+
 const WindowWidth = Dimensions.get('window').width
 const WindowHeight = Dimensions.get('window').height;
 function PromotionScreen() {
@@ -300,7 +306,14 @@ const typeI = matchI ? `image/${matchI[1]}` : `image`;
     <SafeAreaView style={styles.Container}>
 
 <BackBtn/>
-
+<BannerAd
+      unitId={adUnitId}
+      size={BannerAdSize.FULL_BANNER}
+      requestOptions={{
+        requestNonPersonalizedAdsOnly: true,
+      }}
+      
+      />
 <ScrollView
 contentContainerStyle={{alignItems:"center"}}
 >
@@ -471,7 +484,14 @@ style={{width:100,height:100}}
 
 
 </ScrollView>
-
+<BannerAd
+      unitId={adUnitId}
+      size={BannerAdSize.FULL_BANNER}
+      requestOptions={{
+        requestNonPersonalizedAdsOnly: true,
+      }}
+      
+      />
     </SafeAreaView>
   )
 }

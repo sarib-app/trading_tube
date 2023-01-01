@@ -34,6 +34,11 @@ import Endpoints from '../../EnDPoints';
 import Confirmation from './ConfirmationModal';
 import getAsync from '../GetAsynData/getAsync';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7224745157985009/9676971080';
+
 function InvestmentScreen({
   AllPackages,
   forceReload,
@@ -46,6 +51,7 @@ function InvestmentScreen({
 
 
   const [refreshing, setRefreshing] = useState(false);
+
 
   const [user,setUser]=useState({
     firstname:"",
@@ -397,6 +403,17 @@ dataFinal.map((item)=>{
       }
   
 </View>
+
+
+
+<BannerAd
+      unitId={adUnitId}
+      size={BannerAdSize.FULL_BANNER}
+      requestOptions={{
+        requestNonPersonalizedAdsOnly: true,
+      }}
+      
+      />
 
 
 <ScrollView nestedScrollEnabled={true}

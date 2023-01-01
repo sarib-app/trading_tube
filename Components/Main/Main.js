@@ -32,7 +32,8 @@ import Endpoints from '../../EnDPoints';
 import getAsync from '../GetAsynData/getAsync';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
-
+import GetNotif from '../GetNotif/getNotif';
+import Sorry from '../Modals/SorryModal';
 function Main({onChangeState}) {
 const asyncdata = getAsync()
 const focused = useIsFocused()
@@ -48,6 +49,7 @@ const [currentDate,setCurrentDate]=useState("2022-9-9")
 const [allTotal,setAllTotal]=useState("")
 const [allTotalTrasnaction,setAllTotalTransaction]=useState("")
 const [allComissions,setAllComissions]=useState([])
+const [showSorry,setShowSorry]=useState(true)
 
 
 function changeState(val){
@@ -55,7 +57,13 @@ function changeState(val){
 }
 
 
+function HideSorry(){
 
+  setShowSorry(false)
+ 
+ 
+ }
+ 
 
 
 
@@ -92,6 +100,7 @@ useEffect(()=>{
   useEffect(()=>{
     getTip_Tricks()
     getAsyncData()
+    GetNotif()
     },[])
 
     async function getAsyncData () {
@@ -431,7 +440,11 @@ onChangeState={onChangeState}
 />
 }
 <BottomBar/>
+<Sorry 
+IsVisible={showSorry}
+onHideModal={HideSorry}
 
+/>
     </>
   )
 }

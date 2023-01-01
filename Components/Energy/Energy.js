@@ -32,6 +32,9 @@ import moment from 'moment';
 import GlobalProgressLoader from '../LoadingModal/LoadingModal';
 import getAsync from '../GetAsynData/getAsync';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7224745157985009/9676971080';
 function EnergyScreen({
   DailyIncomes,
   forceReload,
@@ -393,7 +396,7 @@ setshowProgressLoader(true)
   Package Start Time: {item.started_time}
 </Text>
 <Text style={styles.SingleIncomeText}>
-  Package End Date: {item.end_date}
+  Package End Date: {moment(item.end_date).format('DD-MM-YYYY')}
 </Text>
 <Text style={styles.SingleIncomeText}>
   Package End Time: {item.end_time}
@@ -474,8 +477,7 @@ onHideLoader={onHideLoader}
 return(
   <View style={styles.LowerCart}>
   <Text style={styles.L_Cart_Title}>{LowerCardTitle}</Text>
-  <Text style={{color:Colors.danger,marginLeft:20,fontWeight:'bold',fontSize:17}}>Note:<Text style={{color:Colors.BgColor,fontWeight:'500',fontSize:14}}> Daily income refreshes at 00 of UTC time clock.{'\n'}{"(12 of midnight.)"}</Text></Text>
-  <Text style={{color:Colors.BgColor,marginLeft:20,fontWeight:"bold"}}>Current <Text style={{fontWeight:'bold',color:Colors.danger}}>UTC</Text> Date and Time: <Text style={{color:Colors.send}}>{utcDate}</Text></Text>
+  <Text style={{color:Colors.danger,marginLeft:20,fontWeight:'bold',fontSize:17}}>Note:<Text style={{color:Colors.BgColor,fontWeight:'500',fontSize:14}}> Daily income refreshes at 12:00 am.</Text></Text>
 
 
 
@@ -542,7 +544,14 @@ data.map((item)=>{
 
 
 </View>
-
+<BannerAd
+      unitId={adUnitId}
+      size={BannerAdSize.FULL_BANNER}
+      requestOptions={{
+        requestNonPersonalizedAdsOnly: true,
+      }}
+      
+      />
 
 <ScrollView nestedScrollEnabled={true}
     refreshControl={

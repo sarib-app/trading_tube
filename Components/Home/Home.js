@@ -40,56 +40,113 @@ import Banner from '../../assets/icons/Banner.png'
 import WebView from 'react-native-webview';
 import Coming_Soon from '../Help/Comingg_Soon';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Sorry from '../Modals/SorryModal';
+
+import { BannerAd, BannerAdSize, TestIds,InterstitialAd,AdEventType } from 'react-native-google-mobile-ads';
+import { useIsFocused } from '@react-navigation/native';
+import Suspended from '../Modals/Suspended';
+const adUnitId = __DEV__ ? TestIds.BANNER : 'ca-app-pub-7224745157985009/9676971080';
+const adUnitIdPopUp = __DEV__ ? TestIds.APP_OPEN  : 'ca-app-pub-7224745157985009/6687446284';
+
+
+
+const interstitial = InterstitialAd.createForAdRequest(adUnitIdPopUp, {
+  requestNonPersonalizedAdsOnly: true,
+  keywords: ['fashion', 'clothing','trading'],
+});
+
+
+
 
 function Home({data,total_Record}) {
 const [username,setUsername]=useState("username")
 const [isPromotion,setIspromotion]=useState("0")
 const [refer,setRefer]=useState("N/A")
+const [newNotifCount,setNewNotifCount]=useState("0")
+const [SuspendedMessage,setSuspendedMessage]=useState("hello there")
+const [isSuspended,setIsSuspended]=useState(false)
 
-  useEffect(()=>{
-    var requestOptions = {
-      method: 'GET',
-      redirect: 'follow'
-    };
-    
-    fetch(`${BaseUrl}getcheck`, requestOptions)
-      .then(response => response.json())
-      .then(result => {
-        if(result.status === "200"){
-setIspromotion(result.check)
-          console.log(result.check)
-        }
-      })
-      .catch(error => console.log('error', error));
-  },[])
- 
+const focused = useIsFocused()
+
+
+const [loaded, setLoaded] = useState(false);
 
 
 
 
+useEffect(()=>{
+  const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+    setLoaded(true);
+    console.log("ffff")
+  });
+
+  // Start loading the interstitial straight away
+  interstitial.load();
+
+  // Unsubscribe from events on unmount
+  return unsubscribe;
 
 
+
+  },[focused])
 
 
 
   useEffect(()=>{
     getAsyncData()
+
+
+
     },[])
   
   
     async function getAsyncData () {
       const user = await AsyncStorage.getItem('user')
       const token = await AsyncStorage.getItem('token')
+      const new_notif = await AsyncStorage.getItem('newnotif')
+
       let userParsed=JSON.parse(user) 
       if(token){
         setRefer(userParsed.referal_code)
         setUsername(userParsed.username)
-      // getData(userParsed.id) 
+        getCheck(userParsed.id)
+        // getData(userParsed.id) 
       }
+    
     }
   
   
+function getCheck(id){
 
+  var formdata = new FormData();
+  formdata.append("user_id", String(id));
+
+  var requestOptions = {
+    method: 'POST',
+    body: formdata,
+
+    redirect: 'follow'
+  };
+
+  fetch(`${BaseUrl}getcheck`, requestOptions)
+    .then(response => response.json())
+    .then(result => {
+      if(result.status === "200"){
+setIspromotion(result.check)
+setNewNotifCount(result.notification_count)
+        console.log(result.check)
+      }
+      else if(result.status ==="402"){
+        setIsSuspended(true)
+        setSuspendedMessage(result.message)
+      }
+
+
+console.log(result)
+
+    })
+    .catch(error => console.log('error in check', error));
+}
 
 
 
@@ -127,7 +184,24 @@ horizontal={true}
 // contentContainerStyle={{justifyContent:'space-between'}}
 style={styles.catSection}>
 <Pressable 
-onPress={()=> navigation.navigate('Recharge')}
+onPress={()=> {
+  
+  
+  
+  if(loaded === true){
+  navigation.navigate('Recharge')
+    
+    setLoaded(false)
+    interstitial.show();
+
+  }else{
+
+    navigation.navigate('Recharge')
+
+  }
+  
+  
+}}
 style={styles.iconWrapper}>
 <LinearGradient 
  colors={[Colors.GoldII, Colors.GoldI]}
@@ -150,7 +224,26 @@ style={{width:20,height:30}}
 
 
 <Pressable 
-onPress={() => navigation.navigate("Withdraw")}
+onPress={() => {
+  
+  
+
+    if(loaded === true){
+      navigation.navigate("Withdraw")
+      setLoaded(false)
+    interstitial.show();
+
+  }else{
+    navigation.navigate("Withdraw")
+
+  }
+
+  
+  
+
+
+
+}}
 style={styles.iconWrapper}>
 <LinearGradient 
  colors={[Colors.GoldII, Colors.GoldI]}
@@ -483,13 +576,45 @@ data.map((item)=>{
     <Text style={styles.OuterTxt}>Weclcome{'\n'} <Text style={styles.InnerTxt}>{username}<Text style={{color:Colors.placeHolder,fontSize:14}}>  {`( ${refer} )`}</Text></Text></Text>
 
     <View style={{flexDirection:'row'}}>
-<TouchableOpacity
-  onPress={()=> navigation.navigate("Notification")}
+      <View style={{flexDirection:'row' }}>
+        <View style={{backgroundColor:Colors.deposit,borderRadius:1000,width:20,height:20,alignItems:"center",justifyContent:"center",left:10}}>
 
+<Text style={{color:"white",fontWeight:"bold"}} >{newNotifCount}</Text>
+        </View>
+        {/* {
+newNotif === "1" &&
+
+        } */}
+<TouchableOpacity
+  onPress={()=> {
+
+
+
+
+    if(loaded === true){
+      setNewNotifCount("0")
+
+      navigation.navigate("Notification")  
+          setLoaded(false)
+      interstitial.show();
+  
+    }else{
+      setNewNotifCount("0")
+
+      navigation.navigate("Notification")  
+    }
+
+
+
+   
+  
+  }}
+  
 >
 
     <Image source={notification} style={{width:35,height:35,tintColor:Colors.PrimaryColor}}/>
 </TouchableOpacity>
+  </View>
  
   <TouchableOpacity
   onPress={()=> navigation.navigate("LevelRewards")}
@@ -503,10 +628,28 @@ data.map((item)=>{
 
 </View>
 
+<View style={{alignItems:"center"}}>
 
+
+
+<BannerAd
+      unitId={adUnitId}
+      size={BannerAdSize.FULL_BANNER}
+      requestOptions={{
+        requestNonPersonalizedAdsOnly: true,
+      }}
+      
+      />
+      </View>
 <ScrollView nestedScrollEnabled={true}
 
 >
+
+
+
+
+
+
 <UpperCart/>
 {/* <Pressable
 onPress={()=> navigation.navigate("PromotionScreen")}
@@ -520,11 +663,23 @@ style={{backgroundColor:"red"}}
 </Pressable> */}
 
 
-
    {
     isPromotion === "0"&&
     <Pressable
-onPress={()=> navigation.navigate("PromotionScreen")}
+onPress={()=>{
+  
+  if(loaded === true){
+    navigation.navigate("PromotionScreen")
+    setLoaded(false)
+    interstitial.show();
+
+  }else{
+  navigation.navigate("PromotionScreen")
+
+  }
+}
+  
+  }
 >
 
 <Image 
@@ -550,6 +705,12 @@ source={promotion}
 style={{width:80,height:80}}
 />
 </Pressable> */}
+
+<Suspended 
+IsVisible={isSuspended}
+Message={SuspendedMessage}
+
+/>
 
     </SafeAreaView>
   )

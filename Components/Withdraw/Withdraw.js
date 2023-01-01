@@ -40,6 +40,7 @@ const [selected , setSelected]=useState(1)
 const [showFilter,setShowFilter]=useState(false)
 
 const [loading,setloading]=useState(false)
+const [ErrorMessage,setErrorMessage] = useState("You currently have not withdraws")
 const [totalWithdraw,setTotalWithdraw]=useState(0)
 
 const [value,setValue]=useState("approved")
@@ -133,7 +134,12 @@ function fetchWithdraws(id){
 
       }
       console.log(result)})
-    .catch(error => console.log('error', error));
+    .catch(error => {
+      
+      setloading(false)
+      setErrorMessage("Something went wrong try again later!")
+
+      console.log('error', error)});
 
   }
 
@@ -205,7 +211,7 @@ height:item.Acc_Type === "VISA"?19:item.Acc_Type === "OKX" ?8:27,
     return(
 <>
 { withdrawData.length <1? 
-  <Text style={{color:Colors.FontColorI,marginTop:100}}>You currently have no deposits.</Text>
+  <Text style={{color:Colors.FontColorI,marginTop:100}}>{ErrorMessage}</Text>
   :
   withdrawData.map((item)=>{
       return(

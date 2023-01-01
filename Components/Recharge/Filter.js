@@ -73,6 +73,27 @@ style={styles.ModalTitles}>Close</Text>
 
   <Text style={styles.ModalTXt}>Un-Approved</Text>
 </View>
+
+
+
+
+
+
+
+<View style={styles.ModalHeader}>
+  <TouchableOpacity
+  onPress={()=>   onChangeValue("rejected")}
+  
+  >
+
+  <Image
+  source={radioButton}
+  style={{width:20,height:20,tintColor:value==="rejected"?Colors.send:Colors.FontColorI}}
+  />
+  </TouchableOpacity>
+
+  <Text style={styles.ModalTXt}>Rejected</Text>
+</View>
 </View>
     </SafeAreaView>
     </Modal>

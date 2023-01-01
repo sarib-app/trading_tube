@@ -35,6 +35,8 @@ target 'tradingtube' do
 
   pod 'RNFBApp', :path => '../node_modules/@react-native-firebase/app'
 
+
+
   target 'tradingtubeTests' do
     inherit! :complete
     # Pods for testing

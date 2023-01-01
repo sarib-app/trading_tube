@@ -77,7 +77,7 @@ function Withdraw (){
   formdata.append("account_subtype", Account_Subtype);
 
   formdata.append("account_number", Acc_Number);
-  formdata.append("requested_amount", Percent_Amount);
+  formdata.append("requested_amount", Amount);
   formdata.append("user_id", asyncdata.user.id);
   
   var requestOptions = {

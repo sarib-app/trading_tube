@@ -8,7 +8,7 @@ buildscript {
         minSdkVersion = 21
         compileSdkVersion = 33
         targetSdkVersion = 33
-
+ firebaseMessagingVersion = "21.0.0" 
         if (System.properties['os.arch'] == "aarch64") {
             // For M1 Users we need to use the NDK 24 which added support for aarch64
             ndkVersion = "24.0.8215888"
@@ -29,8 +29,7 @@ buildscript {
         classpath("com.android.tools.build:gradle:7.0.4")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("de.undercouch:gradle-download-task:4.1.2")
-            classpath 'com.google.gms:google-services:4.3.14'
-
+        classpath 'com.google.gms:google-services:4.3.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -40,7 +39,35 @@ allprojects {
       configurations.all {
         resolutionStrategy {
             // Remove this override in 0.66, as a proper fix is included in react-native itself.
-            force "com.facebook.react:react-native:0.68.1" 
+       force "com.facebook.react:react-native:0.68.1" 
+//              exclude group: "com.google.android.gms", module: "play-services-measurement-base"
+//     exclude group: "com.google.android.gms", module: "play-services-measurement-api"
+//   exclude group: "com.google.android.gms", module: "play-services-measurement-impl"
+//   exclude group: "com.google.android.gms", module: "play-services-measurement"
+//   exclude group: "com.google.android.gms", module: "play-services-measurement-sdk-api"
+//   exclude group: "com.google.firebase", module: "firebase-iid"
+
+
+
+            // force "com.google.firebase:firebase-iid:16.0.0"
+            // force "com.google.firebase:firebase-messaging:23.1.0"
+            // force "com.google.android.gms:play-services-measurement-api:21.2.0"
+            // force "com.google.firebase:firebase-measurement-connector-impl:16.0.1"
+            // force "com.google.firebase:firebase-analytics-impl:16.1.1"
+            // force "com.google.android.gms:play-services-measurement-base:21.2.0"
+            // force "com.google.android.gms:play-services-measurement-impl:21.2.0"
+            // force "com.google.android.gms:play-services-measurement-sdk-api:21.2.0"
+
+// force "com.google.android.gms:play-services-measurement:21.2.0"
+
+//     force 'com.google.android.gms:play-services-measurement-api:21.2.0'
+//     force 'com.google.android.gms:play-services-measurement-base:21.2.0'
+//     force 'com.google.android.gms:play-services-measurement-impl:21.2.0'
+//     force 'com.google.android.gms:play-services-measurement-sdk:21.2.0'
+//     force 'com.google.android.gms:play-services-measurement-sdk-api:21.2.0'
+
+
+        
         }}
    
     repositories {

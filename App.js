@@ -45,11 +45,12 @@ const App = () => {
   useEffect(() => {
     SplashScreen.hide(); //hides the splash screen on app load.
     getAsyncData()
-    Notifications.postLocalNotification({
-      title: "Welcome",
-      body: "Welcome to trading tube best investment platform",
-      extra: "data"
-  })
+    
+  //   Notifications.postLocalNotification({
+  //     title: "Welcome",
+  //     body: "Welcome to trading tube best investment platform",
+  //     extra: "data"
+  // })
   }, []);
 
 
